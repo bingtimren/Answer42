@@ -44,6 +44,7 @@ Answer to THE question,
 * Window Selection
    * on Select -> Window Running (set current Selected)
    * on T-out -> Window Running (remain NIL)
+
 ---
 ## Window Details 
 

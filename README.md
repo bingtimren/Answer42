@@ -68,16 +68,16 @@ Interactions:
       * Extension reminder 2 during extension 2
       * Reminder in final reminder mode or finish
 * Button up
-   * start / increase time by manual extension length
+   * increase time by manual extension length
    * return state to running
-* Button down - finish immediately, or choose again if not started
+* Button down
    * brings up Window Finish Running (that means not stop counting)
 * Button middle - bring up Window Summary
 
 ### Window Finish Running
 Display
 * Just finished what and its running time
-* An indicator, can indicate how much to switch to
+* An indicator, can indicate how much to split
 * Concentration / feeling mode:
    * How concentrated I am (default very concentrated)
    * How good I feel (default very good)
@@ -89,7 +89,7 @@ Interactions:
    * Button up - toggle concentration
    * Button down - toggle how good I feel
 * Split mode:
-   * Button middle - toggle to split mode 
+   * Button middle - toggle to split mode / switch what
    * Button up / down - toggle 1-8/8
 * Button back - confirm & enter
    * add up to today/what total
@@ -100,10 +100,11 @@ Interactions:
 
 ### Window Selection
 
-This is pushed into window stack after a "what" is finished
 Display:  a list of "whats" for selection
 Interactions:
 * Up/Down for browsing
 * Middle for select
    * immediately commit current NIL
+   * change current what to selected
+   * exit window & return to running
  

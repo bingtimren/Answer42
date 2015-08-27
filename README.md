@@ -30,7 +30,7 @@ Display:
 * Target length, remaining
 Interactions:
 * Target meet: 
-** Preserve current status
+* * Preserve current status
 
 
 

@@ -1,0 +1,27 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "Life Endeavour",
+    "longName": "Answer 42",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/menuimg.png",
+                "menuIcon": true,
+                "name": "IMAGE_42",
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "2",
+    "shortName": "Answer 42",
+    "uuid": "68778513-6f1d-408f-b490-d61e2e977216",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}

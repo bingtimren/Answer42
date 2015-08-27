@@ -26,12 +26,15 @@ Answer to THE question,
 * Extension stage 2 length (0 to skip)
 * Extension stage 2 reminder interval in minutes (0 no reminder)
 * Manual extension length in minutes
-* Final reminder interval (0 to terminate immediately)
-
+* Final reminder interval (0 to terminate immediately & commit, -1 to terminate & commit NOFIN)
 
 ---
 ## Windows & Interaction
-
+### Initialize
+* Check storage if current what is available
+* If not, current what is NIL and start right now
+* Bring on window running
+### Window interaction
 * Window Running
    * on Finish -> Window Finish Running
    * on View Summary -> view summary
@@ -44,13 +47,6 @@ Answer to THE question,
 ---
 ## Window Details 
 
-### Initialize
-* Check storage if current what is available
-* If not, current what is NIL and start right now
-* Bring on window running
-
-
-
 ### Window Running
 
 This is the first window
@@ -58,14 +54,14 @@ This is the first window
 Display:
 * Date / time / weekday / battery level
 * Name of currently running "what"
-* How long has it been running (or not started)
+* How long has it been running
 * Percentage indicator
 * Target length, remaining, ends at
 Interactions:
 * Alarm (time out): 
    * Vibe to reminder
    * Determine state, and change to next state if time out
-   * If current what finished, commit current record? set current what to NIL, start it, and return loop
+   * If current what finished (forced finish), commit current record or NoFin, set current what to NIL, start it, and return loop
    * State change:
       * Running reminder during target length
       * Extension reminder 1 during extension 1

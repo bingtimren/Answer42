@@ -14,13 +14,7 @@ Answer to THE question,
 * automatically / manually upload log to watch & then to a datasource, and clean log
 
 ---
-## Windows, UI & Interaction
-
-### Initialize
-* Check storage if current what is available
-* If not, current what is NIL and start right now
-* Bring on window running
-* If current what is NIL, bring on window selection
+## Main Data Structure
 
 ### What's what?
 * int ID
@@ -33,6 +27,29 @@ Answer to THE question,
 * Extension stage 2 reminder interval in minutes (0 no reminder)
 * Manual extension length in minutes
 * Final reminder interval (0 to terminate immediately)
+
+
+---
+## Windows & Interaction
+
+* Window Running
+   * on Finish -> Window Finish Running
+   * on View Summary -> view summary
+* Window Finish Running
+   * on All Committed -> Window Selection (current NIL)
+   * on T-out -> return to Window Running
+* Window Selection
+   * on Select -> Window Running (set current Selected)
+   * on T-out -> Window Running (remain NIL)
+---
+## Window Details 
+
+### Initialize
+* Check storage if current what is available
+* If not, current what is NIL and start right now
+* Bring on window running
+
+
 
 ### Window Running
 
@@ -48,7 +65,7 @@ Interactions:
 * Alarm (time out): 
    * Vibe to reminder
    * Determine state, and change to next state if time out
-   * If current what finished, set current what to NIL, start it, and bring up Window Selection
+   * If current what finished, commit current record? set current what to NIL, start it, and return loop
    * State change:
       * Running reminder during target length
       * Extension reminder 1 during extension 1
@@ -58,7 +75,7 @@ Interactions:
    * start / increase time by manual extension length
    * return state to running
 * Button down - finish immediately, or choose again if not started
-   * brings up Window Finish Running
+   * brings up Window Finish Running (that means not stop counting)
 * Button middle - bring up Window Summary
 
 ### Window Finish Running
@@ -81,9 +98,9 @@ Interactions:
 * Button back - confirm & enter
    * add up to today/what total
    * create entry to buffer
-   * if all entered (no split left), set current "what" to NIL and return to Window Running
+   * if all entered (no split left), set current "what" to NIL and return to Window Running & then bring up Window Selection
    * if still slots left for split, return to split mode
-* Time-out
+* Time-out - do nothing & return to Window Running
 
 ### Window Selection
 
@@ -92,4 +109,5 @@ Display:  a list of "whats" for selection
 Interactions:
 * Up/Down for browsing
 * Middle for select
+   * immediately commit current NIL
  

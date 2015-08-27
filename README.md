@@ -19,13 +19,19 @@ Answer to THE question, where my time goes?
 
 ## Windows & UI
 
-* Window Selection
+### Window Selection
 
-This is the first window, display a list of "whats" for selection
+This is the first window, 
+Display:  a list of "whats" for selection
 Interactions:
 * Up/Down for browsing
 * Middle for select
 * Middle long for showing Window Summary
  
+### Window Running
 
+This is pushed into window stack after a "what" is selected
+Display:
+* Name of currently running "what"
+* How long has it been running / target
 

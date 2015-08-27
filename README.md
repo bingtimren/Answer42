@@ -13,6 +13,7 @@ Answer to THE question,
 * locally store log up to xxx items
 * automatically / manually upload log to watch & then to a datasource, and clean log
 
+---
 ## Windows, UI & Interaction
 
 ### Initialize
@@ -57,9 +58,7 @@ Interactions:
    * start / increase time by manual extension length
    * return state to running
 * Button down - finish immediately, or choose again if not started
-   * preserve log
-   * if 
-   * first brings Window Finish Running, then
+   * brings up Window Finish Running
 * Button middle - bring up Window Summary
 
 ### Window Finish Running
@@ -84,6 +83,7 @@ Interactions:
    * create entry to buffer
    * if all entered (no split left), set current "what" to NIL and return to Window Running
    * if still slots left for split, return to split mode
+* Time-out
 
 ### Window Selection
 

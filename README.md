@@ -20,12 +20,11 @@ Answer to THE question,
 * int ID
 * A name (such as "work", "rest"...)
 * Target length in minutes
-* Running reminder interval in minutes (0 no reminder)
-* Extension stage 1 length (0 to skip)
-* Extension stage 1 reminder interval in minutes (0 no reminder)
-* Extension stage 2 length (0 to skip)
-* Extension stage 2 reminder interval in minutes (0 no reminder)
 * Manual extension length in minutes
+* Stages (stage 0 is the target stage)
+*   stage_lengths (0 indicate last forever)
+*   reminder intervals (when lapse, 0 indicate terminate immediately & commit, -1 to terminate & commit NOFIN) 
+
 * Final reminder interval (0 to terminate immediately & commit, -1 to terminate & commit NOFIN)
 
 ---

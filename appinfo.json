@@ -9,6 +9,41 @@
     "resources": {
         "media": [
             {
+                "file": "images/action_focus.png",
+                "name": "IMAGE_ACTION_FOCUS",
+                "type": "png"
+            },
+            {
+                "file": "images/action_feel.png",
+                "name": "IMAGE_ACTION_FEEL",
+                "type": "png"
+            },
+            {
+                "file": "images/action_c.png",
+                "name": "IMAGE_ACTION_C",
+                "type": "png"
+            },
+            {
+                "file": "images/action_switch.png",
+                "name": "IMAGE_ACTION_SWITCH",
+                "type": "png"
+            },
+            {
+                "file": "images/action_minus.png",
+                "name": "IMAGE_ACTION_MINUS",
+                "type": "png"
+            },
+            {
+                "file": "images/action_stop.png",
+                "name": "IMAGE_ACTION_STOP",
+                "type": "png"
+            },
+            {
+                "file": "images/action_plus.png",
+                "name": "IMAGE_ACTION_PLUS",
+                "type": "png"
+            },
+            {
                 "file": "images/menuimg.png",
                 "menuIcon": true,
                 "name": "IMAGE_42",
@@ -16,10 +51,13 @@
             }
         ]
     },
-    "sdkVersion": "2",
+    "sdkVersion": "3",
     "shortName": "Answer 42",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
     "uuid": "68778513-6f1d-408f-b490-d61e2e977216",
-    "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
         "watchface": false

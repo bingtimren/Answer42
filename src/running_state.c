@@ -3,6 +3,7 @@
 #include "what.h"
 #include "running_state.h"
 #include "data.h"
+#include "format.h"
 
 const struct WhatType *running_state_what() {
   return &(what_list[current_running_state.whats_running_idx]);
@@ -14,9 +15,8 @@ char* running_state_summary() {
   static char running_state_summary_buffer[100];
   char t1buffer[6];
   char t2buffer[6];
-  strftime(t1buffer, 6, "%H:%M", localtime(&(current_running_state.start_time)));
-  strftime(t2buffer, 6, "%H:%M", localtime(&(current_running_state.target_time)));
-  
+  fmt_time_24h(t1buffer, sizeof(t1buffer), &(current_running_state.start_time));
+  fmt_time_24h(t1buffer, sizeof(t1buffer), &(current_running_state.target_time));
   snprintf(running_state_summary_buffer,sizeof(running_state_summary_buffer),"[%s]ST[%s]TG[%s]", (*running_state_what()).name, t1buffer, t2buffer);
   return running_state_summary_buffer;
 }

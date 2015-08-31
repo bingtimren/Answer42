@@ -96,5 +96,5 @@ void sync_w_running(void) {
   // show state - name
   text_layer_set_text(t_what, (*current_running_what_ptr).name);
   // show state - start time
-  
+  // text_layer_set_text(t_rtime, current_running_state.start_time);
 }

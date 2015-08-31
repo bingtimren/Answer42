@@ -99,8 +99,9 @@ void sync_w_running(void) {
   // show state - start time / target time
   char run_time[6];
   char target_time[6];
-  fmt_time_24h(run_time, sizeof(run_time), &current_running_state.start_time);
-  fmt_time_24h(target_time, sizeof(target_time), &current_running_state.target_time);
+  fmt_time_24h(run_time, sizeof(run_time), &(current_running_state.start_time));
+  fmt_time_24h(target_time, sizeof(target_time), &(current_running_state.target_time));
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", target_time);
   text_layer_set_text(t_rtime, run_time);
   text_layer_set_text(t_target, target_time);
   

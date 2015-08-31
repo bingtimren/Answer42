@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "debug.h"
 #include "what.h"
 
 const struct WhatType what_list[MAX_WHATS] = {

@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "debug.h"
 #include "w_running.h"
 #include "running_state.h"
   

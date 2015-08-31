@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "debug.h"
 #include "w_running.h"
 #include "data.h"
 #include "running_state.h"
@@ -16,8 +17,8 @@ static TextLayer *t_what;
 static BitmapLayer *b_progress;
 static TextLayer *t_rtime;
 static TextLayer *t_target;
-static char run_time[6];
-static char target_time[6];
+static char run_time[FORMAT_24HTIME_BUFFER_LENGTH];
+static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];
 
 static void initialise_ui(void) {
   s_window = window_create();

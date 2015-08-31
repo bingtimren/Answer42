@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include "debug.h"
 #include "w_finish.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY

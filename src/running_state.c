@@ -13,8 +13,8 @@ const struct WhatType *running_state_what() {
 #ifdef APP_LOG
 char* running_state_summary() {
   static char running_state_summary_buffer[100];
-  char t1buffer[6];
-  char t2buffer[6];
+  char t1buffer[FORMAT_24HTIME_BUFFER_LENGTH];
+  char t2buffer[FORMAT_24HTIME_BUFFER_LENGTH];
   fmt_time_24h(t1buffer, sizeof(t1buffer), &(current_running_state.start_time));
   fmt_time_24h(t2buffer, sizeof(t2buffer), &(current_running_state.target_time));
   snprintf(running_state_summary_buffer,sizeof(running_state_summary_buffer),"[%s]ST[%s]TG[%s]", (*running_state_what()).name, t1buffer, t2buffer);
@@ -33,7 +33,7 @@ void running_state_kickoff(int whats_idx) {
   current_running_state.whats_running_idx = whats_idx;
   time(&current_running_state.start_time);
   current_running_state.stage_idx = 0;
-  current_running_state.target_time = current_running_state.start_time + 60 * what_list[whats_idx].stage_lengths[0];
+  current_running_state.target_time = current_running_state.start_time + SECONDS_PER_MIN * what_list[whats_idx].stage_lengths[0];
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
 };
 

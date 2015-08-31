@@ -16,7 +16,7 @@ char* running_state_summary() {
   char t1buffer[6];
   char t2buffer[6];
   fmt_time_24h(t1buffer, sizeof(t1buffer), &(current_running_state.start_time));
-  fmt_time_24h(t1buffer, sizeof(t2buffer), &(current_running_state.target_time));
+  fmt_time_24h(t2buffer, sizeof(t2buffer), &(current_running_state.target_time));
   snprintf(running_state_summary_buffer,sizeof(running_state_summary_buffer),"[%s]ST[%s]TG[%s]", (*running_state_what()).name, t1buffer, t2buffer);
   return running_state_summary_buffer;
 }

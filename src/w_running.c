@@ -3,6 +3,7 @@
 #include "data.h"
 #include "running_state.h"
 #include "what.h"
+#include "format.h"
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -95,6 +96,12 @@ void sync_w_running(void) {
   const struct WhatType* current_running_what_ptr = running_state_what();
   // show state - name
   text_layer_set_text(t_what, (*current_running_what_ptr).name);
-  // show state - start time
-  // text_layer_set_text(t_rtime, current_running_state.start_time);
+  // show state - start time / target time
+  char run_time[6];
+  char target_time[6];
+  fmt_time_24h(run_time, sizeof(run_time), &current_running_state.start_time);
+  fmt_time_24h(target_time, sizeof(target_time), &current_running_state.target_time);
+  text_layer_set_text(t_rtime, run_time);
+  text_layer_set_text(t_target, target_time);
+  
 }

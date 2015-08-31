@@ -22,6 +22,12 @@ char* running_state_summary() {
 }
 #endif
 
+void running_state_clear() {
+  if (persist_exists(KEY_CURRENT_RUNNING_STATE)) {
+    persist_delete(KEY_CURRENT_RUNNING_STATE);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Running state cleared.");
+  };
+}
   
 void running_state_save() {
   persist_write_data(KEY_CURRENT_RUNNING_STATE, &current_running_state, sizeof(current_running_state));
@@ -33,7 +39,7 @@ void running_state_kickoff(int whats_idx) {
   current_running_state.whats_running_idx = whats_idx;
   time(&current_running_state.start_time);
   current_running_state.stage_idx = 0;
-  current_running_state.target_time = current_running_state.start_time + SECONDS_PER_MIN * what_list[whats_idx].stage_lengths[0];
+  current_running_state.target_time = current_running_state.start_time + DEBUG_SECONDS_PER_MIN * what_list[whats_idx].stage_lengths[0];
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
 };
 

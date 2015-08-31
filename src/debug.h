@@ -2,4 +2,5 @@
 // #undef APP_LOG
 
 // when setting seconds per minute to 1, makes debugging easier cause time lapses faster
-#define SECONDS_PER_MIN 1
+#define DEBUG_CLEAR_RUNNING_STATE
+#define DEBUG_SECONDS_PER_MIN 1

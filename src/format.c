@@ -32,7 +32,7 @@ void fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2, char* ear
     indicator = earlier_indicator;
   else if (later_indicator != NULL)
     indicator = later_indicator;
-  if (tdiff.days == 0) {
+  if (tdiff.days != 0) {
     snprintf(buffer, size, "%ud %uh %um%s", tdiff.days, tdiff.hours, tdiff.minutes, indicator);
   } else {
     snprintf(buffer, size, "%uh %um %us%s", tdiff.hours, tdiff.minutes, tdiff.seconds, indicator);

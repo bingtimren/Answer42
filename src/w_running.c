@@ -102,7 +102,7 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed);
+static void register_handlers();
 
 void show_w_running(void) {
   initialise_ui();
@@ -110,9 +110,10 @@ void show_w_running(void) {
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);
-  // register tick handler
-  tick_timer_service_subscribe(SECOND_UNIT, &w_running_tick_handler);
+  register_handlers();
 }
+
+
 
 void hide_w_running(void) {
   window_stack_remove(s_window, true);
@@ -144,3 +145,23 @@ void sync_w_running(void) {
 static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   sync_lapse_remain();
 };
+
+// up click handler - increase time
+static void time_extension_handler(ClickRecognizerRef recognizer, void *context) {
+  current_running_state.target_time = time(NULL) + (*running_state_what()).manual_extension_length;
+  current_running_state.stage_idx = 0;
+  running_state_save();
+  sync_w_running();
+}
+
+// subscribe click events
+void w_running_click_config_provider(void *context) {
+  window_single_click_subscribe(BUTTON_ID_UP, *time_extension_handler);
+}
+
+static void register_handlers() {
+  // register tick handler
+  tick_timer_service_subscribe(SECOND_UNIT, &w_running_tick_handler);
+  // up click for time extension
+  window_set_click_config_provider(s_window, *w_running_click_config_provider);
+}

@@ -8,8 +8,8 @@
 
 static char start_time[FORMAT_24HTIME_BUFFER_LENGTH];
 static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];  
-static char elapsed_time[FORMAT_24HTIME_BUFFER_LENGTH+10];
-static char remaining_time[FORMAT_24HTIME_BUFFER_LENGTH+10];  
+static char elapsed_time[50];
+static char remaining_time[50];  
 
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
@@ -102,12 +102,16 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
+static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed);
+
 void show_w_running(void) {
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);
+  // register tick handler
+  tick_timer_service_subscribe(SECOND_UNIT, &w_running_tick_handler);
 }
 
 void hide_w_running(void) {
@@ -116,7 +120,11 @@ void hide_w_running(void) {
 
 // display lapse and remain
 void sync_lapse_remain(void) {
-  
+  time_t now = time(NULL);
+  fmt_timediff_str(elapsed_time, sizeof(elapsed_time), now, current_running_state.start_time, " ERR!", NULL);
+  fmt_timediff_str(remaining_time, sizeof(remaining_time), now, current_running_state.target_time, " [R]", " [OverR]");
+  text_layer_set_text(t_elapsed_time, elapsed_time);
+  text_layer_set_text(t_remaining_time, remaining_time);
 }
 
 // synchronize contents of the running window
@@ -129,5 +137,10 @@ void sync_w_running(void) {
   fmt_time_24h(target_time, sizeof(target_time), &(current_running_state.target_time));
   text_layer_set_text(t_start_time, start_time);
   text_layer_set_text(t_target_time, target_time);
-  
-}
+  sync_lapse_remain();
+};
+
+// handle ticks - update running & remaining time
+static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+  sync_lapse_remain();
+};

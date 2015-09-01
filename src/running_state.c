@@ -39,7 +39,7 @@ void running_state_kickoff(int whats_idx) {
   current_running_state.whats_running_idx = whats_idx;
   time(&current_running_state.start_time);
   current_running_state.stage_idx = 0;
-  current_running_state.target_time = current_running_state.start_time + DEBUG_SECONDS_PER_MIN * what_list[whats_idx].stage_lengths[0];
+  current_running_state.target_time = current_running_state.start_time + SECONDS_PER_MIN * what_list[whats_idx].stage_lengths[0];
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
 };
 

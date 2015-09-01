@@ -6,6 +6,12 @@
 #include "what.h"
 #include "format.h"
 
+static char start_time[FORMAT_24HTIME_BUFFER_LENGTH];
+static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];  
+static char elapsed_time[FORMAT_24HTIME_BUFFER_LENGTH+10];
+static char remaining_time[FORMAT_24HTIME_BUFFER_LENGTH+10];  
+
+
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GBitmap *s_res_image_action_plus;
@@ -15,10 +21,10 @@ static GFont s_res_gothic_14;
 static ActionBarLayer *s_actionbarlayer_1;
 static TextLayer *t_what;
 static BitmapLayer *b_progress;
-static TextLayer *t_rtime;
-static TextLayer *t_target;
-static char run_time[FORMAT_24HTIME_BUFFER_LENGTH];
-static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];
+static TextLayer *t_start_time;
+static TextLayer *t_target_time;
+static TextLayer *t_elapsed_time;
+static TextLayer *t_remaining_time;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -49,21 +55,33 @@ static void initialise_ui(void) {
   b_progress = bitmap_layer_create(GRect(3, 20, 117, 7));
   layer_add_child(window_get_root_layer(s_window), (Layer *)b_progress);
   
-  // t_rtime
-  t_rtime = text_layer_create(GRect(12, 41, 100, 20));
-  text_layer_set_background_color(t_rtime, GColorBlack);
-  text_layer_set_text_color(t_rtime, GColorWhite);
-  text_layer_set_text(t_rtime, "Run 00h : 00m");
-  text_layer_set_text_alignment(t_rtime, GTextAlignmentCenter);
-  text_layer_set_font(t_rtime, s_res_gothic_14);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_rtime);
+  // t_start_time
+  t_start_time = text_layer_create(GRect(12, 41, 100, 20));
+  text_layer_set_background_color(t_start_time, GColorBlack);
+  text_layer_set_text_color(t_start_time, GColorWhite);
+  text_layer_set_text(t_start_time, "Run 00h : 00m");
+  text_layer_set_text_alignment(t_start_time, GTextAlignmentCenter);
+  text_layer_set_font(t_start_time, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_start_time);
   
-  // t_target
-  t_target = text_layer_create(GRect(12, 65, 100, 20));
-  text_layer_set_text(t_target, "Target 00h : 00m");
-  text_layer_set_text_alignment(t_target, GTextAlignmentCenter);
-  text_layer_set_font(t_target, s_res_gothic_14);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_target);
+  // t_target_time
+  t_target_time = text_layer_create(GRect(12, 65, 100, 20));
+  text_layer_set_text(t_target_time, "Target 00h : 00m");
+  text_layer_set_text_alignment(t_target_time, GTextAlignmentCenter);
+  text_layer_set_font(t_target_time, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_target_time);
+  
+  // t_elapsed_time
+  t_elapsed_time = text_layer_create(GRect(14, 83, 100, 20));
+  text_layer_set_text(t_elapsed_time, "Text layer");
+  text_layer_set_font(t_elapsed_time, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_elapsed_time);
+  
+  // t_remaining_time
+  t_remaining_time = text_layer_create(GRect(13, 102, 100, 20));
+  text_layer_set_text(t_remaining_time, "Text layer");
+  text_layer_set_font(t_remaining_time, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_remaining_time);
 }
 
 static void destroy_ui(void) {
@@ -71,8 +89,10 @@ static void destroy_ui(void) {
   action_bar_layer_destroy(s_actionbarlayer_1);
   text_layer_destroy(t_what);
   bitmap_layer_destroy(b_progress);
-  text_layer_destroy(t_rtime);
-  text_layer_destroy(t_target);
+  text_layer_destroy(t_start_time);
+  text_layer_destroy(t_target_time);
+  text_layer_destroy(t_elapsed_time);
+  text_layer_destroy(t_remaining_time);
   gbitmap_destroy(s_res_image_action_plus);
   gbitmap_destroy(s_res_image_action_stop);
 }
@@ -94,15 +114,20 @@ void hide_w_running(void) {
   window_stack_remove(s_window, true);
 }
 
+// display lapse and remain
+void sync_lapse_remain(void) {
+  
+}
+
 // synchronize contents of the running window
 void sync_w_running(void) {
   const struct WhatType* current_running_what_ptr = running_state_what();
   // show state - name
   text_layer_set_text(t_what, (*current_running_what_ptr).name);
   // show state - start time / target time
-  fmt_time_24h(run_time, sizeof(run_time), &(current_running_state.start_time));
+  fmt_time_24h(start_time, sizeof(start_time), &(current_running_state.start_time));
   fmt_time_24h(target_time, sizeof(target_time), &(current_running_state.target_time));
-  text_layer_set_text(t_rtime, run_time);
-  text_layer_set_text(t_target, target_time);
+  text_layer_set_text(t_start_time, start_time);
+  text_layer_set_text(t_target_time, target_time);
   
 }

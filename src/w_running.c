@@ -154,10 +154,22 @@ static void time_extension_handler(ClickRecognizerRef recognizer, void *context)
   sync_w_running();
 }
 
+#ifdef DEBUG_CLEAR_RUNNING_STATE
+// long click up button to quit and clear running state, for debug purpose
+static void clear_running_state_handler(ClickRecognizerRef recognizer, void *context) {
+  running_state_clear();
+  window_stack_pop(true);
+};
+#endif
+
+
 // subscribe click events
 void w_running_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, *time_extension_handler);
-}
+  #ifdef DEBUG_CLEAR_RUNNING_STATE
+    window_long_click_subscribe(BUTTON_ID_UP, 3000, NULL, clear_running_state_handler);
+  #endif
+};
 
 static void register_handlers() {
   // register tick handler

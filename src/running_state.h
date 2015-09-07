@@ -19,6 +19,9 @@ void running_state_kickoff(int whats_idx);
 
 void running_state_load ();
 
-const struct WhatType *running_state_what();
-
 void running_state_clear();
+
+// state holding pointers, to avoid repeated calculation but must be 
+// consistently maintained;
+struct WhatType *running_state_what;
+struct WhatReminderType *running_state_reminder_stage;

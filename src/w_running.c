@@ -129,9 +129,7 @@ void sync_lapse_remain(void) {
 
 // synchronize contents of the running window
 void sync_w_running(void) {
-  const struct WhatType* current_running_what_ptr = running_state_what();
-  // show state - name
-  text_layer_set_text(t_what, (*current_running_what_ptr).name);
+  text_layer_set_text(t_what, (*running_state_what).name);
   // show state - start time / target time
   fmt_time_24h(start_time, sizeof(start_time), &(running_state_current.start_time));
   fmt_time_24h(target_time, sizeof(target_time), &(running_state_current.target_time));
@@ -147,7 +145,7 @@ static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed
 
 // up click handler - increase time
 static void time_extension_handler(ClickRecognizerRef recognizer, void *context) {
-  running_state_current.target_time = time(NULL) + (*running_state_what()).manual_extension_length;
+  running_state_current.target_time = time(NULL) + ((*running_state_what).manual_extension_length);
   running_state_current.stage_idx = 0;
   running_state_save();
   sync_w_running();

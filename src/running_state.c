@@ -5,21 +5,6 @@
 #include "data.h"
 #include "format.h"
 
-// return the pointer to the current state's WHAT type  
-const struct WhatType *running_state_what() {
-  return what_list[running_state_current.whats_running_idx];
-}  
-
-// return the current reminder stage
-const struct WhatReminderStage *running_current_reminder_stage() {
-  const struct WhatType* current_what = running_state_what();
-  if (running_state_current.stage_idx >= (*current_what).number_of_stages) {
-    APP_LOG(APP_LOG_LEVEL_ERROR, "stage index out of range");
-    return NULL;
-  };
-  return &((*current_what).stages[running_state_current.stage_idx]);
-}
-
 // obtain summary of running state for logging
 #ifdef APP_LOG
 char* running_state_summary() {
@@ -28,7 +13,7 @@ char* running_state_summary() {
   char t2buffer[FORMAT_24HTIME_BUFFER_LENGTH];
   fmt_time_24h(t1buffer, sizeof(t1buffer), &(running_state_current.start_time));
   fmt_time_24h(t2buffer, sizeof(t2buffer), &(running_state_current.target_time));
-  snprintf(running_state_summary_buffer,sizeof(running_state_summary_buffer),"[%s]ST[%s]TG[%s]", (*running_state_what()).name, t1buffer, t2buffer);
+  snprintf(running_state_summary_buffer,sizeof(running_state_summary_buffer),"[%s]ST[%s]TG[%s]", (*running_state_what).name, t1buffer, t2buffer);
   return running_state_summary_buffer;
 }
 #endif
@@ -47,13 +32,37 @@ void running_state_save() {
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] saved ", running_state_summary());
 }
 
+// calculate next reminder from time; 0 if no more reminder (where index out of range)
+time_t running_next_reminder_time(time_t start) {
+  if (running_state_reminder_stage != NULL){
+    return start + SECONDS_PER_MIN * (*running_state_reminder_stage).length;
+  }
+}
+
+// change reminder stage to given index
+void running_state_change_stage(uint8_t stage_idx) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "stage index setting to %d", stage_idx);
+  running_state_current.stage_idx = stage_idx;
+  // when index updated, convenience pointer must also be updated
+  if (stage_idx < (*running_state_what).number_of_stages) {
+    running_state_reminder_stage = (*running_state_what).stages + stage_idx;
+    APP_LOG(APP_LOG_LEVEL_INFO, "stage parameters to %d,%d", (*running_state_reminder_stage).length,(*running_state_reminder_stage).repeats);
+  } else {
+    running_state_reminder_stage = NULL;
+    APP_LOG(APP_LOG_LEVEL_INFO, "out of stages");
+  }
+}
+
 // kick starting a WHAT as current running state and save the running state
 void running_state_kickoff(int whats_idx) {
   running_state_current.whats_running_idx = whats_idx;
+  running_state_what = what_list[whats_idx];
+  // set start time
   time(&running_state_current.start_time);
-  running_state_current.stage_idx = 0;
-  running_state_current.target_time = running_state_current.start_time + 
-    SECONDS_PER_MIN * ((*running_current_reminder_stage()).length);
+  // change stage index
+  running_state_change_stage(0);
+  // update target time
+  running_state_current.target_time = running_state_current.start_time + running_next_reminder_time(running_state_current.start_time);
   running_state_save();
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
 };

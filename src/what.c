@@ -2,7 +2,7 @@
 #include "what.h"
 
 const struct WhatReminderStage reminder_then_give_up[3] = {
-  {1,10},
+  {15,10},
   {5,5},
   {60,24}
 };

@@ -35,7 +35,7 @@ void running_state_save() {
 // calculate next reminder from time; 0 if no more reminder (where index out of range)
 time_t running_next_reminder_time(time_t start) {
   if (running_state_reminder_stage != NULL){
-    return start + SECONDS_PER_MIN * (*running_state_reminder_stage).length;
+    return start + SECONDS_PER_MIN * ((*running_state_reminder_stage).length);
   }
   APP_LOG(APP_LOG_LEVEL_ERROR, "when running_state_reminder_stage is NULL, should not calculate next reminder");
   return (time_t)0;
@@ -64,7 +64,7 @@ void running_state_kickoff(int whats_idx) {
   // change stage index
   running_state_change_stage(0);
   // update target time
-  running_state_current.target_time = running_state_current.start_time + running_next_reminder_time(running_state_current.start_time);
+  running_state_current.target_time = running_next_reminder_time(running_state_current.start_time);
   running_state_save();
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
 };

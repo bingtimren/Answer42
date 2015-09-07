@@ -1,6 +1,6 @@
 # Answer42
 
-Answer to THE question, 
+Answer to THE question (of life, universe and everything :p), 
 * where my time goes?
 * how concentrated I am?
 * how I feel?

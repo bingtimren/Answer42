@@ -37,6 +37,7 @@ time_t running_next_reminder_time(time_t start) {
   if (running_state_reminder_stage != NULL){
     return start + SECONDS_PER_MIN * (*running_state_reminder_stage).length;
   }
+  return (time_t)0;
 }
 
 // change reminder stage to given index

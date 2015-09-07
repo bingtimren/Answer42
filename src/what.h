@@ -8,7 +8,7 @@ enum WhatTerminationActionType {
   COMMIT_NOFIN = 3  // commit "Not Finished"
 };  
 
-struct WhatReminderStage {
+struct WhatReminderStageType {
   uint16_t length;
   uint8_t repeats; // 0 indicating repeat forever
 };
@@ -21,13 +21,13 @@ struct WhatType {
   // number of stages
   uint8_t number_of_stages;
   // length in minutes in each stage
-  const struct WhatReminderStage* stages;
+  const struct WhatReminderStageType* stages;
   // what to do when last stage finishes & no user termination
   uint8_t termination_action;
 };
 
 /* Definition of reminder patterns */
-extern const struct WhatReminderStage reminder_then_give_up[3];
+extern const struct WhatReminderStageType reminder_then_give_up[3];
 
 /* Definition of "WHAT"s - how I classify my time, how I want to be remindered */
 

@@ -23,5 +23,5 @@ void running_state_clear();
 
 // state holding pointers, to avoid repeated calculation but must be 
 // consistently maintained;
-struct WhatType *running_state_what;
-struct WhatReminderType *running_state_reminder_stage;
+const struct WhatType *running_state_what;
+const struct WhatReminderStageType *running_state_reminder_stage;

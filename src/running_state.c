@@ -5,9 +5,20 @@
 #include "data.h"
 #include "format.h"
 
+// return the pointer to the current state's WHAT type  
 const struct WhatType *running_state_what() {
-  return &(what_list[current_running_state.whats_running_idx]);
+  return what_list[running_state_current.whats_running_idx];
 }  
+
+// return the current reminder stage
+const struct WhatReminderStage *running_current_reminder_stage() {
+  const struct WhatType* current_what = running_state_what();
+  if (running_state_current.stage_idx >= (*current_what).number_of_stages) {
+    APP_LOG(APP_LOG_LEVEL_ERROR, "stage index out of range");
+    return NULL;
+  };
+  return &((*current_what).stages[running_state_current.stage_idx]);
+}
 
 // obtain summary of running state for logging
 #ifdef APP_LOG
@@ -15,8 +26,8 @@ char* running_state_summary() {
   static char running_state_summary_buffer[100];
   char t1buffer[FORMAT_24HTIME_BUFFER_LENGTH];
   char t2buffer[FORMAT_24HTIME_BUFFER_LENGTH];
-  fmt_time_24h(t1buffer, sizeof(t1buffer), &(current_running_state.start_time));
-  fmt_time_24h(t2buffer, sizeof(t2buffer), &(current_running_state.target_time));
+  fmt_time_24h(t1buffer, sizeof(t1buffer), &(running_state_current.start_time));
+  fmt_time_24h(t2buffer, sizeof(t2buffer), &(running_state_current.target_time));
   snprintf(running_state_summary_buffer,sizeof(running_state_summary_buffer),"[%s]ST[%s]TG[%s]", (*running_state_what()).name, t1buffer, t2buffer);
   return running_state_summary_buffer;
 }
@@ -32,16 +43,17 @@ void running_state_clear() {
 
 // save running state into the persistent storage of the watch
 void running_state_save() {
-  persist_write_data(KEY_CURRENT_RUNNING_STATE, &current_running_state, sizeof(current_running_state));
+  persist_write_data(KEY_CURRENT_RUNNING_STATE, &running_state_current, sizeof(running_state_current));
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] saved ", running_state_summary());
 }
 
 // kick starting a WHAT as current running state and save the running state
 void running_state_kickoff(int whats_idx) {
-  current_running_state.whats_running_idx = whats_idx;
-  time(&current_running_state.start_time);
-  current_running_state.stage_idx = 0;
-  current_running_state.target_time = current_running_state.start_time + SECONDS_PER_MIN * what_list[whats_idx].stage_lengths[0];
+  running_state_current.whats_running_idx = whats_idx;
+  time(&running_state_current.start_time);
+  running_state_current.stage_idx = 0;
+  running_state_current.target_time = running_state_current.start_time + 
+    SECONDS_PER_MIN * ((*running_current_reminder_stage()).length);
   running_state_save();
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
 };
@@ -50,7 +62,7 @@ void running_state_kickoff(int whats_idx) {
 // be NOTHING
 void running_state_load () {
   if (persist_exists(KEY_CURRENT_RUNNING_STATE)) {
-    persist_read_data(KEY_CURRENT_RUNNING_STATE, &current_running_state, sizeof(current_running_state));
+    persist_read_data(KEY_CURRENT_RUNNING_STATE, &running_state_current, sizeof(running_state_current));
     APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] loaded ", running_state_summary());
     return;
   };

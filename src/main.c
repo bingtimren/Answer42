@@ -6,6 +6,7 @@
 static void init(void) {
   APP_LOG(APP_LOG_LEVEL_INFO, "init....");
   #ifdef DEBUG_CLEAR_RUNNING_STATE
+    APP_LOG(APP_LOG_LEVEL_INFO, "running state cleaning....");
     running_state_clear();
   #endif
   running_state_load();

@@ -17,15 +17,8 @@ Answer to THE question,
 ## Main Data Structure
 
 ### What's what?
-* int ID
-* A name (such as "work", "rest"...)
-* Target length in minutes
-* Manual extension length in minutes
-* Stages (stage 0 is the target stage)
-*   stage_lengths (0 indicate last forever)
-*   reminder intervals (when lapse, 0 indicate terminate immediately & commit, -1 to terminate & commit NOFIN) 
 
-* Final reminder interval (0 to terminate immediately & commit, -1 to terminate & commit NOFIN)
+see comments in "what.h"
 
 ---
 ## Windows & Interaction

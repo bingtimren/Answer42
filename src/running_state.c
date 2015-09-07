@@ -37,6 +37,7 @@ time_t running_next_reminder_time(time_t start) {
   if (running_state_reminder_stage != NULL){
     return start + SECONDS_PER_MIN * (*running_state_reminder_stage).length;
   }
+  APP_LOG(APP_LOG_LEVEL_ERROR, "when running_state_reminder_stage is NULL, should not calculate next reminder");
   return (time_t)0;
 }
 

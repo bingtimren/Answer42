@@ -11,7 +11,7 @@ const struct WhatReminderStageType reminder_then_give_up[3] = {
 const struct WhatType WHAT_NOTHING = {
   "Nothing",
   "Nil",
-  0, // no manual extension
+  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER

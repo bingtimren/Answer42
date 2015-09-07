@@ -11,7 +11,6 @@ static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];
 static char elapsed_time[50];
 static char remaining_time[50];  
 
-
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GBitmap *s_res_image_action_plus;
@@ -122,8 +121,8 @@ void hide_w_running(void) {
 // display lapse and remain
 void sync_lapse_remain(void) {
   time_t now = time(NULL);
-  fmt_timediff_str(elapsed_time, sizeof(elapsed_time), now, current_running_state.start_time, " ERR!", NULL);
-  fmt_timediff_str(remaining_time, sizeof(remaining_time), now, current_running_state.target_time, " [R]", " [OverR]");
+  fmt_timediff_str(elapsed_time, sizeof(elapsed_time), now, running_state_current.start_time, " ERR!", NULL);
+  fmt_timediff_str(remaining_time, sizeof(remaining_time), now, running_state_current.target_time, " [R]", " [OverR]");
   text_layer_set_text(t_elapsed_time, elapsed_time);
   text_layer_set_text(t_remaining_time, remaining_time);
 }
@@ -134,8 +133,8 @@ void sync_w_running(void) {
   // show state - name
   text_layer_set_text(t_what, (*current_running_what_ptr).name);
   // show state - start time / target time
-  fmt_time_24h(start_time, sizeof(start_time), &(current_running_state.start_time));
-  fmt_time_24h(target_time, sizeof(target_time), &(current_running_state.target_time));
+  fmt_time_24h(start_time, sizeof(start_time), &(running_state_current.start_time));
+  fmt_time_24h(target_time, sizeof(target_time), &(running_state_current.target_time));
   text_layer_set_text(t_start_time, start_time);
   text_layer_set_text(t_target_time, target_time);
   sync_lapse_remain();
@@ -148,8 +147,8 @@ static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed
 
 // up click handler - increase time
 static void time_extension_handler(ClickRecognizerRef recognizer, void *context) {
-  current_running_state.target_time = time(NULL) + (*running_state_what()).manual_extension_length;
-  current_running_state.stage_idx = 0;
+  running_state_current.target_time = time(NULL) + (*running_state_what()).manual_extension_length;
+  running_state_current.stage_idx = 0;
   running_state_save();
   sync_w_running();
 }

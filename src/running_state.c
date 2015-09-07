@@ -22,27 +22,32 @@ char* running_state_summary() {
 }
 #endif
 
+// clear running state - this should be called only for debugging purpose
 void running_state_clear() {
   if (persist_exists(KEY_CURRENT_RUNNING_STATE)) {
     persist_delete(KEY_CURRENT_RUNNING_STATE);
     APP_LOG(APP_LOG_LEVEL_INFO, "Running state cleared.");
   };
 }
-  
+
+// save running state into the persistent storage of the watch
 void running_state_save() {
   persist_write_data(KEY_CURRENT_RUNNING_STATE, &current_running_state, sizeof(current_running_state));
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] saved ", running_state_summary());
 }
 
-
+// kick starting a WHAT as current running state and save the running state
 void running_state_kickoff(int whats_idx) {
   current_running_state.whats_running_idx = whats_idx;
   time(&current_running_state.start_time);
   current_running_state.stage_idx = 0;
   current_running_state.target_time = current_running_state.start_time + SECONDS_PER_MIN * what_list[whats_idx].stage_lengths[0];
+  running_state_save();
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
 };
 
+// load the running state from persistent storage of the phone. if not found, kick off the first one (index 0), which should
+// be NOTHING
 void running_state_load () {
   if (persist_exists(KEY_CURRENT_RUNNING_STATE)) {
     persist_read_data(KEY_CURRENT_RUNNING_STATE, &current_running_state, sizeof(current_running_state));
@@ -51,5 +56,4 @@ void running_state_load () {
   };
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state not found in store, kicking off NIL");
   running_state_kickoff(0);
-  running_state_save();
 };

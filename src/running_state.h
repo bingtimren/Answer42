@@ -2,7 +2,7 @@
 #include <pebble.h>
 #include "what.h"
   
-  /* current running status */
+/* current running status */
 struct RunningState {
   uint8_t whats_running_idx;
   time_t start_time;
@@ -10,7 +10,8 @@ struct RunningState {
   uint8_t stage_idx;
 };
 
-struct RunningState current_running_state;
+// global variable holding the current running state
+struct RunningState running_state_current;
 
 void running_state_save();
   

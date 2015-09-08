@@ -53,6 +53,8 @@ void running_state_change_stage(uint8_t stage_idx) {
     running_state_reminder_stage = NULL;
     APP_LOG(APP_LOG_LEVEL_INFO, "out of stages");
   }
+  // set remaining repeats
+  running_state_current.remaining_repeats = (*running_state_reminder_stage).repeats;
 }
 
 // kick starting a WHAT as current running state and save the running state

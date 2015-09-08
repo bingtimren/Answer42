@@ -1,5 +1,6 @@
 #pragma once
 #include <pebble.h>
+
 #include "what.h"
   
 /* current running status */
@@ -8,6 +9,7 @@ struct RunningState {
   time_t start_time;
   time_t target_time;
   uint8_t stage_idx;
+  uint8_t remaining_repeats;
 };
 
 // global variable holding the current running state
@@ -16,6 +18,8 @@ struct RunningState running_state_current;
 void running_state_save();
   
 void running_state_kickoff(int whats_idx);
+
+void running_state_change_stage(uint8_t stage_idx);
 
 void running_state_load ();
 

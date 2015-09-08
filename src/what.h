@@ -1,7 +1,8 @@
 #pragma once
 #include <pebble.h>
 
-/* Definition of WHAT, the ultimate question :) */  
+/* Definition of WHAT, the ultimate question */  
+
 enum WhatTerminationActionType {
   LAST_NO_REMINDER = 1,  // no more reminder, never finish
   COMMIT_AS_IS = 2,  // commit as the type and length as recorded

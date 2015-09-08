@@ -9,9 +9,15 @@ void vibe_reminder() {
 
 
 // schedule next wakeup in minutes
-void wakeup_schedule_next(uint16_t minutes_to_now) {
+void wakeup_schedule_next_in_minutes(uint16_t minutes_to_now) {
   time_t next_wakeup_time = time(NULL) + SECONDS_PER_MIN * minutes_to_now;
   wakeup_schedule(next_wakeup_time, REMINDER_DUE, false);
+  APP_LOG(APP_LOG_LEVEL_INFO, "wake up scheduled");
+}
+// schedule next wakeup at target time
+void wakeup_schedule_next_target_time(time_t target) {
+  wakeup_schedule(target, REMINDER_DUE, false);
+  APP_LOG(APP_LOG_LEVEL_INFO, "wake up scheduled");
 }
 
 
@@ -22,13 +28,13 @@ void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
   APP_LOG(APP_LOG_LEVEL_INFO, "woke up, stage %d, repeats remaining %d", running_state_current.stage_idx, running_state_current.remaining_repeats);
   if ((*running_state_reminder_stage).repeats == 0) {
     // indicates repeating forever, only set next reminder
-    wakeup_schedule_next((*running_state_reminder_stage).length);
+    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
   };
   // check if there is still remaining repeat
   if (running_state_current.remaining_repeats > 0) {
     running_state_current.remaining_repeats -= 1;
     running_state_save();
-    wakeup_schedule_next((*running_state_reminder_stage).length);
+    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
   };
   // try to move to next reminding stage
   running_state_change_stage(running_state_current.stage_idx + 1);
@@ -37,4 +43,10 @@ void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
     APP_LOG(APP_LOG_LEVEL_INFO, "run out of stages, time to commit end-of-stages action %d", 
             (*running_state_what).termination_action);
   }
+}
+
+// initialize wakeup & subscribe  
+void wakeup_init() {
+  wakeup_service_subscribe(wakeup_handler);
+  APP_LOG(APP_LOG_LEVEL_INFO, "wakeup initialized"); 
 }

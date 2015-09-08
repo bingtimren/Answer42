@@ -5,6 +5,7 @@
 #include "running_state.h"
 #include "what.h"
 #include "format.h"
+#include "wakeup.h"  
 
 static char start_time[FORMAT_24HTIME_BUFFER_LENGTH];
 static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];  
@@ -101,7 +102,7 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-static void register_handlers();
+static void register_handlers(); // stub, definition at end
 
 void show_w_running(void) {
   initialise_ui();
@@ -173,4 +174,6 @@ static void register_handlers() {
   tick_timer_service_subscribe(SECOND_UNIT, &w_running_tick_handler);
   // up click for time extension
   window_set_click_config_provider(s_window, *w_running_click_config_provider);
+  // wakeup handler
+  wakeup_init();
 }

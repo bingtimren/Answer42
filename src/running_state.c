@@ -4,6 +4,7 @@
 #include "running_state.h"
 #include "data.h"
 #include "format.h"
+#include "wakeup.h"
 
 // obtain summary of running state for logging
 #ifdef APP_LOG
@@ -68,6 +69,7 @@ void running_state_kickoff(int whats_idx) {
   // update target time
   running_state_current.target_time = running_next_reminder_time(running_state_current.start_time);
   running_state_save();
+  wakeup_schedule_next_target_time(running_state_current.target_time);
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
 };
 

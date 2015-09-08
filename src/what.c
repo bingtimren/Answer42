@@ -2,9 +2,9 @@
 #include "what.h"
 
 const struct WhatReminderStageType reminder_then_give_up[3] = {
-  {15,10},
-  {5,5},
-  {60,24}
+  {5,1},
+  {3,3},
+  {15,5}
 };
   
   

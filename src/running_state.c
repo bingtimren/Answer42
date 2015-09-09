@@ -60,9 +60,11 @@ void running_state_kickoff_stage(uint8_t stage_idx) {
   // set remaining repeats
   running_state_current.remaining_repeats = (*running_state_reminder_stage).repeats;
   // if this is stage 0, also update target time
-  running_state_current.target_time = running_state_current.start_time + 
+  if (stage_idx == 0) {
+    running_state_current.target_time = running_state_current.start_time + 
     (*running_state_reminder_stage).length * (*running_state_reminder_stage).repeats * SECONDS_PER_MIN;
-  APP_LOG(APP_LOG_LEVEL_INFO, "running start / target time updated, %s", running_state_summary());
+    APP_LOG(APP_LOG_LEVEL_INFO, "running target time updated, %s", running_state_summary());
+  };
   // kick off the first repeat
   running_state_kickoff_repeat();
 }

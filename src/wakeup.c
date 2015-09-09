@@ -37,7 +37,7 @@ void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
     wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
   };
   // try to move to next reminding stage
-  running_state_change_stage(running_state_current.stage_idx + 1);
+  running_state_kickoff_stage(running_state_current.stage_idx + 1);
   // if out of stages, time to carry out end-of-stages action
   if (running_state_reminder_stage == NULL) {
     APP_LOG(APP_LOG_LEVEL_INFO, "run out of stages, time to commit end-of-stages action %d", 

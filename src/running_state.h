@@ -19,7 +19,7 @@ void running_state_save();
   
 void running_state_kickoff(int whats_idx);
 
-void running_state_change_stage(uint8_t stage_idx);
+void running_state_kickoff_stage(uint8_t stage_idx);
 
 void running_state_load ();
 

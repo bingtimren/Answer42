@@ -19,6 +19,8 @@ char* running_state_summary() {
 }
 #endif
 
+void running_state_kickoff_repeat();  // stub definition
+  
 // clear running state - this should be called only for debugging purpose
 void running_state_clear() {
   if (persist_exists(KEY_CURRENT_RUNNING_STATE)) {
@@ -43,7 +45,7 @@ time_t running_next_reminder_time(time_t start) {
 }
 
 // change reminder stage to given index
-void running_state_change_stage(uint8_t stage_idx) {
+void running_state_kickoff_stage(uint8_t stage_idx) {
   APP_LOG(APP_LOG_LEVEL_INFO, "stage index setting to %d", stage_idx);
   running_state_current.stage_idx = stage_idx;
   // when index updated, convenience pointer must also be updated
@@ -56,6 +58,8 @@ void running_state_change_stage(uint8_t stage_idx) {
   }
   // set remaining repeats
   running_state_current.remaining_repeats = (*running_state_reminder_stage).repeats;
+  // kick off the first repeat
+  running_state_kickoff_repeat();
 }
 
 // kick starting a WHAT as current running state and save the running state
@@ -65,9 +69,10 @@ void running_state_kickoff(int whats_idx) {
   // set start time
   time(&running_state_current.start_time);
   // change stage index
-  running_state_change_stage(0);
+  running_state_kickoff_stage(0);
   // update target time
-  running_state_current.target_time = running_next_reminder_time(running_state_current.start_time);
+  running_state_current.target_time = 
+    (*running_state_reminder_stage).length * (*running_state_reminder_stage).repeats * SECONDS_PER_MIN;
   running_state_save();
   wakeup_schedule_next_target_time(running_state_current.target_time);
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
@@ -84,3 +89,26 @@ void running_state_load () {
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state not found in store, kicking off NIL");
   running_state_kickoff(0);
 };
+
+// kick off start a repeat
+void running_state_kickoff_repeat() {
+  APP_LOG(APP_LOG_LEVEL_INFO, "stage %d, repeats remaining %d", running_state_current.stage_idx, running_state_current.remaining_repeats);
+  if ((*running_state_reminder_stage).repeats == 0) {
+    // indicates repeating forever, only set next reminder
+    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
+  };
+  // check if there is still remaining repeat
+  if (running_state_current.remaining_repeats > 0) {
+    running_state_current.remaining_repeats -= 1;
+    running_state_save();
+    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
+  };
+  // try to move to next reminding stage
+  running_state_kickoff_stage(running_state_current.stage_idx + 1);
+  // if out of stages, time to carry out end-of-stages action
+  if (running_state_reminder_stage == NULL) {
+    APP_LOG(APP_LOG_LEVEL_INFO, "run out of stages, time to commit end-of-stages action %d", 
+            (*running_state_what).termination_action);
+  }
+};
+

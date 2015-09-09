@@ -174,6 +174,4 @@ static void register_handlers() {
   tick_timer_service_subscribe(SECOND_UNIT, &w_running_tick_handler);
   // up click for time extension
   window_set_click_config_provider(s_window, *w_running_click_config_provider);
-  // wakeup handler
-  wakeup_init();
 }

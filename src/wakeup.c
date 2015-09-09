@@ -7,17 +7,16 @@ void vibe_reminder() {
   vibes_long_pulse();
 }  
 
-
 // schedule next wakeup in minutes
 void wakeup_schedule_next_in_minutes(uint16_t minutes_to_now) {
   time_t next_wakeup_time = time(NULL) + SECONDS_PER_MIN * minutes_to_now;
   wakeup_schedule(next_wakeup_time, REMINDER_DUE, false);
-  APP_LOG(APP_LOG_LEVEL_INFO, "wake up scheduled");
+  APP_LOG(APP_LOG_LEVEL_INFO, "wake up scheduled in min %d,%d", minutes_to_now, next_wakeup_time);
 }
 // schedule next wakeup at target time
 void wakeup_schedule_next_target_time(time_t target) {
   wakeup_schedule(target, REMINDER_DUE, false);
-  APP_LOG(APP_LOG_LEVEL_INFO, "wake up scheduled");
+  APP_LOG(APP_LOG_LEVEL_INFO, "wake up scheduled target %d", target);
 }
 
 

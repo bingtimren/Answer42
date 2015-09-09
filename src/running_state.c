@@ -99,15 +99,17 @@ void running_state_load () {
 
 // kick off start a repeat
 void running_state_kickoff_repeat() {
-  APP_LOG(APP_LOG_LEVEL_INFO, "stage %d, repeats remaining %d", running_state_current.stage_idx, running_state_current.remaining_repeats);
+  APP_LOG(APP_LOG_LEVEL_INFO, "stage %d, repeats remaining %d, kick off repeat", running_state_current.stage_idx, running_state_current.remaining_repeats);
   if ((*running_state_reminder_stage).repeats == 0) {
     // indicates repeating forever, only set next reminder
     wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
+    return;
   };
   // check if there is still remaining repeat
   if (running_state_current.remaining_repeats > 0) {
     running_state_current.remaining_repeats -= 1;
     wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
+    return;
   };
   // try to move to next reminding stage
   running_state_kickoff_stage(running_state_current.stage_idx + 1);

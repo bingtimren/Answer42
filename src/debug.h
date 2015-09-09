@@ -6,4 +6,4 @@
 #define DEBUG_TO_SECONDS
 #define DEBUG_CHECK_MORE
 
-#define VERSION_INFO "dingding 4"
+#define VERSION_INFO "dingding 5"

@@ -28,15 +28,19 @@ void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
   APP_LOG(APP_LOG_LEVEL_INFO, "woke up, stage %d, repeats remaining %d", running_state_current.stage_idx, running_state_current.remaining_repeats);
   if ((*running_state_reminder_stage).repeats == 0) {
     // indicates repeating forever, only set next reminder
+    APP_LOG(APP_LOG_LEVEL_INFO, "forever repeating...");
     wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
+    return;
   };
   // check if there is still remaining repeat
   if (running_state_current.remaining_repeats > 0) {
     running_state_current.remaining_repeats -= 1;
-    running_state_save();
     wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
+    running_state_save();    
+    return;
   };
-  // try to move to next reminding stage
+  // exhausted repeats, now try to move to next reminding stage
+  APP_LOG(APP_LOG_LEVEL_INFO, "Exhausted repeats, move to next stage");
   running_state_kickoff_stage(running_state_current.stage_idx + 1);
   // if out of stages, time to carry out end-of-stages action
   if (running_state_reminder_stage == NULL) {

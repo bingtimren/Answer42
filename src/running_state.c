@@ -49,14 +49,16 @@ time_t running_next_reminder_time(time_t start) {
 void running_state_kickoff_stage(uint8_t stage_idx) {
   APP_LOG(APP_LOG_LEVEL_INFO, "stage index setting to %d", stage_idx);
   running_state_current.stage_idx = stage_idx;
-  // when index updated, convenience pointer must also be updated
-  if (stage_idx < (*running_state_what).number_of_stages) {
-    running_state_reminder_stage = (*running_state_what).stages + stage_idx;
-    APP_LOG(APP_LOG_LEVEL_INFO, "stage parameters to %d,%d", (*running_state_reminder_stage).length,(*running_state_reminder_stage).repeats);
-  } else {
+  if (stage_idx >= (*running_state_what).number_of_stages) {
     running_state_reminder_stage = NULL;
     APP_LOG(APP_LOG_LEVEL_INFO, "out of stages");
+    return;
   }
+
+  // when index updated, convenience pointer must also be updated
+  running_state_reminder_stage = (*running_state_what).stages + stage_idx;
+  APP_LOG(APP_LOG_LEVEL_INFO, "stage parameters to %d,%d", (*running_state_reminder_stage).length,(*running_state_reminder_stage).repeats);
+
   // set remaining repeats
   running_state_current.remaining_repeats = (*running_state_reminder_stage).repeats;
   // if this is stage 0, also update target time

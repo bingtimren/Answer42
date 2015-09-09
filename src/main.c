@@ -5,7 +5,7 @@
 #include "wakeup.h"
   
 static void init(void) {
-  APP_LOG(APP_LOG_LEVEL_INFO, "init....");
+  APP_LOG(APP_LOG_LEVEL_INFO, "[%s] starting....", VERSION_INFO);
   #ifdef DEBUG_CLEAR_RUNNING_STATE
     APP_LOG(APP_LOG_LEVEL_INFO, "running state cleaning....");
     running_state_clear();

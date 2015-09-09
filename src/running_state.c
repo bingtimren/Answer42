@@ -44,7 +44,8 @@ time_t running_next_reminder_time(time_t start) {
   return (time_t)0;
 }
 
-// change reminder stage to given index
+// change reminder stage to given index, set running state stage, set reminder stage pointer (so easier to get parameters)
+// then kick start the first repeat
 void running_state_kickoff_stage(uint8_t stage_idx) {
   APP_LOG(APP_LOG_LEVEL_INFO, "stage index setting to %d", stage_idx);
   running_state_current.stage_idx = stage_idx;
@@ -58,23 +59,26 @@ void running_state_kickoff_stage(uint8_t stage_idx) {
   }
   // set remaining repeats
   running_state_current.remaining_repeats = (*running_state_reminder_stage).repeats;
+  // if this is stage 0, also update target time
+  running_state_current.target_time = running_state_current.start_time + 
+    (*running_state_reminder_stage).length * (*running_state_reminder_stage).repeats * SECONDS_PER_MIN;
+  APP_LOG(APP_LOG_LEVEL_INFO, "running start / target time updated, %s", running_state_summary());
   // kick off the first repeat
   running_state_kickoff_repeat();
 }
 
-// kick starting a WHAT as current running state and save the running state
+// kick starting a WHAT as current running state (not saved; saving to be done by caller always)
+// 1. update running_state_current
+// 2. pointing running_state_what
+// 3. update start / target time
+// 4. kick off stage 0
 void running_state_kickoff(int whats_idx) {
   running_state_current.whats_running_idx = whats_idx;
   running_state_what = what_list[whats_idx];
-  // set start time
+  // set start time 
   time(&running_state_current.start_time);
-  // change stage index
+  // kick off stage 0, in which will also update target time
   running_state_kickoff_stage(0);
-  // update target time
-  running_state_current.target_time = running_state_current.start_time + 
-    (*running_state_reminder_stage).length * (*running_state_reminder_stage).repeats * SECONDS_PER_MIN;
-  running_state_save();
-  wakeup_schedule_next_target_time(running_state_current.target_time);
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
 };
 
@@ -88,6 +92,7 @@ void running_state_load () {
   };
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state not found in store, kicking off NIL");
   running_state_kickoff(0);
+  running_state_save();
 };
 
 // kick off start a repeat
@@ -100,7 +105,6 @@ void running_state_kickoff_repeat() {
   // check if there is still remaining repeat
   if (running_state_current.remaining_repeats > 0) {
     running_state_current.remaining_repeats -= 1;
-    running_state_save();
     wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
   };
   // try to move to next reminding stage

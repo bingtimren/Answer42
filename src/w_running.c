@@ -102,7 +102,7 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-static void register_handlers(); // stub, definition at end
+static void my_init(); // stub, definition at end
 
 void show_w_running(void) {
   initialise_ui();
@@ -110,10 +110,8 @@ void show_w_running(void) {
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);
-  register_handlers();
+  my_init();
 }
-
-
 
 void hide_w_running(void) {
   window_stack_remove(s_window, true);
@@ -169,7 +167,8 @@ void w_running_click_config_provider(void *context) {
   #endif
 };
 
-static void register_handlers() {
+// register handlers
+static void my_init() {
   // register tick handler
   tick_timer_service_subscribe(SECOND_UNIT, &w_running_tick_handler);
   // up click for time extension

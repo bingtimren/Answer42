@@ -43,6 +43,8 @@ void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
     APP_LOG(APP_LOG_LEVEL_INFO, "run out of stages, time to commit end-of-stages action %d", 
             (*running_state_what).termination_action);
   }
+  // only preserver running state in the end
+  running_state_save();
 }
 
 // initialize wakeup & subscribe  

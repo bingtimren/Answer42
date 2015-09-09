@@ -14,7 +14,7 @@ void wakeup_schedule_next_in_minutes(uint16_t minutes_to_now) {
 // schedule next wakeup at target time
 void wakeup_schedule_next_target_time(time_t target) {
   wakeup_schedule(target, REMINDER_DUE, false);
-  #ifdef DEBUG
+  #ifdef APP_LOG
   char buffer[20];
   fmt_time_24h(buffer, sizeof(buffer), &(target));
   APP_LOG(APP_LOG_LEVEL_INFO, "wake up scheduled target %s", buffer);

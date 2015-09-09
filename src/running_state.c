@@ -71,7 +71,7 @@ void running_state_kickoff(int whats_idx) {
   // change stage index
   running_state_kickoff_stage(0);
   // update target time
-  running_state_current.target_time = 
+  running_state_current.target_time = running_state_current.start_time + 
     (*running_state_reminder_stage).length * (*running_state_reminder_stage).repeats * SECONDS_PER_MIN;
   running_state_save();
   wakeup_schedule_next_target_time(running_state_current.target_time);

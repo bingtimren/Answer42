@@ -2,6 +2,7 @@
 #include "wakeup.h"
 #include "running_state.h"
 #include "data.h"  
+#include "format.h"  
   
 void vibe_reminder() {
   vibes_long_pulse();

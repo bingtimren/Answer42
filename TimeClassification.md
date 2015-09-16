@@ -1,21 +1,41 @@
 Work
+
 Sleep
+
 Sports
-Pers. Need
+
+Per. Need
+
 Domestic
-P. Goods
-P. Service
+
+Purchase G
+
+Purchase S
+
 Reading
+
 Study
+
 Leisure
+
 Pet
+
 Traffic
+
 Health C.
+
 Social
+
 Cult. Ent.
+
 Cook Dine
+
 S. Misc
+
 Breaks
+
 Misc
+
 Holiday
+
 Media

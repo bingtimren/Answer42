@@ -193,7 +193,8 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-void s01_show_all_choices();
+static void s01_show_all_choices();
+static void my_init();
 
 void show_w_selection(void) {
   initialise_ui();
@@ -214,7 +215,7 @@ const uint8_t VISIBLE_START = 1;
 // initiate state & show all choices
 // page start from 0; other parts of the code
 // are responsible to keep page in valid range
-void s01_show_all_choices() {
+static void s01_show_all_choices() {
   // set status 
   state = INIT;
   index_start = 18 * page + VISIBLE_START;

@@ -91,6 +91,9 @@ void running_state_kickoff(int whats_idx) {
 void running_state_load () {
   if (persist_exists(KEY_CURRENT_RUNNING_STATE)) {
     persist_read_data(KEY_CURRENT_RUNNING_STATE, &running_state_current, sizeof(running_state_current));
+    // state maintain
+    running_state_what = what_list[running_state_current.whats_running_idx];
+    running_state_reminder_stage = (*running_state_what).stages + running_state_current.stage_idx;
     APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] loaded ", running_state_summary());
     return;
   };

@@ -5,5 +5,6 @@
 
 #define DEBUG_TO_SECONDS
 #define DEBUG_CHECK_MORE
+#define DEBUG_CLEAR_RUNNING_STATE  
 
 #define VERSION_INFO "Trudi"

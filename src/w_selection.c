@@ -201,28 +201,7 @@ void show_w_selection(void) {
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);
-  // initialize tarray
-  tarray[0] = t_00;
-  tarray[1] = t_01;
-  tarray[2] = t_02;
-  tarray[3] = t_03;
-  tarray[4] = t_04;
-  tarray[5] = t_05;
-  tarray[6] = t_06;
-  tarray[7] = t_07;
-  tarray[8] = t_08;
-  tarray[9] = t_09;
-  tarray[10] = t_10;
-  tarray[11] = t_11;
-  tarray[12] = t_12;
-  tarray[13] = t_13;
-  tarray[14] = t_14;
-  tarray[15] = t_15;
-  tarray[16] = t_16;
-  tarray[17] = t_17;
-  // init
-  page = 0;
-  s01_show_all_choices(); 
+  my_init();
 }
 
 void hide_w_selection(void) {
@@ -247,4 +226,85 @@ void s01_show_all_choices() {
       text_layer_set_text(tarray[i],"------");
     };
   }
+}
+
+// 
+static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
+  switch (state) {
+    case INIT: break;
+    case HALF_SET: break;
+    case SECTION_SET: break;
+    case LINE_SET: break;
+  }
+};
+
+// turn pages
+static void turnpage() {
+  if (18*page+VISIBLE_START+18 >= WHAT_LIST_LENGTH) {
+    page = 0;
+  } else {
+    page += 1;
+  }
+  s01_show_all_choices();
+}
+
+// middle button
+static void middle_button_handler(ClickRecognizerRef recognizer, void *context) {
+  switch (state) {
+    case INIT: turnpage(); break;
+    case HALF_SET: break;
+    case SECTION_SET: break;
+    case LINE_SET: break;
+  }
+};
+
+// 
+static void down_button_handler(ClickRecognizerRef recognizer, void *context) {
+  switch (state) {
+    case INIT: turnpage();
+    case HALF_SET: break;
+    case SECTION_SET: break;
+    case LINE_SET: break;
+  }
+};
+
+
+// subscribe click events
+void w_selection_click_config_provider(void *context) {
+  window_single_click_subscribe(BUTTON_ID_UP, *up_button_handler);
+  window_single_click_subscribe(BUTTON_ID_SELECT, *middle_button_handler);
+  window_single_click_subscribe(BUTTON_ID_DOWN, *down_button_handler);
+};
+
+// register handlers
+static void register_tarray();
+
+static void my_init() {
+  register_tarray();
+  page = 0;
+  // click handlers
+  window_set_click_config_provider(s_window, *w_selection_click_config_provider);
+  s01_show_all_choices(); 
+}
+
+static void register_tarray() {
+  // initialize tarray
+  tarray[0] = t_00;
+  tarray[1] = t_01;
+  tarray[2] = t_02;
+  tarray[3] = t_03;
+  tarray[4] = t_04;
+  tarray[5] = t_05;
+  tarray[6] = t_06;
+  tarray[7] = t_07;
+  tarray[8] = t_08;
+  tarray[9] = t_09;
+  tarray[10] = t_10;
+  tarray[11] = t_11;
+  tarray[12] = t_12;
+  tarray[13] = t_13;
+  tarray[14] = t_14;
+  tarray[15] = t_15;
+  tarray[16] = t_16;
+  tarray[17] = t_17;
 }

@@ -6,6 +6,7 @@
 #include "what.h"
 #include "format.h"
 #include "wakeup.h"  
+#include "w_selection.h"  
 
 static char start_time[FORMAT_24HTIME_BUFFER_LENGTH];
 static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];  
@@ -144,10 +145,19 @@ static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed
 
 // up click handler - increase time
 static void time_extension_handler(ClickRecognizerRef recognizer, void *context) {
-  running_state_current.target_time = time(NULL) + ((*running_state_what).manual_extension_length);
-  running_state_current.stage_idx = 0;
+  if (time(NULL) > running_state_current.target_time) { 
+    running_state_current.target_time = time(NULL) + ((*running_state_what).manual_extension_length);
+    running_state_current.stage_idx = 0;
+  } else {
+    running_state_current.target_time = running_state_current.target_time + ((*running_state_what).manual_extension_length);
+  }
   running_state_save();
   sync_w_running();
+}
+
+// down click handler - finish current what
+static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
+  show_w_selection();
 }
 
 #ifdef DEBUG_CLEAR_RUNNING_STATE

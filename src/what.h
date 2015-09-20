@@ -38,4 +38,4 @@ extern const struct WhatType WHAT_NOTHING;
 
 extern const struct WhatType* what_list[];
 
-
+extern const uint8_t WHAT_LIST_LENGTH;

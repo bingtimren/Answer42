@@ -212,79 +212,38 @@ const struct WhatType WHAT_MEDIA = {
   LAST_NO_REMINDER
 };
 
-const struct WhatType WHAT_NOTHING = {
-  "Nothing",
-  "Nil",
-  5, // no manual extension
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_NOTHING = {
-  "Nothing",
-  "Nil",
-  5, // no manual extension
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_NOTHING = {
-  "Nothing",
-  "Nil",
-  5, // no manual extension
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_NOTHING = {
-  "Nothing",
-  "Nil",
-  5, // no manual extension
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_NOTHING = {
-  "Nothing",
-  "Nil",
-  5, // no manual extension
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_NOTHING = {
-  "Nothing",
-  "Nil",
-  5, // no manual extension
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_NOTHING = {
-  "Nothing",
-  "Nil",
-  5, // no manual extension
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
-};
-
-
-
 
 /*********************************************************************************************/
 //                                 What - list
 
-/* WHAT database - a list of all the "WHAT"s, where position 0 should be the default - NOTHING  */
+/* WHAT database - a list of all the "WHAT"s, where
+ 0 - NOTHING
+ then free define
+*/
 
 const struct WhatType* what_list[] = {
-  &WHAT_NOTHING
+  &WHAT_NOTHING,
+  &WHAT_WORK,
+  &WHAT_SLEEP,
+  &WHAT_SPORTS,
+  &WHAT_HYGIENE,
+  &WHAT_DOMESTIC,
+  &WHAT_SHOPPING,
+  &WHAT_Purchasing,
+  &WHAT_READING,
+  &WHAT_STUDYING,
+  &WHAT_LEISURE,
+  &WHAT_MEDITATION,
+  &WHAT_PET,
+  &WHAT_TRAFFIC,
+  &WHAT_HEALTH,
+  &WHAT_SOCIAL,
+  &WHAT_CULTURE,
+  &WHAT_COOKDINE,
+  &WHAT_SMISC,
+  &WHAT_BREAKS,
+  &WHAT_MISC,
+  &WHAT_MEDIA
 };
 
-
+const uint8_t WHAT_LIST_LENGTH = 22;

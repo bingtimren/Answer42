@@ -172,6 +172,8 @@ static void clear_running_state_handler(ClickRecognizerRef recognizer, void *con
 // subscribe click events
 void w_running_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, *time_extension_handler);
+  window_single_click_subscribe(BUTTON_ID_DOWN, *what_finish_handler);
+  
   #ifdef DEBUG_CLEAR_RUNNING_STATE
     window_long_click_subscribe(BUTTON_ID_UP, 3000, NULL, clear_running_state_handler);
   #endif

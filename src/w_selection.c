@@ -229,16 +229,6 @@ static void s01_show_all_choices() {
   }
 }
 
-// 
-static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
-  switch (state) {
-    case INIT: break;
-    case HALF_SET: break;
-    case SECTION_SET: break;
-    case LINE_SET: break;
-  }
-};
-
 // turn pages
 static void turnpage() {
   if (18*page+VISIBLE_START+18 >= WHAT_LIST_LENGTH) {
@@ -247,7 +237,34 @@ static void turnpage() {
     page += 1;
   }
   s01_show_all_choices();
+};
+
+// hide from start to end but keep from keep_start to keep_end
+static void hide_other_whats(uint8_t start, uint8_t end, uint8_t keep_start, uint8_t keep_end) {
+  for (uint8_t i=start; i<end; i++ ) {
+    if (i<keep_start || i>= keep_end) {
+      text_layer_set_text(tarray[i],"");
+    }
+  }
 }
+
+// select half 0 or 1
+static void select_half(uint8_t h) {
+  half = h;
+  state = HALF_SET;
+  hide_other_whats(0,18,h*9,h*9+1);
+}
+
+// up button
+static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
+  switch (state) {
+    case INIT: select_half(0); break;
+    case HALF_SET: break;
+    case SECTION_SET: break;
+    case LINE_SET: break;
+  }
+};
+
 
 // middle button
 static void middle_button_handler(ClickRecognizerRef recognizer, void *context) {
@@ -262,7 +279,7 @@ static void middle_button_handler(ClickRecognizerRef recognizer, void *context) 
 // 
 static void down_button_handler(ClickRecognizerRef recognizer, void *context) {
   switch (state) {
-    case INIT: turnpage();
+    case INIT: select_half(1); break;
     case HALF_SET: break;
     case SECTION_SET: break;
     case LINE_SET: break;
@@ -287,6 +304,8 @@ static void my_init() {
   window_set_click_config_provider(s_window, *w_selection_click_config_provider);
   s01_show_all_choices(); 
 }
+
+
 
 static void register_tarray() {
   // initialize tarray

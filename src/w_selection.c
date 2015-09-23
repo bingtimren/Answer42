@@ -306,7 +306,7 @@ static void show_prompt_choice() {
 
 // select line 0,1,2; bold display selection and ask for confirmation
 static void select_line(uint8_t l) {
-  choice = l + index_start + half * 9 + section * 3;
+  choice = l + index_start + section_starts;
   state = LINE_SET;
   // hide all items
   for (uint8_t i = section_starts; i < section_starts+3; i++) {

@@ -252,14 +252,23 @@ static void hide_other_whats(uint8_t start, uint8_t end, uint8_t keep_start, uin
 static void select_half(uint8_t h) {
   half = h;
   state = HALF_SET;
-  hide_other_whats(0,18,h*9,h*9+1);
+  hide_other_whats(0,18,h*9,h*9+9);
 }
+
+// select section 0,1,2
+static void select_section(uint8_t s) {
+  section = s;
+  state = SECTION_SET;
+  hide_other_whats(9*half,9*half+9,9*half+s*3,9*half+s*3+3);
+}
+
+
 
 // up button
 static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
   switch (state) {
     case INIT: select_half(0); break;
-    case HALF_SET: break;
+    case HALF_SET: select_section(0); break;
     case SECTION_SET: break;
     case LINE_SET: break;
   }
@@ -270,7 +279,7 @@ static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
 static void middle_button_handler(ClickRecognizerRef recognizer, void *context) {
   switch (state) {
     case INIT: turnpage(); break;
-    case HALF_SET: break;
+    case HALF_SET: select_section(1); break;
     case SECTION_SET: break;
     case LINE_SET: break;
   }
@@ -280,7 +289,7 @@ static void middle_button_handler(ClickRecognizerRef recognizer, void *context) 
 static void down_button_handler(ClickRecognizerRef recognizer, void *context) {
   switch (state) {
     case INIT: select_half(1); break;
-    case HALF_SET: break;
+    case HALF_SET: select_section(2); break;
     case SECTION_SET: break;
     case LINE_SET: break;
   }

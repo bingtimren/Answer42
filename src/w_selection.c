@@ -5,6 +5,7 @@
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GFont s_res_gothic_14;
+static GFont s_res_gothic_18;
 static TextLayer *t_07;
 static TextLayer *t_08;
 static TextLayer *t_12;
@@ -24,6 +25,9 @@ static TextLayer *t_15;
 static TextLayer *t_16;
 static TextLayer *t_17;
 static TextLayer *t_10;
+static TextLayer *t_prompt_1;
+static TextLayer *t_prompt_2;
+static TextLayer *t_choice_confirmation;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -32,6 +36,7 @@ static void initialise_ui(void) {
   #endif
   
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
+  s_res_gothic_18 = fonts_get_system_font(FONT_KEY_GOTHIC_18);
   // t_07
   t_07 = text_layer_create(GRect(0, 120, 60, 16));
   text_layer_set_text(t_07, "08");
@@ -111,7 +116,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_00);
   
   // t_13
-  t_13 = text_layer_create(GRect(62, 68, 60, 16));
+  t_13 = text_layer_create(GRect(62, 69, 60, 16));
   text_layer_set_text(t_13, "14");
   text_layer_set_font(t_13, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_13);
@@ -145,6 +150,27 @@ static void initialise_ui(void) {
   text_layer_set_text(t_10, "11");
   text_layer_set_font(t_10, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_10);
+  
+  // t_prompt_1
+  t_prompt_1 = text_layer_create(GRect(1, 17, 122, 19));
+  text_layer_set_background_color(t_prompt_1, GColorClear);
+  text_layer_set_text(t_prompt_1, " ");
+  text_layer_set_font(t_prompt_1, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_prompt_1);
+  
+  // t_prompt_2
+  t_prompt_2 = text_layer_create(GRect(1, 31, 122, 21));
+  text_layer_set_background_color(t_prompt_2, GColorClear);
+  text_layer_set_text(t_prompt_2, " ");
+  text_layer_set_font(t_prompt_2, s_res_gothic_18);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_prompt_2);
+  
+  // t_choice_confirmation
+  t_choice_confirmation = text_layer_create(GRect(0, 61, 124, 70));
+  text_layer_set_background_color(t_choice_confirmation, GColorClear);
+  text_layer_set_text(t_choice_confirmation, " ");
+  text_layer_set_font(t_choice_confirmation, s_res_gothic_18);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_choice_confirmation);
 }
 
 static void destroy_ui(void) {
@@ -168,6 +194,9 @@ static void destroy_ui(void) {
   text_layer_destroy(t_16);
   text_layer_destroy(t_17);
   text_layer_destroy(t_10);
+  text_layer_destroy(t_prompt_1);
+  text_layer_destroy(t_prompt_2);
+  text_layer_destroy(t_choice_confirmation);
 }
 // END AUTO-GENERATED UI CODE
 
@@ -184,16 +213,16 @@ typedef enum {
 // current selection state
 SelectionState state;
 uint8_t page;
-uint8_t half;
-uint8_t section;
-uint8_t line;
+uint8_t half_starts;
+uint8_t section_starts;
+uint8_t choice;
 uint8_t index_start;
 
 static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
-static void s01_show_all_choices();
+static void show_all_choices();
 static void my_init();
 
 void show_w_selection(void) {
@@ -215,9 +244,7 @@ const uint8_t VISIBLE_START = 1;
 // initiate state & show all choices
 // page start from 0; other parts of the code
 // are responsible to keep page in valid range
-static void s01_show_all_choices() {
-  // set status 
-  state = INIT;
+static void show_all_choices() {
   index_start = 18 * page + VISIBLE_START;
   // iterate and set
   for (uint8_t i=0; i<18; i++) {
@@ -236,7 +263,7 @@ static void turnpage() {
   } else {
     page += 1;
   }
-  s01_show_all_choices();
+  show_all_choices();
 };
 
 // hide from start to end but keep from keep_start to keep_end
@@ -250,18 +277,42 @@ static void hide_other_whats(uint8_t start, uint8_t end, uint8_t keep_start, uin
 
 // select half 0 or 1
 static void select_half(uint8_t h) {
-  half = h;
+  half_starts = 9*h;
   state = HALF_SET;
-  hide_other_whats(0,18,h*9,h*9+9);
+  hide_other_whats(0,18,half_starts,half_starts+9);
 }
 
 // select section 0,1,2
 static void select_section(uint8_t s) {
-  section = s;
+  section_starts = half_starts + 3 * s;
   state = SECTION_SET;
-  hide_other_whats(9*half,9*half+9,9*half+s*3,9*half+s*3+3);
+  hide_other_whats(half_starts,half_starts+9,section_starts,section_starts+3);
 }
 
+static void hide_prompt_choice() {
+  text_layer_set_text(t_prompt_1,"");
+  text_layer_set_text(t_prompt_2,"");
+  text_layer_set_text(t_choice_confirmation,"");
+}
+
+static void show_prompt_choice() {
+  text_layer_set_text(t_prompt_1,"Confirm your");
+  text_layer_set_text(t_prompt_2,"Next Activity: ");
+  text_layer_set_text(t_choice_confirmation, (*what_list[choice]).name);
+}
+
+
+// select line 0,1,2; bold display selection and ask for confirmation
+static void select_line(uint8_t l) {
+  choice = l + index_start;
+  state = LINE_SET;
+  // hide all items
+  for (uint8_t i = section_starts; i < section_starts+3; i++) {
+    text_layer_set_text(tarray[i],"");
+  };
+  // display prompt & choice
+  show_prompt_choice();
+}
 
 
 // up button
@@ -269,7 +320,7 @@ static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
   switch (state) {
     case INIT: select_half(0); break;
     case HALF_SET: select_section(0); break;
-    case SECTION_SET: break;
+    case SECTION_SET: select_line(0); break;
     case LINE_SET: break;
   }
 };
@@ -280,18 +331,19 @@ static void middle_button_handler(ClickRecognizerRef recognizer, void *context) 
   switch (state) {
     case INIT: turnpage(); break;
     case HALF_SET: select_section(1); break;
-    case SECTION_SET: break;
+    case SECTION_SET: select_line(1); break;
     case LINE_SET: break;
   }
 };
 
-// 
+static void my_init();
+// down button
 static void down_button_handler(ClickRecognizerRef recognizer, void *context) {
   switch (state) {
     case INIT: select_half(1); break;
     case HALF_SET: select_section(2); break;
-    case SECTION_SET: break;
-    case LINE_SET: break;
+    case SECTION_SET: select_line(2); break;
+    case LINE_SET: my_init(); break; // reset
   }
 };
 
@@ -309,9 +361,12 @@ static void register_tarray();
 static void my_init() {
   register_tarray();
   page = 0;
+  hide_prompt_choice();
+    // set status 
+  state = INIT;
   // click handlers
   window_set_click_config_provider(s_window, *w_selection_click_config_provider);
-  s01_show_all_choices(); 
+  show_all_choices(); 
 }
 
 

@@ -280,6 +280,10 @@ static void hide_other_whats(uint8_t start, uint8_t end, uint8_t keep_start, uin
 // select half 0 or 1
 static void select_half(uint8_t h) {
   half_starts = 9*h;
+  if (index_start + half_starts >= WHAT_LIST_LENGTH) {
+    // invalid choice, empty half, state not set
+    return;
+  }
   state = HALF_SET;
   hide_other_whats(0,18,half_starts,half_starts+9);
 }
@@ -287,6 +291,10 @@ static void select_half(uint8_t h) {
 // select section 0,1,2
 static void select_section(uint8_t s) {
   section_starts = half_starts + 3 * s;
+  if (index_start + section_starts >= WHAT_LIST_LENGTH) {
+    // invalid choice, empty section, state not set
+    return;
+  }
   state = SECTION_SET;
   hide_other_whats(half_starts,half_starts+9,section_starts,section_starts+3);
 }
@@ -307,6 +315,11 @@ static void show_prompt_choice() {
 // select line 0,1,2; bold display selection and ask for confirmation
 static void select_line(uint8_t l) {
   choice = l + index_start + section_starts;
+  if (choice >= WHAT_LIST_LENGTH) {
+    // invalid choice, empty section, state not set
+    return;
+  }
+
   state = LINE_SET;
   // hide all items
   for (uint8_t i = section_starts; i < section_starts+3; i++) {

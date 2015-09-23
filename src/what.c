@@ -212,6 +212,15 @@ const struct WhatType WHAT_MEDIA = {
   LAST_NO_REMINDER
 };
 
+const struct WhatType WHAT_RELAX = {
+  "Relaxing",
+  "Relax",
+  5, // no manual extension
+  3, // 3 stages
+  reminder_then_give_up,
+  LAST_NO_REMINDER
+};
+
 
 /*********************************************************************************************/
 //                                 What - list
@@ -243,7 +252,8 @@ const struct WhatType* what_list[] = {
   &WHAT_SMISC,
   &WHAT_BREAKS,
   &WHAT_MISC,
-  &WHAT_MEDIA
+  &WHAT_MEDIA,
+  &WHAT_RELAX
 };
 
-const uint8_t WHAT_LIST_LENGTH = 22;
+const uint8_t WHAT_LIST_LENGTH = 23;

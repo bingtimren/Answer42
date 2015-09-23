@@ -6,6 +6,7 @@
 static Window *s_window;
 static GFont s_res_gothic_14;
 static GFont s_res_gothic_18;
+static GFont s_res_gothic_18_bold;
 static TextLayer *t_07;
 static TextLayer *t_08;
 static TextLayer *t_12;
@@ -37,6 +38,7 @@ static void initialise_ui(void) {
   
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
   s_res_gothic_18 = fonts_get_system_font(FONT_KEY_GOTHIC_18);
+  s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   // t_07
   t_07 = text_layer_create(GRect(0, 120, 60, 16));
   text_layer_set_text(t_07, "08");
@@ -169,7 +171,7 @@ static void initialise_ui(void) {
   t_choice_confirmation = text_layer_create(GRect(0, 61, 124, 70));
   text_layer_set_background_color(t_choice_confirmation, GColorClear);
   text_layer_set_text(t_choice_confirmation, " ");
-  text_layer_set_font(t_choice_confirmation, s_res_gothic_18);
+  text_layer_set_font(t_choice_confirmation, s_res_gothic_18_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_choice_confirmation);
 }
 
@@ -304,7 +306,7 @@ static void show_prompt_choice() {
 
 // select line 0,1,2; bold display selection and ask for confirmation
 static void select_line(uint8_t l) {
-  choice = l + index_start;
+  choice = l + index_start + half * 9 + section * 3;
   state = LINE_SET;
   // hide all items
   for (uint8_t i = section_starts; i < section_starts+3; i++) {

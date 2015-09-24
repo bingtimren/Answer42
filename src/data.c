@@ -12,7 +12,11 @@ void data_store_load () {
     APP_LOG(APP_LOG_LEVEL_INFO, "Data store (l=%ud) loaded ", sizeof(data_store));
     return;
   };
-  APP_LOG(APP_LOG_LEVEL_INFO, "Data store not found, initialize in-memory store");
+  for (unsigned int i=0; i< DATA_STORE_SIZE; i++) {
+    data_store[i].time = 0;
+    data_store[i].durition = 0;
+  }
+  APP_LOG(APP_LOG_LEVEL_INFO, "Data store not found, in-memory store initialized, size %ud", sizeof(data_store));
 };
 
 void data_store_save () {

@@ -3,6 +3,7 @@
 #include "w_running.h"
 #include "running_state.h"
 #include "wakeup.h"
+#include "data.h"  
   
 static void init(void) {
   APP_LOG(APP_LOG_LEVEL_INFO, "[%s] starting....", VERSION_INFO);
@@ -10,6 +11,7 @@ static void init(void) {
   wakeup_init();
   // load running states
   running_state_load();
+  data_store_load();
   show_w_running();
   sync_w_running();
 }

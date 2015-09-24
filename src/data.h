@@ -32,3 +32,5 @@ typedef struct TimeRecord { // together = 8 bytes & aligned
 void data_store_load ();
 
 void data_store_save ();
+
+uint8_t data_store_usage;

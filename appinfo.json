@@ -9,21 +9,6 @@
     "resources": {
         "media": [
             {
-                "file": "images/action_focus.png",
-                "name": "IMAGE_ACTION_FOCUS",
-                "type": "png"
-            },
-            {
-                "file": "images/action_feel.png",
-                "name": "IMAGE_ACTION_FEEL",
-                "type": "png"
-            },
-            {
-                "file": "images/action_c.png",
-                "name": "IMAGE_ACTION_C",
-                "type": "png"
-            },
-            {
                 "file": "images/action_switch.png",
                 "name": "IMAGE_ACTION_SWITCH",
                 "type": "png"
@@ -36,6 +21,21 @@
             {
                 "file": "images/action_stop.png",
                 "name": "IMAGE_ACTION_STOP",
+                "type": "png"
+            },
+            {
+                "file": "images/action_focus.png",
+                "name": "IMAGE_ACTION_FOCUS",
+                "type": "png"
+            },
+            {
+                "file": "images/action_feel.png",
+                "name": "IMAGE_ACTION_FEEL",
+                "type": "png"
+            },
+            {
+                "file": "images/action_c.png",
+                "name": "IMAGE_ACTION_C",
                 "type": "png"
             },
             {

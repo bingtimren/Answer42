@@ -52,3 +52,5 @@ void data_log_in(time_t time, uint16_t durition, uint16_t what_index) {
 void data_send_out() {
 	// send data to phone
 };
+
+

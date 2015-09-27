@@ -17,31 +17,35 @@ void messages_outbox_failed(DictionaryIterator *iterator, AppMessageResult reaso
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Message outbox failed, reason %d", reason);
 }
 
-// gether one batch of records and send to phone
-void messsages_open_send() {
-  // first register callbacks
+void messages_init() {
+ // first register callbacks
   app_message_register_inbox_received(messages_inbox_received);
   app_message_register_inbox_dropped(messages_inbox_dropped);
   app_message_register_outbox_sent(messages_outbox_sent);
   app_message_register_outbox_failed(messages_outbox_failed);
-  
+  // open message with minimum size
   if (app_message_open(APP_MESSAGE_INBOX_SIZE_MINIMUM, APP_MESSAGE_OUTBOX_SIZE_MINIMUM) != APP_MSG_OK) {
     APP_LOG(APP_LOG_LEVEL_ERROR, "Open Message Failed");
     return;
-  }
+  }  
+};	
+
+// send one record
+bool messsages_open_send(int store_index, char* time, char* durition, char* what) {
   DictionaryIterator* dic_iterator;
   if (app_message_outbox_begin(&dic_iterator) != APP_MSG_OK) {
     APP_LOG(APP_LOG_LEVEL_ERROR, "Begin Message Outbox Failed");
-    return;
+    return false;
   }
-  char buffer[50];
-  time_t now;
-  time(&now);
-  strftime(buffer, sizeof(buffer),"P: %H:%M %S", localtime(&now));
-  // write some data
-  dict_write_cstring(dic_iterator, 1, buffer);
+  // pack data into dict
+  dict_write_int(dict_iterator,0,store_index);
+  dict_write_cstring(dic_iterator, 1, time);
+  dict_write_cstring(dic_iterator, 2, durition);
+  dict_write_cstring(dic_iterator, 3, what);
   dict_write_end(dic_iterator);
   // send
   app_message_outbox_send();
-  APP_LOG(APP_LOG_LEVEL_INFO,"Message %s sent",buffer);
+  return true;
 }
+
+void messages_pack

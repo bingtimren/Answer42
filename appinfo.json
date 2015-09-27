@@ -9,16 +9,6 @@
     "resources": {
         "media": [
             {
-                "file": "images/action_switch.png",
-                "name": "IMAGE_ACTION_SWITCH",
-                "type": "png"
-            },
-            {
-                "file": "images/action_minus.png",
-                "name": "IMAGE_ACTION_MINUS",
-                "type": "png"
-            },
-            {
                 "file": "images/action_stop.png",
                 "name": "IMAGE_ACTION_STOP",
                 "type": "png"
@@ -29,8 +19,8 @@
                 "type": "png"
             },
             {
-                "file": "images/action_feel.png",
-                "name": "IMAGE_ACTION_FEEL",
+                "file": "images/action_plus.png",
+                "name": "IMAGE_ACTION_PLUS",
                 "type": "png"
             },
             {
@@ -39,8 +29,18 @@
                 "type": "png"
             },
             {
-                "file": "images/action_plus.png",
-                "name": "IMAGE_ACTION_PLUS",
+                "file": "images/action_switch.png",
+                "name": "IMAGE_ACTION_SWITCH",
+                "type": "png"
+            },
+            {
+                "file": "images/action_minus.png",
+                "name": "IMAGE_ACTION_MINUS",
+                "type": "png"
+            },
+            {
+                "file": "images/action_feel.png",
+                "name": "IMAGE_ACTION_FEEL",
                 "type": "png"
             },
             {

@@ -29,8 +29,8 @@ static void initialise_ui(void) {
   
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(1, 10, 56, 20));
-  text_layer_set_text(s_textlayer_1, "Last Send:");
+  s_textlayer_1 = text_layer_create(GRect(1, 10, 30, 20));
+  text_layer_set_text(s_textlayer_1, "Send:");
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   
   // t_time
@@ -40,20 +40,20 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_time);
   
   // t_what
-  t_what = text_layer_create(GRect(1, 30, 110, 20));
+  t_what = text_layer_create(GRect(1, 30, 103, 20));
   text_layer_set_text(t_what, "what is done");
   text_layer_set_font(t_what, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_what);
   
   // t_send_status
-  t_send_status = text_layer_create(GRect(115, 30, 30, 20));
+  t_send_status = text_layer_create(GRect(105, 30, 40, 20));
   text_layer_set_text(t_send_status, "Fail");
   text_layer_set_font(t_send_status, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_send_status);
   
   // s_textlayer_2
-  s_textlayer_2 = text_layer_create(GRect(1, 60, 56, 20));
-  text_layer_set_text(s_textlayer_2, "Last Ack:");
+  s_textlayer_2 = text_layer_create(GRect(1, 60, 36, 20));
+  text_layer_set_text(s_textlayer_2, "Ack:");
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
   // t_ack_time
@@ -63,13 +63,13 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_ack_time);
   
   // s_textlayer_3
-  s_textlayer_3 = text_layer_create(GRect(1, 80, 110, 20));
+  s_textlayer_3 = text_layer_create(GRect(1, 80, 103, 20));
   text_layer_set_text(s_textlayer_3, "what is done");
   text_layer_set_font(s_textlayer_3, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
   
   // t_ack_status
-  t_ack_status = text_layer_create(GRect(115, 80, 30, 20));
+  t_ack_status = text_layer_create(GRect(105, 80, 30, 20));
   text_layer_set_text(t_ack_status, "Fail");
   text_layer_set_font(t_ack_status, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_ack_status);

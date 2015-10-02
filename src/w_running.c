@@ -7,6 +7,7 @@
 #include "format.h"
 #include "wakeup.h"  
 #include "w_selection.h"  
+#include "w_communication.h"
 
 static char start_time[FORMAT_24HTIME_BUFFER_LENGTH];
 static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];  
@@ -157,6 +158,19 @@ static void time_extension_handler(ClickRecognizerRef recognizer, void *context)
 
 // down click handler - finish current what
 static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
+
+  text_layer_set_text(t_what, (*running_state_what).name);
+  // show state - start time / target time
+  fmt_time_24h(start_time, sizeof(start_time), &(running_state_current.start_time));
+  fmt_time_24h(target_time, sizeof(target_time), &(running_state_current.target_time));
+  text_layer_set_text(t_start_time, start_time);
+  text_layer_set_text(t_target_time, target_time);
+  sync_lapse_remain();
+
+  // first save current session
+  if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time) / 60 , running_state_current.stage_idx)){
+	  APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
+  };
   show_w_selection();
 }
 
@@ -168,14 +182,19 @@ static void clear_running_state_handler(ClickRecognizerRef recognizer, void *con
 };
 #endif
 
+// long click middle button to call communicator
+static void call_communication_handler(ClickRecognizerRef recognizer, void *context) {
+  show_w_communication();
+}
 
 // subscribe click events
 void w_running_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, *time_extension_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, *what_finish_handler);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 0, call_communication_handler, NULL);
   
   #ifdef DEBUG_CLEAR_RUNNING_STATE
-    window_long_click_subscribe(BUTTON_ID_UP, 3000, NULL, clear_running_state_handler);
+    window_long_click_subscribe(BUTTON_ID_UP, 3000, clear_running_state_handler, NULL);
   #endif
 };
 

@@ -11,7 +11,6 @@ static void init(void) {
   wakeup_init();
   // load running states
   running_state_load();
-  data_store_load();
   show_w_running();
   sync_w_running();
 }

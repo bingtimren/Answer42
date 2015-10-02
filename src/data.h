@@ -15,7 +15,8 @@ typedef struct TimeRecord { // together = 8 bytes & aligned
   uint16_t what_index; // 2 bytes
 }  __attribute__((__packed__)) TimeRecord;
 
-
+// the store
+struct TimeRecord data_store[DATA_STORE_SIZE];
 
 // the key to store all time records data
 #define KEY_DATA_STORE 2
@@ -33,4 +34,8 @@ void data_store_load ();
 
 void data_store_save ();
 
-uint8_t data_store_usage;
+bool data_log_in(time_t time, uint16_t durition, uint16_t what_index);
+
+uint8_t data_seek_valid();
+
+uint8_t data_store_usage_count();

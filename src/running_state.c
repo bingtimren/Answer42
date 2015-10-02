@@ -27,6 +27,11 @@ void running_state_clear() {
     persist_delete(KEY_CURRENT_RUNNING_STATE);
     APP_LOG(APP_LOG_LEVEL_INFO, "Running state cleared.");
   };
+  if (persist_exists(KEY_DATA_STORE)) {
+    persist_delete(KEY_DATA_STORE);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Data store cleared.");
+  };  
+  
 }
 
 // save running state into the persistent storage of the watch

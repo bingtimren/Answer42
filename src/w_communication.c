@@ -1,5 +1,11 @@
 #include <pebble.h>
 #include "w_communication.h"
+#include "data.h"
+#include "what.h"
+
+  // text buffers
+static char send_time_buf[50];
+static char num_records[4];
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -99,12 +105,15 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
+static void my_init();
+
 void show_w_communication(void) {
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);
+  my_init();
 }
 
 void hide_w_communication(void) {
@@ -145,23 +154,64 @@ void messages_init() {
   }  
 };	
 
+void w_communication_update_record_num() {
+	snprintf(num_records, sizeof(num_records), "%d", data_store_usage_count());
+	text_layer_set_text(t_num_records, num_records);
+};
+
 // send one record
-bool messsages_open_send(int store_index, char* time, char* durition, char* what) {
+bool message_open_send(uint8_t store_index, char* time, uint16_t durition, char* what) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "Sending record [%d, %s, %d, %s] to watch", store_index, time, durition, what);	
   DictionaryIterator* dic_iterator;
   if (app_message_outbox_begin(&dic_iterator) != APP_MSG_OK) {
     APP_LOG(APP_LOG_LEVEL_ERROR, "Begin Message Outbox Failed");
     return false;
   }
   // pack data into dict
-  dict_write_int(dict_iterator,0,store_index);
+  dict_write_uint8(dic_iterator,0,store_index);
   dict_write_cstring(dic_iterator, 1, time);
-  dict_write_cstring(dic_iterator, 2, durition);
+  dict_write_uint16(dic_iterator, 2, durition);
   dict_write_cstring(dic_iterator, 3, what);
   dict_write_end(dic_iterator);
   // send
-  app_message_outbox_send();
-  return true;
+  if (app_message_outbox_send() == APP_MSG_OK) {
+	  return true;
+  };
+  return false;
 }
 
-void messages_pack
+// to send one record to phone
+static void send_communication_handler(ClickRecognizerRef recognizer, void *context) {
+  // first check out a record
+  if (data_store_usage_count() == 0) {
+	  return;
+  };
+  uint8_t idx = data_seek_valid();
+  APP_LOG(APP_LOG_LEVEL_INFO, "returned check again %u time %ld", idx, (data_store[idx].time - 0));
+  APP_LOG(APP_LOG_LEVEL_INFO, "send communication - idx %u time  %ld", idx, (data_store[idx].time - 0));
+  strftime(send_time_buf, sizeof(send_time_buf), "%d.%m.%y %H:%M", localtime(&(data_store[idx].time)));
+  text_layer_set_text(t_time, send_time_buf);
+  text_layer_set_text(t_what, (*what_list[data_store[idx].what_index]).short_name);
+  if (message_open_send(idx, send_time_buf, data_store[idx].durition, (*what_list[data_store[idx].what_index]).short_name)) {
+	  text_layer_set_text(t_send_status, "S");
+  } else {
+	  text_layer_set_text(t_send_status, "Fa");
+  };
+}
+
+// subscribe click events
+void w_communication_click_config_provider(void *context) {
+  window_single_click_subscribe(BUTTON_ID_UP, *send_communication_handler);
+};
+
+static void my_init() {
+	messages_init();
+	w_communication_update_record_num();
+	window_set_click_config_provider(s_window, *w_communication_click_config_provider);
+};
+
+
+
+
+
 

@@ -13,7 +13,7 @@ struct RunningState {
 };
 
 // global variable holding the current running state
-struct RunningState running_state_current;
+extern struct RunningState running_state_current;
 
 void running_state_save();
   
@@ -27,5 +27,5 @@ void running_state_clear();
 
 // state holding pointers, to avoid repeated calculation but must be 
 // consistently maintained;
-const struct WhatType *running_state_what;
-const struct WhatReminderStageType *running_state_reminder_stage;
+extern const struct WhatType *running_state_what;
+extern const struct WhatReminderStageType *running_state_reminder_stage;

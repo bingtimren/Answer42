@@ -6,6 +6,10 @@
 #include "format.h"
 #include "wakeup.h"
 
+const struct WhatType *running_state_what;
+struct RunningState running_state_current;
+const struct WhatReminderStageType *running_state_reminder_stage;
+
 // obtain summary of running state for logging
 #ifdef APP_LOG
 char* running_state_summary() {
@@ -112,13 +116,13 @@ void running_state_kickoff_repeat() {
   APP_LOG(APP_LOG_LEVEL_INFO, "stage %d, repeats remaining %d, kick off repeat", running_state_current.stage_idx, running_state_current.remaining_repeats);
   if ((*running_state_reminder_stage).repeats == 0) {
     // indicates repeating forever, only set next reminder
-    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
+    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length, RunningStateReminder);
     return;
   };
   // check if there is still remaining repeat
   if (running_state_current.remaining_repeats > 0) {
     running_state_current.remaining_repeats -= 1;
-    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length);
+    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length, RunningStateReminder);
     return;
   };
   // try to move to next reminding stage

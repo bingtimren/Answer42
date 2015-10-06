@@ -198,6 +198,12 @@ void w_running_click_config_provider(void *context) {
   #endif
 };
 
+void running_vibe() {
+	if (window_stack_get_top_window() == s_window) {
+		vibes_long_pulse();
+	};
+} ;
+
 // register handlers
 static void my_init() {
   // register tick handler

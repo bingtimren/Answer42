@@ -16,7 +16,7 @@ typedef struct TimeRecord { // together = 8 bytes & aligned
 }  __attribute__((__packed__)) TimeRecord;
 
 // the store
-struct TimeRecord data_store[DATA_STORE_SIZE];
+extern struct TimeRecord data_store[DATA_STORE_SIZE];
 
 // the key to store all time records data
 #define KEY_DATA_STORE 2

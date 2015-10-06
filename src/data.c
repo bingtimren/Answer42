@@ -5,6 +5,7 @@
 
 static uint8_t data_store_usage;
 
+struct TimeRecord data_store[DATA_STORE_SIZE];
 
 static bool data_store_loaded = false;
 
@@ -90,8 +91,5 @@ uint8_t data_seek_valid() {
 	return DATA_STORE_SIZE;
 };
 
-void data_send_out() {
-	// send data to phone
-};
 
 

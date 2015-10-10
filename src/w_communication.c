@@ -4,11 +4,22 @@
 #include "what.h"
 #include "running_state.h"
 #include "wakeup.h"
+#include "debug.h"
 
   // text buffers
+#ifdef DEBUG_CHECK_MORE
 static char send_time_buf[50];
+#endif
+// for some reason if I use maximum inbox/outbox I can get, after sending the system will just crash, so save some buffer
+#define safety_buffer 70
+
 static char num_records[4];
 
+static bool init_done = false;
+
+static uint32_t inbox_size = 0;
+static uint32_t outbox_size = 0;
+#define outbuffer_safety_gap 20
 // seconds to boost bluetooth response
 #define bluetooth_high_durition 5
 
@@ -128,19 +139,21 @@ void hide_w_communication(void) {
 /***************************** communication functions *********************************/
 
 void messages_inbox_received(DictionaryIterator *iterator, void *context)  {
-	APP_LOG(APP_LOG_LEVEL_INFO,"Message inbox received");
+	APP_LOG(APP_LOG_LEVEL_INFO,"Message inbox received, size %lu", dict_size(iterator));
 	Tuple *tuple = dict_read_first(iterator);
+	char* ack_str;
 	while (tuple) {
-	  APP_LOG(APP_LOG_LEVEL_INFO, "tuple: %li -> type %u length %u", tuple->key, tuple->type, tuple->length);
-	  int slot_num;
+	  uint8_t tl = tuple->length;
+	  APP_LOG(APP_LOG_LEVEL_INFO, "tuple: %li -> type %u length %u", tuple->key, tuple->type, tl);
 	  switch (tuple->key) {
-	    case 0:
-			slot_num = (int)tuple->value->int32;
-			APP_LOG(APP_LOG_LEVEL_INFO, "key 0, slot = %d", slot_num);
-			// should remove slot
-	      break;
-	    case 4:
-			APP_LOG(APP_LOG_LEVEL_INFO, "key 4, status = %s", tuple->value->cstring);
+	    case 42:
+			ack_str = tuple->value->cstring;
+			if (tl > 1) {
+				for (uint8_t i=0; i<(tl-1); i++) {
+					APP_LOG(APP_LOG_LEVEL_INFO, "[%d] idx: %d", i, (uint8_t)(ack_str[i])-1);
+					data_free((uint8_t)(ack_str[i])-1);
+				};
+			};
 	      break;
 	  }
 	  tuple = dict_read_next(iterator);
@@ -162,16 +175,21 @@ void messages_outbox_failed(DictionaryIterator *iterator, AppMessageResult reaso
 }
 
 void messages_init() {
+  if (init_done) return;
  // first register callbacks
   app_message_register_inbox_received(messages_inbox_received);
   app_message_register_inbox_dropped(messages_inbox_dropped);
   app_message_register_outbox_sent(messages_outbox_sent);
   app_message_register_outbox_failed(messages_outbox_failed);
-  // open message with minimum size
-  if (app_message_open(APP_MESSAGE_INBOX_SIZE_MINIMUM, APP_MESSAGE_OUTBOX_SIZE_MINIMUM) != APP_MSG_OK) {
+  // open message with maximum size
+  inbox_size = app_message_inbox_size_maximum() - safety_buffer;
+  outbox_size = app_message_outbox_size_maximum() - safety_buffer;
+  if (app_message_open(inbox_size, outbox_size) != APP_MSG_OK) {
     APP_LOG(APP_LOG_LEVEL_ERROR, "Open Message Failed");
     return;
   }  
+  APP_LOG(APP_LOG_LEVEL_INFO, "Open message OK, inbox size %lu outbox size %lu", inbox_size, outbox_size);
+  init_done = true;
 };	
 
 void w_communication_update_record_num() {
@@ -179,46 +197,89 @@ void w_communication_update_record_num() {
 	text_layer_set_text(t_num_records, num_records);
 };
 
-// send one record
-bool message_open_send(uint8_t store_index, time_t time, uint16_t durition, char* what) {
-  APP_LOG(APP_LOG_LEVEL_INFO, "Sending record [%d, %u, %d, %s] to watch", store_index, (unsigned int)time, durition, what);	
-  DictionaryIterator* dic_iterator;
-  if (app_message_outbox_begin(&dic_iterator) != APP_MSG_OK) {
-    APP_LOG(APP_LOG_LEVEL_ERROR, "Begin Message Outbox Failed");
-    return false;
-  }
-  // pack data into dict
-  dict_write_uint8(dic_iterator,0,store_index);
-  dict_write_uint32(dic_iterator, 1, (unsigned int)time);
-  dict_write_uint16(dic_iterator, 2, durition);
-  dict_write_cstring(dic_iterator, 3, what);
-  dict_write_end(dic_iterator);
-  // send
-  if (app_message_outbox_send() == APP_MSG_OK) {
-	  return true;
-  };
-  return false;
-}
 
-// to send one record to phone
+
+// to send one batch of records to phone
+// data protocol
+// 0 -> number of records
+// n*4+1 -> storage index (uint8)
+// n*4+2 -> time (uint32)
+// n*4+3 -> durition (uint16)
+// n*4+4 -> what (string)
+
 static void send_communication_handler(ClickRecognizerRef recognizer, void *context) {
-  // first check out a record
-  if (data_store_usage_count() == 0) {
+	// first check if there is a record
+	uint8_t remaining_records = data_store_usage_count();
+	if (remaining_records == 0) {
 	  return;
-  };
-  uint8_t idx = data_seek_valid();
-  strftime(send_time_buf, sizeof(send_time_buf), "%d.%m.%y %H:%M", localtime(&(data_store[idx].time)));
-  text_layer_set_text(t_time, send_time_buf);
-  text_layer_set_text(t_what, (*what_list[data_store[idx].what_index]).short_name);
-  if (message_open_send(idx, data_store[idx].time, data_store[idx].durition, (*what_list[data_store[idx].what_index]).short_name)) {
-	  text_layer_set_text(t_send_status, "Sending");
+	};
+	// initialize dictionary
+	DictionaryIterator* dic_iterator;
+	if (app_message_outbox_begin(&dic_iterator) != APP_MSG_OK) {
+	APP_LOG(APP_LOG_LEVEL_ERROR, "Begin Message Outbox Failed");
+	return;
+	}
+	
+	// start packing
+	uint8_t records_packed = 0;
+	uint8_t idx = data_seek_valid(0);
+	uint16_t buffer_used = 9; // according to doc, buffer header 1 byte, and I also need to reserve the last triplet, key 0 length 1 byte (header 7 bytes)
+	
+	while (true) {
+		// first calculate if there should be enough room
+		buffer_used = buffer_used + dict_calc_buffer_size(
+			4, // 4 tuplets
+			1, // idx 1 byte
+			4, // time 4 bytes
+			2, // durition 2 bytes
+			what_list_length_short_name[data_store[idx].what_index]); // what name, and then remove the buffer header as it's already calculated
+		APP_LOG(APP_LOG_LEVEL_INFO, "checking space, if pack record %d buffer size would be %d", (records_packed + 1), buffer_used);
+		if (buffer_used  >= outbox_size) { // header size 7 + 1 byte record number = 8, for key 0
+			break;
+		};
+		time_t time = data_store[idx].time;
+		uint16_t durition = data_store[idx].durition;
+		char* what = what_list[data_store[idx].what_index]->short_name;
+		#ifdef DEBUG_CHECK_MORE
+			strftime(send_time_buf, sizeof(send_time_buf), "%d.%m.%y %H:%M", localtime(&(time)));
+			APP_LOG(APP_LOG_LEVEL_INFO, "packing record %d [%d, time(%u, %s) %d, %s]", records_packed, idx, (unsigned int)time, send_time_buf, durition, what);	
+		#endif
+	
+		if (dict_write_uint8(dic_iterator,records_packed*4+1,idx) == DICT_OK) {
+			if (dict_write_uint32(dic_iterator, records_packed*4+2, (unsigned int)time) == DICT_OK) {
+				if (dict_write_uint16(dic_iterator, records_packed*4+3, durition) == DICT_OK) {
+					if (dict_write_cstring(dic_iterator, records_packed*4+4, what) == DICT_OK) {
+						records_packed += 1;
+						APP_LOG(APP_LOG_LEVEL_INFO, "packing ALL OK for record %d",records_packed);
+						if (records_packed < remaining_records) {
+							// prepare next
+							idx = data_seek_valid(idx + 1);
+							continue;
+						}; 
+					};
+				};
+			};
+		};
+		// something wrong... mostly dictionary full, or maybe we just packed everything
+		break;
+	};
+
+	// pack complete, write number of records, and prepare to send them off
+	DictionaryResult res = dict_write_uint8(dic_iterator, 0, records_packed);
+	uint32_t final_size = dict_write_end(dic_iterator);
+	APP_LOG(APP_LOG_LEVEL_INFO, "Packed %d records, size (final_size %lu dict_size %lu)", records_packed, final_size, dict_size(dic_iterator));
+	if (res != DICT_OK) {
+		APP_LOG(APP_LOG_LEVEL_INFO, "Last write failed, reason %d, not sending", res);
+		return;
+	};
+	// send
+	APP_LOG(APP_LOG_LEVEL_INFO, "Last write checked OK, sending");
+	if (app_message_outbox_send() == APP_MSG_OK) {
+	  APP_LOG(APP_LOG_LEVEL_INFO, "Sending OK"); 
 	  // boost bluetooth response and set timer to lower back
 	  wakeup_schedule_next_in_seconds(bluetooth_high_durition, BluetoothHighTimeOut);
 	  app_comm_set_sniff_interval(SNIFF_INTERVAL_REDUCED);
-	  APP_LOG(APP_LOG_LEVEL_INFO, "send communication - idx %u time %s", idx, send_time_buf);
-  } else {
-	  text_layer_set_text(t_send_status, "Failed");
-  };
+	} else APP_LOG(APP_LOG_LEVEL_INFO, "Sending FAILED");
 }
 
 // subscribe click events

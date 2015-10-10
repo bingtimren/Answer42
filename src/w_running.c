@@ -168,9 +168,17 @@ static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
   sync_lapse_remain();
 
   // first save current session
+  APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... data store usage = %d", data_store_usage_count());
   if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time) / 60 , running_state_current.stage_idx)){
 	  APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
   };
+  #ifdef DEBUG_SAVE_DEBUG_RECORDS
+  while (data_store_usage_count() < DATA_STORE_SIZE) {
+	  if (! data_log_in(running_state_current.start_time - data_store_usage_count()*600*1000, data_store_usage_count() , data_store_usage_count()%WHAT_LIST_LENGTH)){
+		  APP_LOG(APP_LOG_LEVEL_ERROR, "Saving test running state failed");
+	  };
+  };	  
+  #endif
   show_w_selection();
 }
 

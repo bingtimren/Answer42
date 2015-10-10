@@ -256,4 +256,13 @@ const struct WhatType* what_list[] = {
   &WHAT_RELAX
 };
 
-const uint8_t WHAT_LIST_LENGTH = 23;
+uint8_t what_list_length_short_name[WHAT_LIST_LENGTH];
+
+// calculate lengths once for all
+void what_initiate() {
+	for (int i=0; i<WHAT_LIST_LENGTH; i++) {
+		what_list_length_short_name[i] = strlen(what_list[i]->short_name);
+	};
+};
+
+

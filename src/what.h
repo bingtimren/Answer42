@@ -36,6 +36,8 @@ extern const struct WhatType WHAT_NOTHING;
   
 /* WHAT database - a list of all the "WHAT"s, where position 0 should be the default - NOTHING  */
 
+#define WHAT_LIST_LENGTH 23
 extern const struct WhatType* what_list[];
+extern uint8_t what_list_length_short_name[];
 
-extern const uint8_t WHAT_LIST_LENGTH;
+void what_initiate();

@@ -36,6 +36,8 @@ void data_store_save ();
 
 bool data_log_in(time_t time, uint16_t durition, uint16_t what_index);
 
-uint8_t data_seek_valid();
+uint8_t data_seek_valid(uint8_t start);
 
 uint8_t data_store_usage_count();
+
+void data_free(const uint8_t i);

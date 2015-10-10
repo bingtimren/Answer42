@@ -6,6 +6,10 @@
 #include "data.h"  
 #include "format.h"  
 
+// schedule registry remembers the schedule id
+// so that if a wakeup for a cookie has already been registered,
+// cancel that event first before registering the new wakeup
+// so basically - one wakeup one cookie
 WakeupId schedule_registry[10];
 
 // schedule next wakeup in minutes
@@ -17,6 +21,7 @@ void wakeup_schedule_next_in_seconds(uint16_t seconds_to_now, int32_t cookie ) {
   return wakeup_schedule_next_target_time(time(NULL) + seconds_to_now, cookie);
 }
 
+// if previously registered then cancel
 void wakeup_cancel_by_cookie(int32_t cookie) {
   if (schedule_registry[cookie] > 0) {
 	  APP_LOG(APP_LOG_LEVEL_INFO, "cancel previous scheduled wakeup %ld", cookie);
@@ -76,6 +81,7 @@ void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
 
 // initialize wakeup & subscribe  
 void wakeup_init() {
+  // clear schedule registry
   for (int i=0; i<10; i++) {
 	  schedule_registry[i] = -1;
   };

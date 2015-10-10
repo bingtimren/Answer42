@@ -16,13 +16,12 @@ void data_store_load () {
     persist_read_data(KEY_DATA_STORE, &data_store, sizeof(data_store));
     // now count the empty slots
     for (uint8_t i=0; i<DATA_STORE_SIZE; i++) {
-		if (data_store[i].time != 0) {
-			data_store_usage += 1;
+			if (data_store[i].time != 0) { data_store_usage += 1; };
 		};
-	};
-	APP_LOG(APP_LOG_LEVEL_INFO, "Data store (size %u load %u) loaded ", sizeof(data_store), data_store_usage);
+		APP_LOG(APP_LOG_LEVEL_INFO, "Data store (size %u load %u) loaded ", sizeof(data_store), data_store_usage);
     return;
   };
+  // not found persisted data store
   for (unsigned int i=0; i< DATA_STORE_SIZE; i++) {
     data_store[i].time = 0;
     data_store[i].durition = 0;
@@ -33,7 +32,7 @@ void data_store_load () {
 uint8_t data_store_usage_count() {
 	if (! data_store_loaded) {
 		data_store_load();
-	};	
+		};	
 	return data_store_usage;
 };
 
@@ -44,7 +43,7 @@ void data_store_save () {
   APP_LOG(APP_LOG_LEVEL_INFO, "Data store (l=%u) saved ", sizeof(data_store));
 };
 
-bool data_log_in(time_t time, uint16_t durition, uint16_t what_index) {
+bool data_log_in(const time_t time, const uint16_t durition, const uint16_t what_index) {
 	#ifdef DEBUG_CHECK_MORE
 	char time_buf[30];
 	strftime(time_buf, sizeof(time_buf), "%d.%m.%y %H:%M", localtime(&time));
@@ -76,12 +75,22 @@ bool data_log_in(time_t time, uint16_t durition, uint16_t what_index) {
 	return false;
 };
 
-uint8_t data_seek_valid() {
+void data_free(const uint8_t i) {
+	if (data_store[i].time != 0) {
+		data_store[i].time = 0;
+		data_store_usage -= 1;
+		data_store_save();
+		APP_LOG(APP_LOG_LEVEL_INFO, "Freed slot %u usage=%d", i, data_store_usage);		
+	} else APP_LOG(APP_LOG_LEVEL_ERROR, "Slot %u already freed", i);
+};
+
+
+uint8_t data_seek_valid(uint8_t start) {
 	if (! data_store_loaded) {
 		data_store_load();
 	};
 	// find an occupied slot
-    for (uint8_t i=0; i<DATA_STORE_SIZE; i++) {
+    for (uint8_t i=start; i<DATA_STORE_SIZE; i++) {
 		if (data_store[i].time != 0) {
 			APP_LOG(APP_LOG_LEVEL_INFO, "data_seek_valid return %u time %ld", i, (data_store[i].time - 0));
 			return i;

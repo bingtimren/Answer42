@@ -4,7 +4,7 @@
 #include "running_state.h"
 #include "wakeup.h"
 
-#define indecision_time 5
+
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;

@@ -31,12 +31,11 @@ static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
 static TextLayer *s_textlayer_3;
 static TextLayer *t_remain_over;
-static InverterLayer *s_inverterlayer_1;
 
 static void initialise_ui(void) {
   s_window = window_create();
   #ifndef PBL_SDK_3
-    window_set_fullscreen(s_window, false);
+    window_set_fullscreen(s_window, 0);
   #endif
   
   s_res_image_action_plus = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_PLUS);
@@ -109,10 +108,6 @@ static void initialise_ui(void) {
   text_layer_set_text(t_remain_over, "Remain:");
   text_layer_set_font(t_remain_over, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_remain_over);
-  
-  // s_inverterlayer_1
-  s_inverterlayer_1 = inverter_layer_create(GRect(4, 33, 116, 51));
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_inverterlayer_1);
 }
 
 static void destroy_ui(void) {
@@ -127,7 +122,6 @@ static void destroy_ui(void) {
   text_layer_destroy(s_textlayer_2);
   text_layer_destroy(s_textlayer_3);
   text_layer_destroy(t_remain_over);
-  inverter_layer_destroy(s_inverterlayer_1);
   gbitmap_destroy(s_res_image_action_plus);
   gbitmap_destroy(s_res_image_action_wireless);
   gbitmap_destroy(s_res_image_action_stop);

@@ -26,16 +26,23 @@ static uint32_t outbox_size = 0;
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GFont s_res_gothic_14;
+static GBitmap *s_res_image_action_wireless;
+static GBitmap *s_res_image_action_clear;
+static GBitmap *s_res_image_action_reset;
 static TextLayer *s_textlayer_1;
-static TextLayer *t_time;
-static TextLayer *t_what;
-static TextLayer *t_send_status;
+static TextLayer *t_lastsend_time;
+static TextLayer *t_lastsend_records;
+static TextLayer *t_lastsend_status;
 static TextLayer *s_textlayer_2;
 static TextLayer *t_ack_time;
 static TextLayer *s_textlayer_3;
-static TextLayer *t_ack_status;
 static TextLayer *s_textlayer_4;
 static TextLayer *t_num_records;
+static TextLayer *s_textlayer_5;
+static TextLayer *s_textlayer_6;
+static TextLayer *s_textlayer_7;
+static TextLayer *t_lastack_records;
+static ActionBarLayer *s_actionbarlayer_1;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -44,28 +51,31 @@ static void initialise_ui(void) {
   #endif
   
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
+  s_res_image_action_wireless = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_WIRELESS);
+  s_res_image_action_clear = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_CLEAR);
+  s_res_image_action_reset = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_RESET);
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(1, 10, 56, 20));
-  text_layer_set_text(s_textlayer_1, "Last Send:");
+  s_textlayer_1 = text_layer_create(GRect(1, 0, 56, 20));
+  text_layer_set_text(s_textlayer_1, "Last Sent:");
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   
-  // t_time
-  t_time = text_layer_create(GRect(60, 10, 83, 20));
-  text_layer_set_text(t_time, "12.31 13:23");
-  text_layer_set_font(t_time, s_res_gothic_14);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_time);
+  // t_lastsend_time
+  t_lastsend_time = text_layer_create(GRect(35, 20, 83, 20));
+  text_layer_set_text(t_lastsend_time, " ");
+  text_layer_set_font(t_lastsend_time, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_lastsend_time);
   
-  // t_what
-  t_what = text_layer_create(GRect(1, 30, 110, 20));
-  text_layer_set_text(t_what, "what is done");
-  text_layer_set_font(t_what, s_res_gothic_14);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_what);
+  // t_lastsend_records
+  t_lastsend_records = text_layer_create(GRect(35, 40, 24, 20));
+  text_layer_set_text(t_lastsend_records, " ");
+  text_layer_set_font(t_lastsend_records, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_lastsend_records);
   
-  // t_send_status
-  t_send_status = text_layer_create(GRect(115, 30, 30, 20));
-  text_layer_set_text(t_send_status, "Fail");
-  text_layer_set_font(t_send_status, s_res_gothic_14);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_send_status);
+  // t_lastsend_status
+  t_lastsend_status = text_layer_create(GRect(60, 40, 60, 20));
+  text_layer_set_text(t_lastsend_status, " ");
+  text_layer_set_font(t_lastsend_status, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_lastsend_status);
   
   // s_textlayer_2
   s_textlayer_2 = text_layer_create(GRect(1, 60, 56, 20));
@@ -73,47 +83,81 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
   // t_ack_time
-  t_ack_time = text_layer_create(GRect(60, 60, 83, 20));
-  text_layer_set_text(t_ack_time, "12:31 13:23");
+  t_ack_time = text_layer_create(GRect(35, 80, 83, 20));
+  text_layer_set_text(t_ack_time, " ");
   text_layer_set_font(t_ack_time, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_ack_time);
   
   // s_textlayer_3
-  s_textlayer_3 = text_layer_create(GRect(1, 80, 110, 20));
-  text_layer_set_text(s_textlayer_3, "what is done");
+  s_textlayer_3 = text_layer_create(GRect(1, 100, 35, 20));
+  text_layer_set_text(s_textlayer_3, "# rec.");
   text_layer_set_font(s_textlayer_3, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
   
-  // t_ack_status
-  t_ack_status = text_layer_create(GRect(115, 80, 30, 20));
-  text_layer_set_text(t_ack_status, "Fail");
-  text_layer_set_font(t_ack_status, s_res_gothic_14);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_ack_status);
-  
   // s_textlayer_4
-  s_textlayer_4 = text_layer_create(GRect(1, 110, 107, 20));
-  text_layer_set_text(s_textlayer_4, "#Records on Watch:");
+  s_textlayer_4 = text_layer_create(GRect(1, 125, 78, 20));
+  text_layer_set_text(s_textlayer_4, "# saved rec. :");
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_4);
   
   // t_num_records
-  t_num_records = text_layer_create(GRect(110, 110, 30, 20));
-  text_layer_set_text(t_num_records, "999");
+  t_num_records = text_layer_create(GRect(80, 125, 36, 20));
+  text_layer_set_text(t_num_records, " ");
   text_layer_set_font(t_num_records, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_num_records);
+  
+  // s_textlayer_5
+  s_textlayer_5 = text_layer_create(GRect(1, 20, 35, 20));
+  text_layer_set_text(s_textlayer_5, "Time");
+  text_layer_set_font(s_textlayer_5, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_5);
+  
+  // s_textlayer_6
+  s_textlayer_6 = text_layer_create(GRect(1, 40, 35, 20));
+  text_layer_set_text(s_textlayer_6, "# rec. ");
+  text_layer_set_font(s_textlayer_6, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_6);
+  
+  // s_textlayer_7
+  s_textlayer_7 = text_layer_create(GRect(1, 80, 38, 20));
+  text_layer_set_text(s_textlayer_7, "Time");
+  text_layer_set_font(s_textlayer_7, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_7);
+  
+  // t_lastack_records
+  t_lastack_records = text_layer_create(GRect(35, 100, 40, 20));
+  text_layer_set_text(t_lastack_records, " ");
+  text_layer_set_font(t_lastack_records, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_lastack_records);
+  
+  // s_actionbarlayer_1
+  s_actionbarlayer_1 = action_bar_layer_create();
+  action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
+  action_bar_layer_set_background_color(s_actionbarlayer_1, GColorBlack);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_wireless);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_clear);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_reset);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
 }
 
 static void destroy_ui(void) {
   window_destroy(s_window);
   text_layer_destroy(s_textlayer_1);
-  text_layer_destroy(t_time);
-  text_layer_destroy(t_what);
-  text_layer_destroy(t_send_status);
+  text_layer_destroy(t_lastsend_time);
+  text_layer_destroy(t_lastsend_records);
+  text_layer_destroy(t_lastsend_status);
   text_layer_destroy(s_textlayer_2);
   text_layer_destroy(t_ack_time);
   text_layer_destroy(s_textlayer_3);
-  text_layer_destroy(t_ack_status);
   text_layer_destroy(s_textlayer_4);
   text_layer_destroy(t_num_records);
+  text_layer_destroy(s_textlayer_5);
+  text_layer_destroy(s_textlayer_6);
+  text_layer_destroy(s_textlayer_7);
+  text_layer_destroy(t_lastack_records);
+  action_bar_layer_destroy(s_actionbarlayer_1);
+  gbitmap_destroy(s_res_image_action_wireless);
+  gbitmap_destroy(s_res_image_action_clear);
+  gbitmap_destroy(s_res_image_action_reset);
 }
 // END AUTO-GENERATED UI CODE
 

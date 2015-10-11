@@ -17,16 +17,21 @@ static char remaining_time[50];
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GBitmap *s_res_image_action_plus;
+static GBitmap *s_res_image_action_wireless;
 static GBitmap *s_res_image_action_stop;
 static GFont s_res_gothic_18_bold;
 static GFont s_res_gothic_14;
 static ActionBarLayer *s_actionbarlayer_1;
 static TextLayer *t_what;
-static BitmapLayer *b_progress;
 static TextLayer *t_start_time;
 static TextLayer *t_target_time;
 static TextLayer *t_elapsed_time;
 static TextLayer *t_remaining_time;
+static TextLayer *s_textlayer_1;
+static TextLayer *s_textlayer_2;
+static TextLayer *s_textlayer_3;
+static TextLayer *t_remain_over;
+static InverterLayer *s_inverterlayer_1;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -35,6 +40,7 @@ static void initialise_ui(void) {
   #endif
   
   s_res_image_action_plus = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_PLUS);
+  s_res_image_action_wireless = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_WIRELESS);
   s_res_image_action_stop = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_STOP);
   s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
@@ -43,59 +49,87 @@ static void initialise_ui(void) {
   action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
   action_bar_layer_set_background_color(s_actionbarlayer_1, GColorBlack);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_plus);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_wireless);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_stop);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
   
   // t_what
-  t_what = text_layer_create(GRect(1, 0, 117, 21));
+  t_what = text_layer_create(GRect(0, 3, 124, 21));
   text_layer_set_text(t_what, "What going on");
   text_layer_set_text_alignment(t_what, GTextAlignmentCenter);
   text_layer_set_font(t_what, s_res_gothic_18_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_what);
   
-  // b_progress
-  b_progress = bitmap_layer_create(GRect(3, 20, 117, 7));
-  layer_add_child(window_get_root_layer(s_window), (Layer *)b_progress);
-  
   // t_start_time
-  t_start_time = text_layer_create(GRect(12, 41, 100, 20));
-  text_layer_set_background_color(t_start_time, GColorBlack);
-  text_layer_set_text_color(t_start_time, GColorWhite);
-  text_layer_set_text(t_start_time, "Run 00h : 00m");
-  text_layer_set_text_alignment(t_start_time, GTextAlignmentCenter);
+  t_start_time = text_layer_create(GRect(65, 40, 56, 20));
+  text_layer_set_background_color(t_start_time, GColorClear);
+  text_layer_set_text(t_start_time, "00 : 00");
   text_layer_set_font(t_start_time, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_start_time);
   
   // t_target_time
-  t_target_time = text_layer_create(GRect(12, 65, 100, 20));
-  text_layer_set_text(t_target_time, "Target 00h : 00m");
-  text_layer_set_text_alignment(t_target_time, GTextAlignmentCenter);
+  t_target_time = text_layer_create(GRect(65, 60, 56, 20));
+  text_layer_set_background_color(t_target_time, GColorClear);
+  text_layer_set_text(t_target_time, "00 : 00");
   text_layer_set_font(t_target_time, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_target_time);
   
   // t_elapsed_time
-  t_elapsed_time = text_layer_create(GRect(14, 83, 100, 20));
-  text_layer_set_text(t_elapsed_time, "Text layer");
+  t_elapsed_time = text_layer_create(GRect(65, 100, 56, 20));
+  text_layer_set_text(t_elapsed_time, "00m 00s");
   text_layer_set_font(t_elapsed_time, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_elapsed_time);
   
   // t_remaining_time
-  t_remaining_time = text_layer_create(GRect(13, 102, 100, 20));
-  text_layer_set_text(t_remaining_time, "Text layer");
+  t_remaining_time = text_layer_create(GRect(65, 120, 56, 20));
+  text_layer_set_text(t_remaining_time, "00m 00s");
   text_layer_set_font(t_remaining_time, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_remaining_time);
+  
+  // s_textlayer_1
+  s_textlayer_1 = text_layer_create(GRect(10, 40, 46, 20));
+  text_layer_set_text(s_textlayer_1, "Started:");
+  text_layer_set_font(s_textlayer_1, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
+  
+  // s_textlayer_2
+  s_textlayer_2 = text_layer_create(GRect(10, 60, 40, 20));
+  text_layer_set_text(s_textlayer_2, "Target:");
+  text_layer_set_font(s_textlayer_2, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
+  
+  // s_textlayer_3
+  s_textlayer_3 = text_layer_create(GRect(10, 100, 46, 20));
+  text_layer_set_text(s_textlayer_3, "Elapsed:");
+  text_layer_set_font(s_textlayer_3, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
+  
+  // t_remain_over
+  t_remain_over = text_layer_create(GRect(10, 120, 40, 20));
+  text_layer_set_text(t_remain_over, "Remain:");
+  text_layer_set_font(t_remain_over, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_remain_over);
+  
+  // s_inverterlayer_1
+  s_inverterlayer_1 = inverter_layer_create(GRect(4, 33, 116, 51));
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_inverterlayer_1);
 }
 
 static void destroy_ui(void) {
   window_destroy(s_window);
   action_bar_layer_destroy(s_actionbarlayer_1);
   text_layer_destroy(t_what);
-  bitmap_layer_destroy(b_progress);
   text_layer_destroy(t_start_time);
   text_layer_destroy(t_target_time);
   text_layer_destroy(t_elapsed_time);
   text_layer_destroy(t_remaining_time);
+  text_layer_destroy(s_textlayer_1);
+  text_layer_destroy(s_textlayer_2);
+  text_layer_destroy(s_textlayer_3);
+  text_layer_destroy(t_remain_over);
+  inverter_layer_destroy(s_inverterlayer_1);
   gbitmap_destroy(s_res_image_action_plus);
+  gbitmap_destroy(s_res_image_action_wireless);
   gbitmap_destroy(s_res_image_action_stop);
 }
 // END AUTO-GENERATED UI CODE

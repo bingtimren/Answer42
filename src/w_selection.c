@@ -11,11 +11,13 @@ static Window *s_window;
 static GFont s_res_gothic_14;
 static GFont s_res_gothic_18;
 static GFont s_res_gothic_18_bold;
+static GBitmap *s_res_image_action_switch;
+static GBitmap *s_res_image_action_right;
+static GBitmap *s_res_image_action_left;
 static TextLayer *t_07;
 static TextLayer *t_08;
 static TextLayer *t_12;
 static TextLayer *t_11;
-static ActionBarLayer *s_actionbarlayer_1;
 static TextLayer *t_06;
 static TextLayer *t_05;
 static TextLayer *t_09;
@@ -33,6 +35,7 @@ static TextLayer *t_10;
 static TextLayer *t_prompt_1;
 static TextLayer *t_prompt_2;
 static TextLayer *t_choice_confirmation;
+static ActionBarLayer *s_actionbarlayer_1;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -43,6 +46,9 @@ static void initialise_ui(void) {
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
   s_res_gothic_18 = fonts_get_system_font(FONT_KEY_GOTHIC_18);
   s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
+  s_res_image_action_switch = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_SWITCH);
+  s_res_image_action_right = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_RIGHT);
+  s_res_image_action_left = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_LEFT);
   // t_07
   t_07 = text_layer_create(GRect(0, 120, 60, 16));
   text_layer_set_text(t_07, "08");
@@ -66,12 +72,6 @@ static void initialise_ui(void) {
   text_layer_set_text(t_11, "12");
   text_layer_set_font(t_11, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_11);
-  
-  // s_actionbarlayer_1
-  s_actionbarlayer_1 = action_bar_layer_create();
-  action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
-  action_bar_layer_set_background_color(s_actionbarlayer_1, GColorBlack);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
   
   // t_06
   t_06 = text_layer_create(GRect(0, 104, 60, 16));
@@ -177,6 +177,15 @@ static void initialise_ui(void) {
   text_layer_set_text(t_choice_confirmation, " ");
   text_layer_set_font(t_choice_confirmation, s_res_gothic_18_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_choice_confirmation);
+  
+  // s_actionbarlayer_1
+  s_actionbarlayer_1 = action_bar_layer_create();
+  action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
+  action_bar_layer_set_background_color(s_actionbarlayer_1, GColorBlack);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_left);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_switch);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_right);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
 }
 
 static void destroy_ui(void) {
@@ -185,7 +194,6 @@ static void destroy_ui(void) {
   text_layer_destroy(t_08);
   text_layer_destroy(t_12);
   text_layer_destroy(t_11);
-  action_bar_layer_destroy(s_actionbarlayer_1);
   text_layer_destroy(t_06);
   text_layer_destroy(t_05);
   text_layer_destroy(t_09);
@@ -203,6 +211,10 @@ static void destroy_ui(void) {
   text_layer_destroy(t_prompt_1);
   text_layer_destroy(t_prompt_2);
   text_layer_destroy(t_choice_confirmation);
+  action_bar_layer_destroy(s_actionbarlayer_1);
+  gbitmap_destroy(s_res_image_action_switch);
+  gbitmap_destroy(s_res_image_action_right);
+  gbitmap_destroy(s_res_image_action_left);
 }
 // END AUTO-GENERATED UI CODE
 

@@ -15,4 +15,4 @@ struct TimeDifference {
   uint8_t seconds;
 };
 void fmt_to_timediff(struct TimeDifference* result_buffer, time_t t1, time_t t2);
-void fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2, char* earlier_indicator, char* later_indicator);
+bool fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2);

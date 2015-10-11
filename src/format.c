@@ -24,17 +24,14 @@ void fmt_to_timediff(struct TimeDifference* result_buffer, time_t t1, time_t t2)
   (*result_buffer).days = secdiff / SEC_IN_DAY;
 }
 
-void fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2, char* earlier_indicator, char* later_indicator) {
+// returns - earlier (true) or later
+bool fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2) {
   struct TimeDifference tdiff;
-  char* indicator = "";
   fmt_to_timediff(&tdiff, t1, t2);
-  if (tdiff.earlier && (earlier_indicator != NULL))
-    indicator = earlier_indicator;
-  else if (later_indicator != NULL)
-    indicator = later_indicator;
   if (tdiff.days != 0) {
-    snprintf(buffer, size, "%ud %uh %um%s", tdiff.days, tdiff.hours, tdiff.minutes, indicator);
+    snprintf(buffer, size, "%ud %uh %um", tdiff.days, tdiff.hours, tdiff.minutes);
   } else {
-    snprintf(buffer, size, "%uh %um %us%s", tdiff.hours, tdiff.minutes, tdiff.seconds, indicator);
+    snprintf(buffer, size, "%uh %um %us", tdiff.hours, tdiff.minutes, tdiff.seconds);
   };
+  return tdiff.earlier;
 }

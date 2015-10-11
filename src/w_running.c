@@ -61,19 +61,19 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_what);
   
   // t_elapsed_time
-  t_elapsed_time = text_layer_create(GRect(65, 100, 56, 20));
+  t_elapsed_time = text_layer_create(GRect(48, 100, 75, 20));
   text_layer_set_text(t_elapsed_time, "00m 00s");
   text_layer_set_font(t_elapsed_time, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_elapsed_time);
   
   // t_remaining_time
-  t_remaining_time = text_layer_create(GRect(65, 120, 56, 20));
+  t_remaining_time = text_layer_create(GRect(48, 120, 75, 20));
   text_layer_set_text(t_remaining_time, "00m 00s");
   text_layer_set_font(t_remaining_time, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_remaining_time);
   
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(5, 40, 115, 20));
+  s_textlayer_1 = text_layer_create(GRect(1, 40, 119, 20));
   text_layer_set_background_color(s_textlayer_1, GColorBlack);
   text_layer_set_text_color(s_textlayer_1, GColorWhite);
   text_layer_set_text(s_textlayer_1, "  Started:");
@@ -81,7 +81,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   
   // s_textlayer_2
-  s_textlayer_2 = text_layer_create(GRect(5, 60, 115, 20));
+  s_textlayer_2 = text_layer_create(GRect(1, 60, 119, 20));
   text_layer_set_background_color(s_textlayer_2, GColorBlack);
   text_layer_set_text_color(s_textlayer_2, GColorWhite);
   text_layer_set_text(s_textlayer_2, "  Target:");
@@ -89,7 +89,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
   // s_textlayer_3
-  s_textlayer_3 = text_layer_create(GRect(10, 100, 46, 20));
+  s_textlayer_3 = text_layer_create(GRect(2, 100, 44, 20));
   text_layer_set_text(s_textlayer_3, "Elapsed:");
   text_layer_set_font(s_textlayer_3, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
@@ -111,7 +111,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_target_time);
   
   // t_remain_over
-  t_remain_over = text_layer_create(GRect(10, 120, 40, 20));
+  t_remain_over = text_layer_create(GRect(2, 120, 40, 20));
   text_layer_set_text(t_remain_over, "Remain:");
   text_layer_set_font(t_remain_over, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_remain_over);

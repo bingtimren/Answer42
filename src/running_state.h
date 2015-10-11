@@ -25,6 +25,8 @@ void running_state_load ();
 
 void running_state_clear();
 
+void running_reminder_handler();
+
 // state holding pointers, to avoid repeated calculation but must be 
 // consistently maintained;
 extern const struct WhatType *running_state_what;

@@ -84,6 +84,15 @@ void data_free(const uint8_t i) {
 	} else APP_LOG(APP_LOG_LEVEL_ERROR, "Slot %u already freed", i);
 };
 
+// clear data store
+void data_clear() {
+  if (persist_exists(KEY_DATA_STORE)) {
+    persist_delete(KEY_DATA_STORE);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Data store cleared.");
+  };  
+}
+
+
 
 uint8_t data_seek_valid(uint8_t start) {
 	if (! data_store_loaded) {

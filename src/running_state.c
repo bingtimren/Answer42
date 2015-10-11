@@ -5,6 +5,7 @@
 #include "data.h"
 #include "format.h"
 #include "wakeup.h"
+#include "w_running.h"
 
 const struct WhatType *running_state_what;
 struct RunningState running_state_current;
@@ -31,11 +32,6 @@ void running_state_clear() {
     persist_delete(KEY_CURRENT_RUNNING_STATE);
     APP_LOG(APP_LOG_LEVEL_INFO, "Running state cleared.");
   };
-  if (persist_exists(KEY_DATA_STORE)) {
-    persist_delete(KEY_DATA_STORE);
-    APP_LOG(APP_LOG_LEVEL_INFO, "Data store cleared.");
-  };  
-  
 }
 
 // save running state into the persistent storage of the watch
@@ -133,4 +129,33 @@ void running_state_kickoff_repeat() {
             (*running_state_what).termination_action);
   }
 };
+
+// handling wakeup & stage changes
+void running_reminder_handler() {
+  running_vibe();
+  APP_LOG(APP_LOG_LEVEL_INFO, "woke up, stage %d, repeats remaining %d", running_state_current.stage_idx, running_state_current.remaining_repeats);
+  if ((*running_state_reminder_stage).repeats == 0) {
+    // indicates repeating forever, only set next reminder
+    APP_LOG(APP_LOG_LEVEL_INFO, "forever repeating...");
+    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length, RunningStateReminder);
+    return;
+  };
+  // check if there is still remaining repeat
+  if (running_state_current.remaining_repeats > 0) {
+    running_state_current.remaining_repeats -= 1;
+    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length, RunningStateReminder);
+    running_state_save();    
+    return;
+  };
+  // exhausted repeats, now try to move to next reminding stage
+  APP_LOG(APP_LOG_LEVEL_INFO, "Exhausted repeats, move to next stage");
+  running_state_kickoff_stage(running_state_current.stage_idx + 1);
+  // if out of stages, time to carry out end-of-stages action
+  if (running_state_reminder_stage == NULL) {
+    APP_LOG(APP_LOG_LEVEL_INFO, "run out of stages, time to commit end-of-stages action %d", 
+            (*running_state_what).termination_action);
+  }
+  // only preserver running state in the end
+  running_state_save();
+}
 

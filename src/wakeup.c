@@ -12,6 +12,38 @@
 // so basically - one wakeup one cookie
 WakeupId schedule_registry[10];
 
+// load wakeup registry from persistent storage
+void wakeup_state_load () {
+  if (persist_exists(KEY_WAKEUP_REGISTRY)) {
+    persist_read_data(KEY_WAKEUP_REGISTRY, &schedule_registry, sizeof(schedule_registry));
+    APP_LOG(APP_LOG_LEVEL_INFO, "Wakeup registry loaded ");
+    return;
+  };
+  APP_LOG(APP_LOG_LEVEL_INFO, "No wakeup registry found, initiate");
+  for (int i=0; i<10; i++) {
+	  schedule_registry[i] = -1;
+  };
+};
+
+
+// clear running state - this should be called only for debugging purpose
+void wakeup_state_clear() {
+  if (persist_exists(KEY_WAKEUP_REGISTRY)) {
+    persist_delete(KEY_WAKEUP_REGISTRY);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Wakeup registry state cleared.");
+  };
+  // cancel all wakeups
+  wakeup_cancel_all();
+}
+
+// save running state into the persistent storage of the watch
+void wakeup_state_save() {
+  persist_write_data(KEY_WAKEUP_REGISTRY, &schedule_registry, sizeof(schedule_registry));
+  APP_LOG(APP_LOG_LEVEL_INFO, "Wakeup registry saved ");
+}
+
+
+
 // schedule next wakeup in minutes
 void wakeup_schedule_next_in_minutes(uint16_t minutes_to_now, int32_t cookie ) {
   return wakeup_schedule_next_target_time(time(NULL) + SECONDS_PER_MIN * minutes_to_now, cookie);
@@ -34,40 +66,12 @@ void wakeup_schedule_next_target_time(time_t target, int32_t cookie) {
   // only one wakeup for a cookie type is allowed
   wakeup_cancel_by_cookie(cookie);
   #ifdef APP_LOG
-  char buffer[20];
-  fmt_time_24h(buffer, sizeof(buffer), &(target));
-  APP_LOG(APP_LOG_LEVEL_INFO, "wake up scheduled target %s cookie %ld", buffer, cookie);
+	  char buffer[20];
+	  fmt_time_24h(buffer, sizeof(buffer), &(target));
+	  APP_LOG(APP_LOG_LEVEL_INFO, "wake up scheduled target %s cookie %ld", buffer, cookie);
   #endif
   schedule_registry[cookie] = wakeup_schedule(target, cookie, false);  
-}
-
-// handling wakeup & stage changes
-void running_reminder_handler() {
-  running_vibe();
-  APP_LOG(APP_LOG_LEVEL_INFO, "woke up, stage %d, repeats remaining %d", running_state_current.stage_idx, running_state_current.remaining_repeats);
-  if ((*running_state_reminder_stage).repeats == 0) {
-    // indicates repeating forever, only set next reminder
-    APP_LOG(APP_LOG_LEVEL_INFO, "forever repeating...");
-    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length, RunningStateReminder);
-    return;
-  };
-  // check if there is still remaining repeat
-  if (running_state_current.remaining_repeats > 0) {
-    running_state_current.remaining_repeats -= 1;
-    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length, RunningStateReminder);
-    running_state_save();    
-    return;
-  };
-  // exhausted repeats, now try to move to next reminding stage
-  APP_LOG(APP_LOG_LEVEL_INFO, "Exhausted repeats, move to next stage");
-  running_state_kickoff_stage(running_state_current.stage_idx + 1);
-  // if out of stages, time to carry out end-of-stages action
-  if (running_state_reminder_stage == NULL) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "run out of stages, time to commit end-of-stages action %d", 
-            (*running_state_what).termination_action);
-  }
-  // only preserver running state in the end
-  running_state_save();
+  wakeup_state_save();
 }
 
 // handling wakeup & stage changes
@@ -81,10 +85,8 @@ void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
 
 // initialize wakeup & subscribe  
 void wakeup_init() {
-  // clear schedule registry
-  for (int i=0; i<10; i++) {
-	  schedule_registry[i] = -1;
-  };
+  wakeup_state_load();
   wakeup_service_subscribe(wakeup_handler);
   APP_LOG(APP_LOG_LEVEL_INFO, "wakeup initialized"); 
 }
+

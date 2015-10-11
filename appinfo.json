@@ -1,92 +1,96 @@
 {
-    "appKeys": {},
-    "capabilities": [
-        ""
-    ],
-    "companyName": "Life Endeavour",
-    "longName": "Answer 42",
-    "projectType": "native",
-    "resources": {
-        "media": [
-            {
-                "file": "images/action_no.png",
-                "name": "IMAGE_ACTION_NO",
-                "type": "png"
-            },
-            {
-                "file": "images/action_yes.png",
-                "name": "IMAGE_ACTION_YES",
-                "type": "png"
-            },
-            {
-                "file": "images/action_reset.png",
-                "name": "IMAGE_ACTION_RESET",
-                "type": "png"
-            },
-            {
-                "file": "images/action_clear.png",
-                "name": "IMAGE_ACTION_CLEAR",
-                "type": "png"
-            },
-            {
-                "file": "images/action_right.png",
-                "name": "IMAGE_ACTION_RIGHT",
-                "type": "png"
-            },
-            {
-                "file": "images/action_left.png",
-                "name": "IMAGE_ACTION_LEFT",
-                "type": "png"
-            },
-            {
-                "file": "images/action_up.png",
-                "name": "IMAGE_ACTION_UP",
-                "type": "png"
-            },
-            {
-                "file": "images/action_mid.png",
-                "name": "IMAGE_ACTION_MID",
-                "type": "png"
-            },
-            {
-                "file": "images/action_down.png",
-                "name": "IMAGE_ACTION_DOWN",
-                "type": "png"
-            },
-            {
-                "file": "images/wireless.png",
-                "name": "IMAGE_ACTION_WIRELESS",
-                "type": "png"
-            },
-            {
-                "file": "images/menuimg.png",
-                "menuIcon": true,
-                "name": "IMAGE_42",
-                "type": "png"
-            },
-            {
-                "file": "images/action_switch.png",
-                "name": "IMAGE_ACTION_SWITCH",
-                "type": "png"
-            },
-            {
-                "file": "images/action_plus.png",
-                "name": "IMAGE_ACTION_PLUS",
-                "type": "png"
-            },
-            {
-                "file": "images/action_stop.png",
-                "name": "IMAGE_ACTION_STOP",
-                "type": "png"
-            }
-        ]
-    },
-    "sdkVersion": "2",
-    "shortName": "Answer 42",
-    "uuid": "68778513-6f1d-408f-b490-d61e2e977216",
-    "versionCode": 1,
-    "versionLabel": "1.0",
-    "watchapp": {
-        "watchface": false
-    }
+  "appKeys": {},
+  "capabilities": [
+    ""
+  ],
+  "companyName": "Life Endeavour",
+  "longName": "Answer 42",
+  "projectType": "native",
+  "resources": {
+    "media": [
+      {
+        "file": "images/action_no.png",
+        "name": "IMAGE_ACTION_NO",
+        "type": "png"
+      },
+      {
+        "file": "images/action_yes.png",
+        "name": "IMAGE_ACTION_YES",
+        "type": "png"
+      },
+      {
+        "file": "images/action_reset.png",
+        "name": "IMAGE_ACTION_RESET",
+        "type": "png"
+      },
+      {
+        "file": "images/action_clear.png",
+        "name": "IMAGE_ACTION_CLEAR",
+        "type": "png"
+      },
+      {
+        "file": "images/action_right.png",
+        "name": "IMAGE_ACTION_RIGHT",
+        "type": "png"
+      },
+      {
+        "file": "images/action_left.png",
+        "name": "IMAGE_ACTION_LEFT",
+        "type": "png"
+      },
+      {
+        "file": "images/action_up.png",
+        "name": "IMAGE_ACTION_UP",
+        "type": "png"
+      },
+      {
+        "file": "images/action_mid.png",
+        "name": "IMAGE_ACTION_MID",
+        "type": "png"
+      },
+      {
+        "file": "images/action_down.png",
+        "name": "IMAGE_ACTION_DOWN",
+        "type": "png"
+      },
+      {
+        "file": "images/wireless.png",
+        "name": "IMAGE_ACTION_WIRELESS",
+        "type": "png"
+      },
+      {
+        "file": "images/menuimg.png",
+        "menuIcon": true,
+        "name": "IMAGE_42",
+        "type": "png"
+      },
+      {
+        "file": "images/action_switch.png",
+        "name": "IMAGE_ACTION_SWITCH",
+        "type": "png"
+      },
+      {
+        "file": "images/action_plus.png",
+        "name": "IMAGE_ACTION_PLUS",
+        "type": "png"
+      },
+      {
+        "file": "images/action_stop.png",
+        "name": "IMAGE_ACTION_STOP",
+        "type": "png"
+      }
+    ]
+  },
+  "sdkVersion": "3",
+  "shortName": "Answer 42",
+  "uuid": "68778513-6f1d-408f-b490-d61e2e977216",
+  "versionCode": 1,
+  "versionLabel": "1.0",
+  "watchapp": {
+    "watchface": false
+  },
+  "targetPlatforms": [
+    "aplite",
+    "basalt"
+  ]
 }

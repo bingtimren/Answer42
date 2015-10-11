@@ -3,6 +3,9 @@
 #include "pebble.h"
 /* IDs for persistent storage */
 #define KEY_CURRENT_RUNNING_STATE 1
+#define KEY_DATA_STORE 2
+#define KEY_WAKEUP_REGISTRY 3 
+
 
 /* everything related to storage of records and communication with phone */
 /* pebble persisent storage capability: max value length 256 bytes, all cannot exceed 4K */  
@@ -18,9 +21,8 @@ typedef struct TimeRecord { // together = 8 bytes & aligned
 // the store
 extern struct TimeRecord data_store[DATA_STORE_SIZE];
 
-// the key to store all time records data
-#define KEY_DATA_STORE 2
-  
+
+void data_clear();  
   
 /* seconds in a minute - set to 1 for faster time lapsing for debugging */
 #ifdef DEBUG_TO_SECONDS

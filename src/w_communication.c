@@ -210,11 +210,19 @@ void messages_inbox_dropped(AppMessageResult reason, void *context) {
 
 void messages_outbox_sent(DictionaryIterator *iterator, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Message sent / reply received");
-  text_layer_set_text(t_send_status, "Sent");
+  text_layer_set_text(t_lastsend_status, "Sent");
 }
   
 void messages_outbox_failed(DictionaryIterator *iterator, AppMessageResult reason, void *context){
-  text_layer_set_text(t_send_status, "Failed");
+  switch (reason) {
+         case APP_MSG_SEND_TIMEOUT: text_layer_set_text(t_lastsend_status, "T-out"); break;
+         case APP_MSG_SEND_REJECTED: text_layer_set_text(t_lastsend_status, "Rejected"); break;
+         case APP_MSG_NOT_CONNECTED: text_layer_set_text(t_lastsend_status, "No conn"); break;
+         case APP_MSG_APP_NOT_RUNNING: text_layer_set_text(t_lastsend_status, "App Close"); break;
+         case APP_MSG_BUSY: text_layer_set_text(t_lastsend_status, "Busy"); break;
+         case APP_MSG_OUT_OF_MEMORY: text_layer_set_text(t_lastsend_status, "Mem-out"); break;
+         default: text_layer_set_text(t_lastsend_status, "No conn"); break;
+	 };
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Message outbox failed, reason %d", reason);
 }
 

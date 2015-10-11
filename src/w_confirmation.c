@@ -1,6 +1,11 @@
 #include <pebble.h>
 #include "w_confirmation.h"
 
+static char* prompt;
+ConfirmationReceived received_callback;
+
+
+
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GBitmap *s_res_image_action_yes;
@@ -26,7 +31,7 @@ static void initialise_ui(void) {
   
   // s_textlayer_1
   s_textlayer_1 = text_layer_create(GRect(0, 67, 124, 20));
-  text_layer_set_text(s_textlayer_1, "Text layer");
+  text_layer_set_text(s_textlayer_1, " ");
   text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentCenter);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
 }
@@ -44,14 +49,41 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
+
+static void yes_handler(ClickRecognizerRef recognizer, void *context) {
+	window_stack_pop(true);
+  received_callback(true);
+}
+
+static void no_handler(ClickRecognizerRef recognizer, void *context) {
+		window_stack_pop(true);
+  received_callback(false);
+}
+
+// subscribe click events
+void w_confirmation_click_config_provider(void *context) {
+  window_single_click_subscribe(BUTTON_ID_UP, *yes_handler);
+  window_single_click_subscribe(BUTTON_ID_DOWN, *no_handler);
+};
+
 void show_w_confirmation(void) {
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);
+  window_set_click_config_provider(s_window, *w_confirmation_click_config_provider);
+}
+
+
+void confirmation_ask(const char* prompt, ConfirmationReceived callback) {
+	received_callback = callback;
+	show_w_confirmation();
+	text_layer_set_text(s_textlayer_1, prompt);
 }
 
 void hide_w_confirmation(void) {
   window_stack_remove(s_window, true);
 }
+
+

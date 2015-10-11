@@ -8,6 +8,7 @@
 #include "wakeup.h"  
 #include "w_selection.h"  
 #include "w_communication.h"
+#include "w_confirmation.h"
 
 static char start_time[FORMAT_24HTIME_BUFFER_LENGTH];
 static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];  
@@ -190,41 +191,37 @@ static void time_extension_handler(ClickRecognizerRef recognizer, void *context)
   sync_w_running();
 }
 
+void what_finish_handler_after_confirmation(bool confirmed){
+	if (confirmed) {
+		// first save current session
+		APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... data store usage = %d", data_store_usage_count());
+		if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time) / 60 , running_state_current.stage_idx)){
+			APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
+		};
+		#ifdef DEBUG_SAVE_DEBUG_RECORDS
+		while (data_store_usage_count() < DATA_STORE_SIZE) {
+			if (! data_log_in(running_state_current.start_time - data_store_usage_count()*600*1000, data_store_usage_count() , data_store_usage_count()%WHAT_LIST_LENGTH)){
+				APP_LOG(APP_LOG_LEVEL_ERROR, "Saving test running state failed");
+			};
+		};	  
+		#endif
+	};
+	// then pop-up selection window
+	show_w_selection();
+};
+
 // down click handler - finish current what
 static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
-
-  text_layer_set_text(t_what, (*running_state_what).name);
-  // show state - start time / target time
-  fmt_time_24h(start_time, sizeof(start_time), &(running_state_current.start_time));
-  fmt_time_24h(target_time, sizeof(target_time), &(running_state_current.target_time));
-  text_layer_set_text(t_start_time, start_time);
-  text_layer_set_text(t_target_time, target_time);
-  sync_lapse_remain();
-
-  // first save current session
-  APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... data store usage = %d", data_store_usage_count());
-  if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time) / 60 , running_state_current.stage_idx)){
-	  APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
-  };
-  #ifdef DEBUG_SAVE_DEBUG_RECORDS
-  while (data_store_usage_count() < DATA_STORE_SIZE) {
-	  if (! data_log_in(running_state_current.start_time - data_store_usage_count()*600*1000, data_store_usage_count() , data_store_usage_count()%WHAT_LIST_LENGTH)){
-		  APP_LOG(APP_LOG_LEVEL_ERROR, "Saving test running state failed");
-	  };
-  };	  
-  #endif
-  show_w_selection();
+	sync_w_running();
+	if (running_state_current.whats_running_idx == 0) { // nothing, no need to commit, just bring up selection window 
+		what_finish_handler_after_confirmation(false);
+	} else {
+		// bring up confirmation window
+		confirmation_ask("Log session?", what_finish_handler_after_confirmation);
+	};
 }
 
-#ifdef DEBUG_CLEAR_RUNNING_STATE
-// long click up button to quit and clear running state, for debug purpose
-static void clear_running_state_handler(ClickRecognizerRef recognizer, void *context) {
-  running_state_clear();
-  window_stack_pop(true);
-};
-#endif
-
-// long click middle button to call communicator
+// call communicator
 static void call_communication_handler(ClickRecognizerRef recognizer, void *context) {
   show_w_communication();
 }
@@ -233,11 +230,7 @@ static void call_communication_handler(ClickRecognizerRef recognizer, void *cont
 void w_running_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, *time_extension_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, *what_finish_handler);
-  window_long_click_subscribe(BUTTON_ID_SELECT, 0, call_communication_handler, NULL);
-  
-  #ifdef DEBUG_CLEAR_RUNNING_STATE
-    window_long_click_subscribe(BUTTON_ID_UP, 3000, clear_running_state_handler, NULL);
-  #endif
+  window_single_click_subscribe(BUTTON_ID_SELECT, *call_communication_handler);
 };
 
 void running_vibe() {

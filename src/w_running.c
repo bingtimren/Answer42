@@ -23,13 +23,13 @@ static GFont s_res_gothic_18_bold;
 static GFont s_res_gothic_14;
 static ActionBarLayer *s_actionbarlayer_1;
 static TextLayer *t_what;
-static TextLayer *t_start_time;
-static TextLayer *t_target_time;
 static TextLayer *t_elapsed_time;
 static TextLayer *t_remaining_time;
 static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
 static TextLayer *s_textlayer_3;
+static TextLayer *t_start_time;
+static TextLayer *t_target_time;
 static TextLayer *t_remain_over;
 
 static void initialise_ui(void) {
@@ -59,20 +59,6 @@ static void initialise_ui(void) {
   text_layer_set_font(t_what, s_res_gothic_18_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_what);
   
-  // t_start_time
-  t_start_time = text_layer_create(GRect(65, 40, 56, 20));
-  text_layer_set_background_color(t_start_time, GColorClear);
-  text_layer_set_text(t_start_time, "00 : 00");
-  text_layer_set_font(t_start_time, s_res_gothic_14);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_start_time);
-  
-  // t_target_time
-  t_target_time = text_layer_create(GRect(65, 60, 56, 20));
-  text_layer_set_background_color(t_target_time, GColorClear);
-  text_layer_set_text(t_target_time, "00 : 00");
-  text_layer_set_font(t_target_time, s_res_gothic_14);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_target_time);
-  
   // t_elapsed_time
   t_elapsed_time = text_layer_create(GRect(65, 100, 56, 20));
   text_layer_set_text(t_elapsed_time, "00m 00s");
@@ -86,14 +72,18 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_remaining_time);
   
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(10, 40, 46, 20));
-  text_layer_set_text(s_textlayer_1, "Started:");
+  s_textlayer_1 = text_layer_create(GRect(5, 40, 115, 20));
+  text_layer_set_background_color(s_textlayer_1, GColorBlack);
+  text_layer_set_text_color(s_textlayer_1, GColorWhite);
+  text_layer_set_text(s_textlayer_1, "  Started:");
   text_layer_set_font(s_textlayer_1, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   
   // s_textlayer_2
-  s_textlayer_2 = text_layer_create(GRect(10, 60, 40, 20));
-  text_layer_set_text(s_textlayer_2, "Target:");
+  s_textlayer_2 = text_layer_create(GRect(5, 60, 115, 20));
+  text_layer_set_background_color(s_textlayer_2, GColorBlack);
+  text_layer_set_text_color(s_textlayer_2, GColorWhite);
+  text_layer_set_text(s_textlayer_2, "  Target:");
   text_layer_set_font(s_textlayer_2, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
@@ -102,6 +92,22 @@ static void initialise_ui(void) {
   text_layer_set_text(s_textlayer_3, "Elapsed:");
   text_layer_set_font(s_textlayer_3, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
+  
+  // t_start_time
+  t_start_time = text_layer_create(GRect(65, 40, 56, 20));
+  text_layer_set_background_color(t_start_time, GColorClear);
+  text_layer_set_text_color(t_start_time, GColorWhite);
+  text_layer_set_text(t_start_time, "00 : 00");
+  text_layer_set_font(t_start_time, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_start_time);
+  
+  // t_target_time
+  t_target_time = text_layer_create(GRect(65, 60, 56, 20));
+  text_layer_set_background_color(t_target_time, GColorClear);
+  text_layer_set_text_color(t_target_time, GColorWhite);
+  text_layer_set_text(t_target_time, "00 : 00");
+  text_layer_set_font(t_target_time, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_target_time);
   
   // t_remain_over
   t_remain_over = text_layer_create(GRect(10, 120, 40, 20));
@@ -114,13 +120,13 @@ static void destroy_ui(void) {
   window_destroy(s_window);
   action_bar_layer_destroy(s_actionbarlayer_1);
   text_layer_destroy(t_what);
-  text_layer_destroy(t_start_time);
-  text_layer_destroy(t_target_time);
   text_layer_destroy(t_elapsed_time);
   text_layer_destroy(t_remaining_time);
   text_layer_destroy(s_textlayer_1);
   text_layer_destroy(s_textlayer_2);
   text_layer_destroy(s_textlayer_3);
+  text_layer_destroy(t_start_time);
+  text_layer_destroy(t_target_time);
   text_layer_destroy(t_remain_over);
   gbitmap_destroy(s_res_image_action_plus);
   gbitmap_destroy(s_res_image_action_wireless);

@@ -2,19 +2,7 @@
 #include "what.h"
 #include "debug.h"
 
-/*********************************************************************************************/
-//                                 Reminder stages  
-  
-const struct WhatReminderStageType reminder_then_give_up[3] = {
-  {10,2},
-  {5,3},
-  {3,2}
-};
-
-const struct WhatReminderStageType reminder_then_forever[2] = {
-  {10,2},
-  {5,0}
-};
+#include "reminder_stages.h"
 
 /*********************************************************************************************/
 //                                 What definitions
@@ -24,7 +12,7 @@ const struct WhatType WHAT_NOTHING = {
   "Nothing",
   "Nil",
   3, // 3 stages
-  reminder_then_give_up,
+  r5x2_5x10_30,
   LAST_NO_REMINDER
 };
 
@@ -32,175 +20,175 @@ const struct WhatType WHAT_WORK = {
   "Work",
   "Work",
   2, // 2 stages
-  reminder_then_forever,
+  r15x2_15,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_SLEEP = {
   "Sleep",
   "Sleep",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 3 stages
+  r480_30x4,
   COMMIT_AS_IS
 };
 
 const struct WhatType WHAT_SPORTS = {
   "Sports",
   "Sports",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r60_60x3,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_HYGIENE = {
   "Hygiene",
   "Hygiene",
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
+  2, // 2 stages
+  r30_10x5,
+  COMMIT_AS_IS
 };
 
 const struct WhatType WHAT_DOMESTIC = {
   "Domestic",
   "Domestic Works",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r30_10x5,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_SHOPPING = {
   "Shopping",
   "Shopping",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r30_10x5,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_Purchasing = {
   "Purchasing",
   "Purchasing",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r30_10x5,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_READING = {
   "Reading",
   "Reading",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r30_30,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_STUDYING = {
   "Studying",
   "Studying",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r30_30,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_LEISURE = {
   "Leisure",
   "Leisure",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r180_60x5,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_MEDITATION = {
   "Meditation",
   "Meditation",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r60_60x3,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_PET = {
   "Pet",
   "Pet",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r60_60x3,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_TRAFFIC = {
   "Traffic",
   "Traffic",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r60_60x3,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_HEALTH = {
   "Health Care",
   "Health",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r60_60x3,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_SOCIAL = {
   "Social",
   "Social",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r60_60x3,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_CULTURE = {
   "Culture",
   "Culture",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r60_60x3,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_COOKDINE = {
   "Cook & Dine",
   "Cook Dine",
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
+  2, // 2 stages
+  r30x2_15x4,
+  COMMIT_AS_IS
 };
 
 const struct WhatType WHAT_SMISC = {
   "Serious Misc.",
   "S. Misc.",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r30_30,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_BREAKS = {
   "Breaks",
   "Breaks",
-  3, // 3 stages
-  reminder_then_give_up,
-  LAST_NO_REMINDER
+  2, // 2 stages
+  r5_5x3,
+  COMMIT_AS_IS
 };
 
 const struct WhatType WHAT_MISC = {
   "Misc.",
   "Misc.",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r30_30,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_MEDIA = {
   "Media",
   "Media",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r30_30,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_RELAX = {
   "Relaxing",
   "Relax",
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  r180_60x5,
   LAST_NO_REMINDER
 };
 
@@ -214,15 +202,15 @@ const struct WhatType WHAT_RELAX = {
 */
 
 const struct WhatType* what_list[] = {
-  &WHAT_NOTHING,
-  &WHAT_WORK,
-  &WHAT_SLEEP,
-  &WHAT_SPORTS,
-  &WHAT_HYGIENE,
-  &WHAT_DOMESTIC,
-  &WHAT_SHOPPING,
-  &WHAT_Purchasing,
-  &WHAT_READING,
+  &WHAT_NOTHING, 
+  &WHAT_WORK, 
+  &WHAT_SLEEP, 
+  &WHAT_SPORTS, 
+  &WHAT_HYGIENE, 
+  &WHAT_DOMESTIC, 
+  &WHAT_SHOPPING, 
+  &WHAT_Purchasing, 
+  &WHAT_READING, 
   &WHAT_STUDYING,
   &WHAT_LEISURE,
   &WHAT_MEDITATION,

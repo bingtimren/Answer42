@@ -31,7 +31,6 @@ static uint32_t outbox_size = 0;
 static Window *s_window;
 static GFont s_res_gothic_14;
 static GBitmap *s_res_image_action_wireless;
-static GBitmap *s_res_image_action_clear;
 static GBitmap *s_res_image_action_reset;
 static TextLayer *s_textlayer_1;
 static TextLayer *t_lastsend_time;
@@ -56,7 +55,6 @@ static void initialise_ui(void) {
   
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
   s_res_image_action_wireless = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_WIRELESS);
-  s_res_image_action_clear = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_CLEAR);
   s_res_image_action_reset = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_RESET);
   // s_textlayer_1
   s_textlayer_1 = text_layer_create(GRect(1, 0, 56, 20));
@@ -138,7 +136,6 @@ static void initialise_ui(void) {
   action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
   action_bar_layer_set_background_color(s_actionbarlayer_1, GColorBlack);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_wireless);
-  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_clear);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_reset);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
 }
@@ -160,7 +157,6 @@ static void destroy_ui(void) {
   text_layer_destroy(t_lastack_records);
   action_bar_layer_destroy(s_actionbarlayer_1);
   gbitmap_destroy(s_res_image_action_wireless);
-  gbitmap_destroy(s_res_image_action_clear);
   gbitmap_destroy(s_res_image_action_reset);
 }
 // END AUTO-GENERATED UI CODE

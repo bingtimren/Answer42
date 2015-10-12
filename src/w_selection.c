@@ -18,9 +18,9 @@ static Window *s_window;
 static GFont s_res_gothic_14;
 static GFont s_res_gothic_18;
 static GFont s_res_gothic_18_bold;
+static GBitmap *s_res_image_action_left;
 static GBitmap *s_res_image_action_switch;
 static GBitmap *s_res_image_action_right;
-static GBitmap *s_res_image_action_left;
 static TextLayer *t_07;
 static TextLayer *t_08;
 static TextLayer *t_12;
@@ -53,114 +53,114 @@ static void initialise_ui(void) {
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
   s_res_gothic_18 = fonts_get_system_font(FONT_KEY_GOTHIC_18);
   s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
+  s_res_image_action_left = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_LEFT);
   s_res_image_action_switch = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_SWITCH);
   s_res_image_action_right = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_RIGHT);
-  s_res_image_action_left = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_LEFT);
   // t_07
   t_07 = text_layer_create(GRect(0, 120, 60, 16));
-  text_layer_set_text(t_07, "08");
+  text_layer_set_text(t_07, " ");
   text_layer_set_font(t_07, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_07);
   
   // t_08
   t_08 = text_layer_create(GRect(0, 136, 60, 16));
-  text_layer_set_text(t_08, "09");
+  text_layer_set_text(t_08, " ");
   text_layer_set_font(t_08, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_08);
   
   // t_12
   t_12 = text_layer_create(GRect(62, 52, 60, 16));
-  text_layer_set_text(t_12, "13");
+  text_layer_set_text(t_12, " ");
   text_layer_set_font(t_12, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_12);
   
   // t_11
   t_11 = text_layer_create(GRect(62, 32, 60, 16));
-  text_layer_set_text(t_11, "12");
+  text_layer_set_text(t_11, " ");
   text_layer_set_font(t_11, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_11);
   
   // t_06
   t_06 = text_layer_create(GRect(0, 104, 60, 16));
-  text_layer_set_text(t_06, "07");
+  text_layer_set_text(t_06, " ");
   text_layer_set_font(t_06, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_06);
   
   // t_05
   t_05 = text_layer_create(GRect(0, 84, 60, 16));
-  text_layer_set_text(t_05, "06");
+  text_layer_set_text(t_05, " ");
   text_layer_set_font(t_05, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_05);
   
   // t_09
   t_09 = text_layer_create(GRect(62, 0, 60, 16));
-  text_layer_set_text(t_09, "10");
+  text_layer_set_text(t_09, " ");
   text_layer_set_font(t_09, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_09);
   
   // t_04
   t_04 = text_layer_create(GRect(0, 68, 60, 16));
-  text_layer_set_text(t_04, "05");
+  text_layer_set_text(t_04, " ");
   text_layer_set_font(t_04, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_04);
   
   // t_03
   t_03 = text_layer_create(GRect(0, 52, 60, 16));
-  text_layer_set_text(t_03, "04");
+  text_layer_set_text(t_03, " ");
   text_layer_set_font(t_03, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_03);
   
   // t_02
   t_02 = text_layer_create(GRect(0, 32, 60, 16));
-  text_layer_set_text(t_02, "03");
+  text_layer_set_text(t_02, " ");
   text_layer_set_font(t_02, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_02);
   
   // t_01
   t_01 = text_layer_create(GRect(0, 16, 60, 16));
-  text_layer_set_text(t_01, "01");
+  text_layer_set_text(t_01, " ");
   text_layer_set_font(t_01, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_01);
   
   // t_00
   t_00 = text_layer_create(GRect(0, 0, 60, 16));
-  text_layer_set_text(t_00, "00");
+  text_layer_set_text(t_00, " ");
   text_layer_set_font(t_00, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_00);
   
   // t_13
   t_13 = text_layer_create(GRect(62, 69, 60, 16));
-  text_layer_set_text(t_13, "14");
+  text_layer_set_text(t_13, " ");
   text_layer_set_font(t_13, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_13);
   
   // t_14
   t_14 = text_layer_create(GRect(62, 84, 60, 16));
-  text_layer_set_text(t_14, "15");
+  text_layer_set_text(t_14, " ");
   text_layer_set_font(t_14, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_14);
   
   // t_15
   t_15 = text_layer_create(GRect(62, 104, 60, 16));
-  text_layer_set_text(t_15, "16");
+  text_layer_set_text(t_15, " ");
   text_layer_set_font(t_15, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_15);
   
   // t_16
   t_16 = text_layer_create(GRect(62, 120, 60, 16));
-  text_layer_set_text(t_16, "17");
+  text_layer_set_text(t_16, " ");
   text_layer_set_font(t_16, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_16);
   
   // t_17
   t_17 = text_layer_create(GRect(62, 136, 60, 16));
-  text_layer_set_text(t_17, "18");
+  text_layer_set_text(t_17, " ");
   text_layer_set_font(t_17, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_17);
   
   // t_10
   t_10 = text_layer_create(GRect(62, 16, 60, 16));
-  text_layer_set_text(t_10, "11");
+  text_layer_set_text(t_10, " ");
   text_layer_set_font(t_10, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_10);
   
@@ -219,9 +219,9 @@ static void destroy_ui(void) {
   text_layer_destroy(t_prompt_2);
   text_layer_destroy(t_choice_confirmation);
   action_bar_layer_destroy(s_actionbarlayer_1);
+  gbitmap_destroy(s_res_image_action_left);
   gbitmap_destroy(s_res_image_action_switch);
   gbitmap_destroy(s_res_image_action_right);
-  gbitmap_destroy(s_res_image_action_left);
 }
 // END AUTO-GENERATED UI CODE
 

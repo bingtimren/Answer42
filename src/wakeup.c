@@ -4,7 +4,8 @@
 #include "w_running.h"
 #include "w_selection.h"
 #include "data.h"  
-#include "format.h"  
+#include "format.h" 
+#include "debug.h" 
 
 // schedule registry remembers the schedule id
 // so that if a wakeup for a cookie has already been registered,

@@ -4,6 +4,7 @@
 #include "running_state.h"
 #include "wakeup.h"
 #include "w_running.h"
+#include "debug.h"
 
 static GBitmap *s_res_image_action_up;
 static GBitmap *s_res_image_action_mid;

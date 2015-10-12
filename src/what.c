@@ -1,5 +1,6 @@
 #include <pebble.h>
 #include "what.h"
+#include "debug.h"
 
 /*********************************************************************************************/
 //                                 Reminder stages  

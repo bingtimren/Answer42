@@ -81,7 +81,9 @@ void data_free(const uint8_t i) {
 		data_store_usage -= 1;
 		data_store_save();
 		APP_LOG(APP_LOG_LEVEL_INFO, "Freed slot %u usage=%d", i, data_store_usage);		
-	} else APP_LOG(APP_LOG_LEVEL_ERROR, "Slot %u already freed", i);
+	} else {
+		APP_LOG(APP_LOG_LEVEL_ERROR, "Slot %u already freed", i);
+	}
 };
 
 // clear data store

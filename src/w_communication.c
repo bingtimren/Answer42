@@ -349,7 +349,9 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 	  // boost bluetooth response and set timer to lower back
 	  wakeup_schedule_next_in_seconds(bluetooth_high_durition, BluetoothHighTimeOut);
 	  app_comm_set_sniff_interval(SNIFF_INTERVAL_REDUCED);
-	} else APP_LOG(APP_LOG_LEVEL_INFO, "Sending FAILED");
+	} else {
+		APP_LOG(APP_LOG_LEVEL_INFO, "Sending FAILED");
+	};
 }
 
 void reset_handler_after_confirmation(bool confirmed){

@@ -1,5 +1,6 @@
 #include <pebble.h>
 #include "w_confirmation.h"
+#include "debug.h"
 
 ConfirmationReceived received_callback;
 

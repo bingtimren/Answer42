@@ -14,13 +14,8 @@
                 "type": "png"
             },
             {
-                "file": "images/action_clear.png",
-                "name": "IMAGE_ACTION_CLEAR",
-                "type": "png"
-            },
-            {
-                "file": "images/action_yes.png",
-                "name": "IMAGE_ACTION_YES",
+                "file": "images/action_mid.png",
+                "name": "IMAGE_ACTION_MID",
                 "type": "png"
             },
             {
@@ -29,14 +24,23 @@
                 "type": "png"
             },
             {
+                "file": "images/action_reset.png",
+                "name": "IMAGE_ACTION_RESET",
+                "type": "png"
+            },
+            {
+                "file": "images/action_down.png",
+                "name": "IMAGE_ACTION_DOWN",
+                "type": "png"
+            },
+            {
                 "file": "images/action_right.png",
                 "name": "IMAGE_ACTION_RIGHT",
                 "type": "png"
             },
             {
-                "file": "images/menuimg.png",
-                "menuIcon": true,
-                "name": "IMAGE_42",
+                "file": "images/action_yes.png",
+                "name": "IMAGE_ACTION_YES",
                 "type": "png"
             },
             {
@@ -50,18 +54,14 @@
                 "type": "png"
             },
             {
-                "file": "images/action_reset.png",
-                "name": "IMAGE_ACTION_RESET",
-                "type": "png"
-            },
-            {
                 "file": "images/action_stop.png",
                 "name": "IMAGE_ACTION_STOP",
                 "type": "png"
             },
             {
-                "file": "images/action_down.png",
-                "name": "IMAGE_ACTION_DOWN",
+                "file": "images/menuimg.png",
+                "menuIcon": true,
+                "name": "IMAGE_42",
                 "type": "png"
             },
             {
@@ -70,8 +70,8 @@
                 "type": "png"
             },
             {
-                "file": "images/action_mid.png",
-                "name": "IMAGE_ACTION_MID",
+                "file": "images/action_clear.png",
+                "name": "IMAGE_ACTION_CLEAR",
                 "type": "png"
             }
         ]

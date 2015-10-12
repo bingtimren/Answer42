@@ -62,7 +62,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   
   // t_lastsend_time
-  t_lastsend_time = text_layer_create(GRect(35, 20, 83, 20));
+  t_lastsend_time = text_layer_create(GRect(36, 20, 83, 20));
   text_layer_set_text(t_lastsend_time, " ");
   text_layer_set_font(t_lastsend_time, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_lastsend_time);
@@ -85,7 +85,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
   // t_ack_time
-  t_ack_time = text_layer_create(GRect(35, 80, 83, 20));
+  t_ack_time = text_layer_create(GRect(36, 80, 83, 20));
   text_layer_set_text(t_ack_time, " ");
   text_layer_set_font(t_ack_time, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_ack_time);
@@ -120,7 +120,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_6);
   
   // s_textlayer_7
-  s_textlayer_7 = text_layer_create(GRect(1, 80, 38, 20));
+  s_textlayer_7 = text_layer_create(GRect(1, 80, 35, 20));
   text_layer_set_text(s_textlayer_7, "Time");
   text_layer_set_font(s_textlayer_7, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_7);

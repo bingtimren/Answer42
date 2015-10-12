@@ -52,14 +52,14 @@ time_t running_next_reminder_time(time_t start) {
 // change reminder stage to given index, set running state stage, set reminder stage pointer (so easier to get parameters)
 // then kick start the first repeat
 void running_state_kickoff_stage(uint8_t stage_idx) {
-  APP_LOG(APP_LOG_LEVEL_INFO, "stage index setting to %d", stage_idx);
+  APP_LOG(APP_LOG_LEVEL_INFO, "STAGE <= %d", stage_idx);
   running_state_current.stage_idx = stage_idx;
   if (stage_idx >= (*running_state_what).number_of_stages) {
+		// this NULL indicates to caller this is the end of stage
     running_state_reminder_stage = NULL;
     APP_LOG(APP_LOG_LEVEL_INFO, "out of stages");
     return;
   }
-
   // when index updated, convenience pointer must also be updated
   running_state_reminder_stage = (*running_state_what).stages + stage_idx;
   APP_LOG(APP_LOG_LEVEL_INFO, "stage parameters to %d,%d", (*running_state_reminder_stage).length,(*running_state_reminder_stage).repeats);
@@ -82,6 +82,9 @@ void running_state_kickoff_stage(uint8_t stage_idx) {
 // 3. update start / target time
 // 4. kick off stage 0
 void running_state_kickoff(int whats_idx) {
+	APP_LOG(APP_LOG_LEVEL_INFO, "WHAT_IDX <= %d", whats_idx);
+	// cancel reminder for old session
+	wakeup_cancel_by_cookie(RunningStateReminder);
   running_state_current.whats_running_idx = whats_idx;
   running_state_what = what_list[whats_idx];
   // set start time 
@@ -89,6 +92,7 @@ void running_state_kickoff(int whats_idx) {
   // kick off stage 0, in which will also update target time
   running_state_kickoff_stage(0);
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
+  sync_w_running();
 };
 
 // load the running state from persistent storage of the phone. if not found, kick off the first one (index 0), which should
@@ -109,6 +113,10 @@ void running_state_load () {
 
 // kick off start a repeat
 void running_state_kickoff_repeat() {
+	if (running_state_reminder_stage == NULL) {
+		APP_LOG(APP_LOG_LEVEL_ERROR, "No running stage, should not be here...");
+		return;
+	};
   APP_LOG(APP_LOG_LEVEL_INFO, "stage %d, repeats remaining %d, kick off repeat", running_state_current.stage_idx, running_state_current.remaining_repeats);
   if ((*running_state_reminder_stage).repeats == 0) {
     // indicates repeating forever, only set next reminder
@@ -121,41 +129,47 @@ void running_state_kickoff_repeat() {
     wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length, RunningStateReminder);
     return;
   };
-  // try to move to next reminding stage
+  // exhausted repeats, now try to move to next reminding stage
+  APP_LOG(APP_LOG_LEVEL_INFO, "Exhausted repeats, move to next stage");
   running_state_kickoff_stage(running_state_current.stage_idx + 1);
-  // if out of stages, time to carry out end-of-stages action
-  if (running_state_reminder_stage == NULL) {
-    APP_LOG(APP_LOG_LEVEL_INFO, "run out of stages, time to commit end-of-stages action %d", 
-            (*running_state_what).termination_action);
-  }
+  // here may run out of stages, but it's caller who shall check
+};
+
+void running_state_commit() {
+		// first save current session
+		APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... data store usage = %d", data_store_usage_count());
+		if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time) / 60 , running_state_current.whats_running_idx)){
+			APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
+		};
+		#ifdef DEBUG_SAVE_DEBUG_RECORDS
+			// write random records to test batch sending function
+			while (data_store_usage_count() < DATA_STORE_SIZE) {
+				if (! data_log_in(running_state_current.start_time - data_store_usage_count()*600*1000, data_store_usage_count() , data_store_usage_count()%WHAT_LIST_LENGTH)){
+					APP_LOG(APP_LOG_LEVEL_ERROR, "Saving test running state failed");
+				};
+			};	  
+		#endif
+		// kick-off session NOTHING before entering selection
+		running_state_kickoff(0);
+		running_state_save();
 };
 
 // handling wakeup & stage changes
 void running_reminder_handler() {
   running_vibe();
-  APP_LOG(APP_LOG_LEVEL_INFO, "woke up, stage %d, repeats remaining %d", running_state_current.stage_idx, running_state_current.remaining_repeats);
-  if ((*running_state_reminder_stage).repeats == 0) {
-    // indicates repeating forever, only set next reminder
-    APP_LOG(APP_LOG_LEVEL_INFO, "forever repeating...");
-    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length, RunningStateReminder);
-    return;
-  };
-  // check if there is still remaining repeat
-  if (running_state_current.remaining_repeats > 0) {
-    running_state_current.remaining_repeats -= 1;
-    wakeup_schedule_next_in_minutes((*running_state_reminder_stage).length, RunningStateReminder);
-    running_state_save();    
-    return;
-  };
-  // exhausted repeats, now try to move to next reminding stage
-  APP_LOG(APP_LOG_LEVEL_INFO, "Exhausted repeats, move to next stage");
-  running_state_kickoff_stage(running_state_current.stage_idx + 1);
+  // move to next repeat
+	running_state_kickoff_repeat();
   // if out of stages, time to carry out end-of-stages action
   if (running_state_reminder_stage == NULL) {
     APP_LOG(APP_LOG_LEVEL_INFO, "run out of stages, time to commit end-of-stages action %d", 
             (*running_state_what).termination_action);
+    switch ((*running_state_what).termination_action) {
+			case LAST_NO_REMINDER: break; // no more reminders, no change to anything
+			case COMMIT_AS_IS:
+				// commit as is then change to nothing
+				running_state_commit(); break;
+		};
   }
   // only preserver running state in the end
   running_state_save();
 }
-

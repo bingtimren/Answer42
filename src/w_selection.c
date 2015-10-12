@@ -251,9 +251,6 @@ static void handle_window_unload(Window* window) {
   gbitmap_destroy(s_res_image_action_down);
   gbitmap_destroy(s_res_image_action_yes);
   gbitmap_destroy(s_res_image_action_no);
-  
-  APP_LOG(APP_LOG_LEVEL_INFO, "Unloading window SELECTION");
-  wakeup_cancel_by_cookie(SelectionTimeOut);
 }
 
 static void show_all_choices();
@@ -380,7 +377,6 @@ static void select_line(uint8_t l) {
 // up button
 static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
   // set selection time out - remove previous one if needed
-  wakeup_schedule_next_in_minutes(indecision_time, SelectionTimeOut);
   switch (state) {
     case INIT: select_half(0); break;
     case HALF_SET: select_section(0); break;
@@ -396,8 +392,6 @@ static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
 
 // middle button
 static void middle_button_handler(ClickRecognizerRef recognizer, void *context) {
-  // set selection time out - remove previous one if needed
-  wakeup_schedule_next_in_minutes(indecision_time, SelectionTimeOut);
   switch (state) {
     case INIT: turnpage(); break;
     case HALF_SET: select_section(1); break;
@@ -409,8 +403,6 @@ static void middle_button_handler(ClickRecognizerRef recognizer, void *context) 
 static void my_init();
 // down button
 static void down_button_handler(ClickRecognizerRef recognizer, void *context) {
-  // set selection time out - remove previous one if needed
-  wakeup_schedule_next_in_minutes(indecision_time, SelectionTimeOut);
   switch (state) {
     case INIT: select_half(1); break;
     case HALF_SET: select_section(2); break;
@@ -430,7 +422,6 @@ void w_selection_click_config_provider(void *context) {
 static void register_tarray();
 
 static void my_init() {
-  wakeup_schedule_next_in_minutes(indecision_time, SelectionTimeOut);
   register_tarray();
   page = 0;
   hide_prompt_choice();

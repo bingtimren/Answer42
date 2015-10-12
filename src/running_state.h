@@ -31,3 +31,5 @@ void running_reminder_handler();
 // consistently maintained;
 extern const struct WhatType *running_state_what;
 extern const struct WhatReminderStageType *running_state_reminder_stage;
+
+void running_state_commit();

@@ -188,49 +188,22 @@ static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed
   sync_lapse_remain();
 };
 
-// up click handler - increase time
-static void time_extension_handler(ClickRecognizerRef recognizer, void *context) {
-  if (time(NULL) > running_state_current.target_time) { 
-    running_state_current.target_time = time(NULL) + ((*running_state_what).manual_extension_length);
-    running_state_current.stage_idx = 0;
-  } else {
-    running_state_current.target_time = running_state_current.target_time + ((*running_state_what).manual_extension_length);
-  }
-  running_state_save();
-  sync_w_running();
-}
-
 void what_finish_handler_after_confirmation(bool confirmed){
 	if (confirmed) {
-		// first save current session
-		APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... data store usage = %d", data_store_usage_count());
-		if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time) / 60 , running_state_current.whats_running_idx)){
-			APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
-		};
-		#ifdef DEBUG_SAVE_DEBUG_RECORDS
-			// write random records to test batch sending function
-			while (data_store_usage_count() < DATA_STORE_SIZE) {
-				if (! data_log_in(running_state_current.start_time - data_store_usage_count()*600*1000, data_store_usage_count() , data_store_usage_count()%WHAT_LIST_LENGTH)){
-					APP_LOG(APP_LOG_LEVEL_ERROR, "Saving test running state failed");
-				};
-			};	  
-		#endif
-		// kick-off session NOTHING before entering selection
-		running_state_kickoff(0);
-		sync_w_running();
+		running_state_commit();
+		// then pop-up selection window
+		show_w_selection();		
 	};
-	// then pop-up selection window
-	show_w_selection();
 };
 
 // down click handler - finish current what
 static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
 	sync_w_running();
 	if (running_state_current.whats_running_idx == 0) { // nothing, no need to commit, just bring up selection window 
-		what_finish_handler_after_confirmation(false);
+		show_w_selection();
 	} else {
 		// bring up confirmation window
-		confirmation_ask("Log session?", *what_finish_handler_after_confirmation);
+		confirmation_ask("Log session?", &what_finish_handler_after_confirmation);
 	};
 }
 
@@ -239,11 +212,27 @@ static void call_communication_handler(ClickRecognizerRef recognizer, void *cont
   show_w_communication();
 }
 
+void what_discard_handler_after_confirmation(bool confirmed){
+	if (confirmed) {
+		running_state_kickoff(0);
+	};
+};
+
+// down click handler - finish current what
+static void what_discard_handler(ClickRecognizerRef recognizer, void *context) {
+	if (running_state_current.whats_running_idx != 0) { 
+		confirmation_ask("Discard this?", &what_discard_handler_after_confirmation);
+	};
+}
+
+
+
+
 // subscribe click events
 void w_running_click_config_provider(void *context) {
-  window_single_click_subscribe(BUTTON_ID_UP, *time_extension_handler);
-  window_single_click_subscribe(BUTTON_ID_DOWN, *what_finish_handler);
-  window_single_click_subscribe(BUTTON_ID_SELECT, *call_communication_handler);
+  window_single_click_subscribe(BUTTON_ID_UP, &what_discard_handler);	
+  window_single_click_subscribe(BUTTON_ID_DOWN, &what_finish_handler);
+  window_single_click_subscribe(BUTTON_ID_SELECT, &call_communication_handler);
 };
 
 void running_vibe() {
@@ -257,5 +246,5 @@ static void my_init() {
   // register tick handler
   tick_timer_service_subscribe(SECOND_UNIT, &w_running_tick_handler);
   // up click for time extension
-  window_set_click_config_provider(s_window, *w_running_click_config_provider);
+  window_set_click_config_provider(s_window, &w_running_click_config_provider);
 }

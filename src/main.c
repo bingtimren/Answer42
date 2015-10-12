@@ -12,9 +12,9 @@ static void init(void) {
   what_initiate();
   // initialize wakeup service - subscribe
   wakeup_init();
+  show_w_running();
   // load running states
   running_state_load();
-  show_w_running();
   sync_w_running();
 }
 

@@ -10,6 +10,11 @@ const struct WhatReminderStageType reminder_then_give_up[3] = {
   {3,2}
 };
 
+const struct WhatReminderStageType reminder_then_forever[2] = {
+  {10,2},
+  {5,0}
+};
+
 /*********************************************************************************************/
 //                                 What definitions
 
@@ -17,7 +22,6 @@ const struct WhatReminderStageType reminder_then_give_up[3] = {
 const struct WhatType WHAT_NOTHING = {
   "Nothing",
   "Nil",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -26,25 +30,22 @@ const struct WhatType WHAT_NOTHING = {
 const struct WhatType WHAT_WORK = {
   "Work",
   "Work",
-  5, // no manual extension
-  3, // 3 stages
-  reminder_then_give_up,
+  2, // 2 stages
+  reminder_then_forever,
   LAST_NO_REMINDER
 };
 
 const struct WhatType WHAT_SLEEP = {
   "Sleep",
   "Sleep",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
-  LAST_NO_REMINDER
+  COMMIT_AS_IS
 };
 
 const struct WhatType WHAT_SPORTS = {
   "Sports",
   "Sports",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -53,7 +54,6 @@ const struct WhatType WHAT_SPORTS = {
 const struct WhatType WHAT_HYGIENE = {
   "Hygiene",
   "Hygiene",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -62,7 +62,6 @@ const struct WhatType WHAT_HYGIENE = {
 const struct WhatType WHAT_DOMESTIC = {
   "Domestic",
   "Domestic Works",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -71,7 +70,6 @@ const struct WhatType WHAT_DOMESTIC = {
 const struct WhatType WHAT_SHOPPING = {
   "Shopping",
   "Shopping",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -80,7 +78,6 @@ const struct WhatType WHAT_SHOPPING = {
 const struct WhatType WHAT_Purchasing = {
   "Purchasing",
   "Purchasing",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -89,7 +86,6 @@ const struct WhatType WHAT_Purchasing = {
 const struct WhatType WHAT_READING = {
   "Reading",
   "Reading",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -98,7 +94,6 @@ const struct WhatType WHAT_READING = {
 const struct WhatType WHAT_STUDYING = {
   "Studying",
   "Studying",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -107,7 +102,6 @@ const struct WhatType WHAT_STUDYING = {
 const struct WhatType WHAT_LEISURE = {
   "Leisure",
   "Leisure",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -116,7 +110,6 @@ const struct WhatType WHAT_LEISURE = {
 const struct WhatType WHAT_MEDITATION = {
   "Meditation",
   "Meditation",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -125,7 +118,6 @@ const struct WhatType WHAT_MEDITATION = {
 const struct WhatType WHAT_PET = {
   "Pet",
   "Pet",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -134,7 +126,6 @@ const struct WhatType WHAT_PET = {
 const struct WhatType WHAT_TRAFFIC = {
   "Traffic",
   "Traffic",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -143,7 +134,6 @@ const struct WhatType WHAT_TRAFFIC = {
 const struct WhatType WHAT_HEALTH = {
   "Health Care",
   "Health",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -152,7 +142,6 @@ const struct WhatType WHAT_HEALTH = {
 const struct WhatType WHAT_SOCIAL = {
   "Social",
   "Social",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -161,7 +150,6 @@ const struct WhatType WHAT_SOCIAL = {
 const struct WhatType WHAT_CULTURE = {
   "Culture",
   "Culture",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -170,7 +158,6 @@ const struct WhatType WHAT_CULTURE = {
 const struct WhatType WHAT_COOKDINE = {
   "Cook & Dine",
   "Cook Dine",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -179,7 +166,6 @@ const struct WhatType WHAT_COOKDINE = {
 const struct WhatType WHAT_SMISC = {
   "Serious Misc.",
   "S. Misc.",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -188,7 +174,6 @@ const struct WhatType WHAT_SMISC = {
 const struct WhatType WHAT_BREAKS = {
   "Breaks",
   "Breaks",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -197,7 +182,6 @@ const struct WhatType WHAT_BREAKS = {
 const struct WhatType WHAT_MISC = {
   "Misc.",
   "Misc.",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -206,7 +190,6 @@ const struct WhatType WHAT_MISC = {
 const struct WhatType WHAT_MEDIA = {
   "Media",
   "Media",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER
@@ -215,7 +198,6 @@ const struct WhatType WHAT_MEDIA = {
 const struct WhatType WHAT_RELAX = {
   "Relaxing",
   "Relax",
-  5, // no manual extension
   3, // 3 stages
   reminder_then_give_up,
   LAST_NO_REMINDER

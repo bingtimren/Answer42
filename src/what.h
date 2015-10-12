@@ -5,8 +5,7 @@
 
 enum WhatTerminationActionType {
   LAST_NO_REMINDER = 1,  // no more reminder, never finish
-  COMMIT_AS_IS = 2,  // commit as the type and length as recorded
-  COMMIT_NOFIN = 3  // commit "Not Finished"
+  COMMIT_AS_IS = 2  // commit as the type and length as recorded
 };  
 
 struct WhatReminderStageType {
@@ -17,8 +16,6 @@ struct WhatReminderStageType {
 struct WhatType {
   char* name;
   char* short_name;
-  // how many minutes to extend when user push "time extension" button, "0" indicates no extension allowed
-  uint16_t manual_extension_length;
   // number of stages
   uint8_t number_of_stages;
   // length in minutes in each stage

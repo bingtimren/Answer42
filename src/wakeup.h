@@ -2,8 +2,7 @@
 
 enum WakeUpCookieType {
   RunningStateReminder = 1,
-  SelectionTimeOut = 2,
-  BluetoothHighTimeOut = 3
+  BluetoothHighTimeOut = 2
 };
 
 void wakeup_init();

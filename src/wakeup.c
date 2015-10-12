@@ -56,7 +56,7 @@ void wakeup_schedule_next_in_seconds(uint16_t seconds_to_now, int32_t cookie ) {
 // if previously registered then cancel
 void wakeup_cancel_by_cookie(int32_t cookie) {
   if (schedule_registry[cookie] > 0) {
-	  APP_LOG(APP_LOG_LEVEL_INFO, "cancel previous scheduled wakeup %ld", cookie);
+	  APP_LOG(APP_LOG_LEVEL_INFO, "cancel previous scheduled wakeup, cookie = %ld", cookie);
 	  wakeup_cancel(schedule_registry[cookie]);
   };	
 };
@@ -76,6 +76,7 @@ void wakeup_schedule_next_target_time(time_t target, int32_t cookie) {
 
 // handling wakeup & stage changes
 void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "Woke-up, cookie %ld", cookie);
   switch (cookie) {
 	  case RunningStateReminder: running_reminder_handler(); break;
 	  case SelectionTimeOut: hide_w_selection(); break;

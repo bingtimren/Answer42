@@ -3,7 +3,14 @@
 #include "what.h"
 #include "running_state.h"
 #include "wakeup.h"
+#include "w_running.h"
 
+static GBitmap *s_res_image_action_up;
+static GBitmap *s_res_image_action_mid;
+static GBitmap *s_res_image_action_down;
+
+static GBitmap *s_res_image_action_yes;
+static GBitmap *s_res_image_action_no;
 
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
@@ -238,6 +245,13 @@ uint8_t index_start;
 
 static void handle_window_unload(Window* window) {
   destroy_ui();
+  // additional destroy of resources
+  gbitmap_destroy(s_res_image_action_up);
+  gbitmap_destroy(s_res_image_action_mid);
+  gbitmap_destroy(s_res_image_action_down);
+  gbitmap_destroy(s_res_image_action_yes);
+  gbitmap_destroy(s_res_image_action_no);
+  
   APP_LOG(APP_LOG_LEVEL_INFO, "Unloading window SELECTION");
   wakeup_cancel_by_cookie(SelectionTimeOut);
 }
@@ -246,7 +260,15 @@ static void show_all_choices();
 static void my_init();
 
 void show_w_selection(void) {
+  APP_LOG(APP_LOG_LEVEL_INFO," #### showing window SELECTION");
   initialise_ui();
+  // load addition action icons
+  s_res_image_action_up = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_UP);
+  s_res_image_action_mid = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_MID);
+  s_res_image_action_down = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_DOWN);  
+  s_res_image_action_yes = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_YES);
+  s_res_image_action_no = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_NO);
+
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
   });
@@ -304,6 +326,10 @@ static void select_half(uint8_t h) {
   }
   state = HALF_SET;
   hide_other_whats(0,18,half_starts,half_starts+9);
+  // set action icon to up/mid/down
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_up);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_mid);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_down);  
 }
 
 // select section 0,1,2
@@ -327,6 +353,9 @@ static void show_prompt_choice() {
   text_layer_set_text(t_prompt_1,"Confirm your");
   text_layer_set_text(t_prompt_2,"Next Activity: ");
   text_layer_set_text(t_choice_confirmation, (*what_list[choice]).name);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_yes);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, NULL);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_no);    
 }
 
 
@@ -356,7 +385,11 @@ static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
     case INIT: select_half(0); break;
     case HALF_SET: select_section(0); break;
     case SECTION_SET: select_line(0); break;
-    case LINE_SET: break;
+    case LINE_SET: 
+		running_state_kickoff(choice);
+		hide_w_selection(); 
+		sync_w_running();
+		break;
   }
 };
 
@@ -405,10 +438,12 @@ static void my_init() {
   state = INIT;
   // click handlers
   window_set_click_config_provider(s_window, *w_selection_click_config_provider);
+  // reset action bar
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_left);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_switch);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_right);  
   show_all_choices(); 
 }
-
-
 
 static void register_tarray() {
   // initialize tarray

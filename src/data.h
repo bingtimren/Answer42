@@ -10,17 +10,16 @@
 /* everything related to storage of records and communication with phone */
 /* pebble persisent storage capability: max value length 256 bytes, all cannot exceed 4K */  
   
-#define DATA_STORE_SIZE 30  
-  
-typedef struct TimeRecord { // together = 8 bytes & aligned
+#define DATA_STORE_SIZE 30
+
+typedef struct TimeRecord { // together = 7 bytes & aligned
   time_t time; // unsigned int = 4 bytes
   uint16_t durition; // 2 bytes
-  uint16_t what_index; // 2 bytes
+  uint8_t what_index; // 1 bytes
 }  __attribute__((__packed__)) TimeRecord;
 
 // the store
 extern struct TimeRecord data_store[DATA_STORE_SIZE];
-
 
 void data_clear();  
   
@@ -36,7 +35,7 @@ void data_store_load ();
 
 void data_store_save ();
 
-bool data_log_in(time_t time, uint16_t durition, uint16_t what_index);
+bool data_log_in(const time_t time, const uint16_t durition, const uint16_t what_index);
 
 uint8_t data_seek_valid(uint8_t start);
 

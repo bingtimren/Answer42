@@ -35,6 +35,7 @@ Pebble.addEventListener('appmessage',
     // obtain number of records
     var numberOfRecords = e.payload["0"];	
 	// the closures
+	// when response is loaded
 	function onload_handler(i, index, localReq) {
 		return function() {
 			ack_count += 1; // one more result known
@@ -51,7 +52,7 @@ Pebble.addEventListener('appmessage',
 			};
 		}; // end of function
 	}; // Immediately Invoked Function Expression	
-	  
+	// when response has error  
 	function onerror_handler(i, index, localReq) {
 		return function() {
 			ack_count += 1; // one more result known
@@ -67,22 +68,28 @@ Pebble.addEventListener('appmessage',
 	// actually start
     console.log('Phone: received message: ' + JSON.stringify(e.payload));
     console.log('Number of records received: ' + numberOfRecords);
-	var tzAdjust = (new Date()).getTimezoneOffset()*60;
-	console.log('Time zone adjustment is ' + tzAdjust);
 	
     for (var i=0; i<numberOfRecords; i++) {
 		// submit google form
 		var req = new XMLHttpRequest();
 		var index = e.payload[i*4+1];
-		var tStamp = new Date(e.payload[i*4+2]*1000 + tzAdjust*1000);
-		var tStampStr = tStamp.getFullYear() + "-" + pad(tStamp.getMonth()) + "-" + pad(tStamp.getDay()) + " " + pad(tStamp.getHours()) + ":"+ pad(tStamp.getMinutes())+" "+days[tStamp.getDay()];
-		var durition = e.payload[i*4+3]
-		var what = e.payload[i*4+4]
-		var summary = "index="+index+" time stamp={"+tStampStr+"} durition="+durition+" what:"+what;
+		var tStamp = new Date(e.payload[i*4+2]*1000);
+		var tDateStr = tStamp.getUTCFullYear() + "." + pad(tStamp.getUTCMonth()+1) + "." + pad(tStamp.getUTCDate()) + " " +days[tStamp.getUTCDay()];
+		var tTimeStr = pad(tStamp.getUTCHours()) + ":"+ pad(tStamp.getUTCMinutes());
+		var durition = e.payload[i*4+3];
+		var what = e.payload[i*4+4];
+		var summary = "index="+index+" time stamp={"+tDateStr+" / "+tTimeStr+"} durition="+durition+" what:"+what;
 		console.log("Before sending, Summary: "+summary);
 		
 		// prepare to submit
-		req.open('GET', 'https://docs.google.com/forms/d/1-MmR1ptkFDktlZ936rJxYi3hsW9CIjLVIDaepOCIc2c/formResponse?ifq&entry.1880139073='+encodeURIComponent(summary)+'&submit=Submit', true);
+		req.open('HEAD', 
+			'https://docs.google.com/forms/d/1gOp9TOxxIoQRsY0rD7eGmJApORie8W-RQGeg2EZQz14/formResponse?ifq'+
+			'&entry.1602682480='+encodeURIComponent(tDateStr)+
+			'&entry.1527113700='+encodeURIComponent(tTimeStr)+
+			'&entry.1936279194='+encodeURIComponent(durition)+
+			'&entry.55169166='+encodeURIComponent(what)+
+			'&submit=Submit', true);
+
 		req.onload = onload_handler(i, index, req);
 		req.onabort = onerror_handler(i, index, req);
 		req.onerror = onerror_handler(i, index, req);	

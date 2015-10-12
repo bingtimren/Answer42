@@ -5,23 +5,27 @@
 #include "running_state.h"
 #include "wakeup.h"
 #include "debug.h"
+#include "w_confirmation.h"
 
   // text buffers
-#ifdef DEBUG_CHECK_MORE
-static char send_time_buf[50];
-#endif
-// for some reason if I use maximum inbox/outbox I can get, after sending the system will just crash, so save some buffer
-#define safety_buffer 70
+static time_t time_now;
+static char send_time_buf[10];
+static char ack_time_buf[10];
 
-static char num_records[4];
+// for some reason if I use maximum inbox/outbox I can get, after sending the system will just crash, so save some buffer
+#define safety_buffer 40
+
+static char onwatch_num_records[4];
+static char sent_num_records[4];
+static char ack_num_records[4];
 
 static bool init_done = false;
 
 static uint32_t inbox_size = 0;
 static uint32_t outbox_size = 0;
-#define outbuffer_safety_gap 20
+
 // seconds to boost bluetooth response
-#define bluetooth_high_durition 5
+#define bluetooth_high_durition 10
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -168,6 +172,7 @@ static void handle_window_unload(Window* window) {
 static void my_init();
 
 void show_w_communication(void) {
+  APP_LOG(APP_LOG_LEVEL_INFO," #### showing window COMMUNICATION");
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
@@ -182,8 +187,20 @@ void hide_w_communication(void) {
 
 /***************************** communication functions *********************************/
 
+
+void w_communication_update_record_num() {
+	snprintf(onwatch_num_records, sizeof(onwatch_num_records), "%d", data_store_usage_count());
+	text_layer_set_text(t_num_records, onwatch_num_records);
+};
+
+
 void messages_inbox_received(DictionaryIterator *iterator, void *context)  {
 	APP_LOG(APP_LOG_LEVEL_INFO,"Message inbox received, size %lu", dict_size(iterator));
+	// first record ack time
+	time(&time_now);
+	strftime(ack_time_buf, sizeof(ack_time_buf), "%H:%M:%S", localtime(&time_now));
+	text_layer_set_text(t_ack_time, ack_time_buf);	
+	
 	Tuple *tuple = dict_read_first(iterator);
 	char* ack_str;
 	while (tuple) {
@@ -194,14 +211,17 @@ void messages_inbox_received(DictionaryIterator *iterator, void *context)  {
 			ack_str = tuple->value->cstring;
 			if (tl > 1) {
 				for (uint8_t i=0; i<(tl-1); i++) {
-					APP_LOG(APP_LOG_LEVEL_INFO, "[%d] idx: %d", i, (uint8_t)(ack_str[i])-1);
+					// APP_LOG(APP_LOG_LEVEL_INFO, "[%d] idx: %d", i, (uint8_t)(ack_str[i])-1);
 					data_free((uint8_t)(ack_str[i])-1);
 				};
 			};
-	      break;
+		snprintf(ack_num_records, sizeof(ack_num_records), "%d", (tl-1));
+		text_layer_set_text(t_lastack_records, ack_num_records);
+	    break;
 	  }
 	  tuple = dict_read_next(iterator);
 	}
+	w_communication_update_record_num();
 }
 
 void messages_inbox_dropped(AppMessageResult reason, void *context) {
@@ -244,11 +264,6 @@ void messages_init() {
   init_done = true;
 };	
 
-void w_communication_update_record_num() {
-	snprintf(num_records, sizeof(num_records), "%d", data_store_usage_count());
-	text_layer_set_text(t_num_records, num_records);
-};
-
 
 
 // to send one batch of records to phone
@@ -260,6 +275,11 @@ void w_communication_update_record_num() {
 // n*4+4 -> what (string)
 
 static void send_communication_handler(ClickRecognizerRef recognizer, void *context) {
+	// first record sending time
+	time(&time_now);
+	strftime(send_time_buf, sizeof(send_time_buf), "%H:%M:%S", localtime(&time_now));
+	text_layer_set_text(t_lastsend_time, send_time_buf);
+	
 	// first check if there is a record
 	uint8_t remaining_records = data_store_usage_count();
 	if (remaining_records == 0) {
@@ -285,17 +305,17 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 			4, // time 4 bytes
 			2, // durition 2 bytes
 			what_list_length_short_name[data_store[idx].what_index]); // what name, and then remove the buffer header as it's already calculated
-		APP_LOG(APP_LOG_LEVEL_INFO, "checking space, if pack record %d buffer size would be %d", (records_packed + 1), buffer_used);
+		// APP_LOG(APP_LOG_LEVEL_INFO, "checking space, if pack record %d buffer size would be %d", (records_packed + 1), buffer_used);
 		if (buffer_used  >= outbox_size) { // header size 7 + 1 byte record number = 8, for key 0
 			break;
 		};
 		time_t time = data_store[idx].time;
 		uint16_t durition = data_store[idx].durition;
 		char* what = what_list[data_store[idx].what_index]->short_name;
-		#ifdef DEBUG_CHECK_MORE
-			strftime(send_time_buf, sizeof(send_time_buf), "%d.%m.%y %H:%M", localtime(&(time)));
-			APP_LOG(APP_LOG_LEVEL_INFO, "packing record %d [%d, time(%u, %s) %d, %s]", records_packed, idx, (unsigned int)time, send_time_buf, durition, what);	
-		#endif
+		// #ifdef DEBUG_CHECK_MORE
+		//	strftime(send_time_buf, sizeof(send_time_buf), "%d.%m.%y %H:%M", localtime(&(time)));
+		//	APP_LOG(APP_LOG_LEVEL_INFO, "packing record %d [%d, time(%u, %s) %d, %s]", records_packed, idx, (unsigned int)time, send_time_buf, durition, what);	
+		// #endif
 	
 		if (dict_write_uint8(dic_iterator,records_packed*4+1,idx) == DICT_OK) {
 			if (dict_write_uint32(dic_iterator, records_packed*4+2, (unsigned int)time) == DICT_OK) {
@@ -326,6 +346,8 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 	};
 	// send
 	APP_LOG(APP_LOG_LEVEL_INFO, "Last write checked OK, sending");
+	snprintf(sent_num_records, sizeof(sent_num_records), "%d", records_packed);
+	text_layer_set_text(t_lastsend_records, sent_num_records);
 	if (app_message_outbox_send() == APP_MSG_OK) {
 	  APP_LOG(APP_LOG_LEVEL_INFO, "Sending OK"); 
 	  // boost bluetooth response and set timer to lower back
@@ -334,9 +356,26 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 	} else APP_LOG(APP_LOG_LEVEL_INFO, "Sending FAILED");
 }
 
+void reset_handler_after_confirmation(bool confirmed){
+	if (confirmed) {
+		// completely reset everything
+		data_clear();
+		running_state_clear();
+		wakeup_state_clear();
+		// and exit everything
+		window_stack_pop_all(false);
+	};
+};
+
+static void reset_handler(ClickRecognizerRef recognizer, void *context) {
+	// complete reset, first bring up confirmation
+	confirmation_ask("RESET! Sure?", *reset_handler_after_confirmation);
+};
+
 // subscribe click events
 void w_communication_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, *send_communication_handler);
+  window_single_click_subscribe(BUTTON_ID_DOWN, *reset_handler);
 };
 
 static void my_init() {

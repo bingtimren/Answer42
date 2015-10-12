@@ -20,3 +20,5 @@ void wakeup_schedule_next_target_time(time_t target, int32_t cookie);
 
 void wakeup_cancel_by_cookie(int32_t cookie);
 
+void wakeup_state_clear();
+

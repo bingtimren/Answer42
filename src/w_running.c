@@ -142,6 +142,7 @@ static void handle_window_unload(Window* window) {
 static void my_init(); // stub, definition at end
 
 void show_w_running(void) {
+	APP_LOG(APP_LOG_LEVEL_INFO," #### showing window Running");
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
@@ -203,16 +204,20 @@ void what_finish_handler_after_confirmation(bool confirmed){
 	if (confirmed) {
 		// first save current session
 		APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... data store usage = %d", data_store_usage_count());
-		if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time) / 60 , running_state_current.stage_idx)){
+		if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time) / 60 , running_state_current.whats_running_idx)){
 			APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
 		};
 		#ifdef DEBUG_SAVE_DEBUG_RECORDS
-		while (data_store_usage_count() < DATA_STORE_SIZE) {
-			if (! data_log_in(running_state_current.start_time - data_store_usage_count()*600*1000, data_store_usage_count() , data_store_usage_count()%WHAT_LIST_LENGTH)){
-				APP_LOG(APP_LOG_LEVEL_ERROR, "Saving test running state failed");
-			};
-		};	  
+			// write random records to test batch sending function
+			while (data_store_usage_count() < DATA_STORE_SIZE) {
+				if (! data_log_in(running_state_current.start_time - data_store_usage_count()*600*1000, data_store_usage_count() , data_store_usage_count()%WHAT_LIST_LENGTH)){
+					APP_LOG(APP_LOG_LEVEL_ERROR, "Saving test running state failed");
+				};
+			};	  
 		#endif
+		// kick-off session NOTHING before entering selection
+		running_state_kickoff(0);
+		sync_w_running();
 	};
 	// then pop-up selection window
 	show_w_selection();
@@ -225,7 +230,7 @@ static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
 		what_finish_handler_after_confirmation(false);
 	} else {
 		// bring up confirmation window
-		confirmation_ask("Log session?", what_finish_handler_after_confirmation);
+		confirmation_ask("Log session?", *what_finish_handler_after_confirmation);
 	};
 }
 

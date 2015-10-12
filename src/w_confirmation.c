@@ -1,10 +1,7 @@
 #include <pebble.h>
 #include "w_confirmation.h"
 
-static char* prompt;
 ConfirmationReceived received_callback;
-
-
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -50,13 +47,27 @@ static void handle_window_unload(Window* window) {
 }
 
 
+
+
+void confirmation_ask(const char* prompt, ConfirmationReceived callback) {
+	received_callback = callback;
+	show_w_confirmation();
+	text_layer_set_text(s_textlayer_1, prompt);
+}
+
+void hide_w_confirmation(void) {
+  window_stack_remove(s_window, false);
+}
+
+
+
 static void yes_handler(ClickRecognizerRef recognizer, void *context) {
-	window_stack_pop(true);
+	hide_w_confirmation();
   received_callback(true);
 }
 
 static void no_handler(ClickRecognizerRef recognizer, void *context) {
-		window_stack_pop(true);
+	hide_w_confirmation();
   received_callback(false);
 }
 
@@ -67,6 +78,7 @@ void w_confirmation_click_config_provider(void *context) {
 };
 
 void show_w_confirmation(void) {
+	APP_LOG(APP_LOG_LEVEL_INFO," #### showing window CONFIRMATION");
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
@@ -75,15 +87,5 @@ void show_w_confirmation(void) {
   window_set_click_config_provider(s_window, *w_confirmation_click_config_provider);
 }
 
-
-void confirmation_ask(const char* prompt, ConfirmationReceived callback) {
-	received_callback = callback;
-	show_w_confirmation();
-	text_layer_set_text(s_textlayer_1, prompt);
-}
-
-void hide_w_confirmation(void) {
-  window_stack_remove(s_window, true);
-}
 
 

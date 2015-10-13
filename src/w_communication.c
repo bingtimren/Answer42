@@ -24,8 +24,8 @@ static bool init_done = false;
 static uint32_t inbox_size = 0;
 static uint32_t outbox_size = 0;
 
-// seconds to boost bluetooth response
-#define bluetooth_high_durition 10
+// minutes to boost bluetooth response
+#define bluetooth_high_durition 2
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -347,7 +347,7 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 	if (app_message_outbox_send() == APP_MSG_OK) {
 	  APP_LOG(APP_LOG_LEVEL_INFO, "Sending OK"); 
 	  // boost bluetooth response and set timer to lower back
-	  wakeup_schedule_next_in_seconds(bluetooth_high_durition, BluetoothHighTimeOut);
+	  wakeup_schedule_next_in_minutes(bluetooth_high_durition, BluetoothHighTimeOut);
 	  app_comm_set_sniff_interval(SNIFF_INTERVAL_REDUCED);
 	} else {
 		APP_LOG(APP_LOG_LEVEL_INFO, "Sending FAILED");
@@ -373,7 +373,7 @@ static void reset_handler(ClickRecognizerRef recognizer, void *context) {
 // subscribe click events
 void w_communication_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, *send_communication_handler);
-  window_single_click_subscribe(BUTTON_ID_DOWN, *reset_handler);
+  window_long_click_subscribe(BUTTON_ID_DOWN, 0, *reset_handler, NULL);
 };
 
 static void my_init() {

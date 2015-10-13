@@ -198,7 +198,6 @@ void what_finish_handler_after_confirmation(bool confirmed){
 
 // down click handler - finish current what
 static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
-	sync_w_running();
 	if (running_state_current.whats_running_idx == 0) { // nothing, no need to commit, just bring up selection window 
 		show_w_selection();
 	} else {
@@ -225,13 +224,10 @@ static void what_discard_handler(ClickRecognizerRef recognizer, void *context) {
 	};
 }
 
-
-
-
 // subscribe click events
 void w_running_click_config_provider(void *context) {
-  window_single_click_subscribe(BUTTON_ID_UP, &what_discard_handler);	
-  window_single_click_subscribe(BUTTON_ID_DOWN, &what_finish_handler);
+  window_long_click_subscribe(BUTTON_ID_UP, 0, &what_discard_handler, NULL);	
+  window_long_click_subscribe(BUTTON_ID_DOWN, 0, &what_finish_handler, NULL);
   window_single_click_subscribe(BUTTON_ID_SELECT, &call_communication_handler);
 };
 
@@ -243,6 +239,7 @@ void running_vibe() {
 
 // register handlers
 static void my_init() {
+	APP_LOG(APP_LOG_LEVEL_INFO,"w_running - my_init");
   // register tick handler
   tick_timer_service_subscribe(SECOND_UNIT, &w_running_tick_handler);
   // up click for time extension

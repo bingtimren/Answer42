@@ -92,23 +92,25 @@ void running_state_kickoff(int whats_idx) {
   // kick off stage 0, in which will also update target time
   running_state_kickoff_stage(0);
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());
+  running_state_save();  
   sync_w_running();
 };
 
 // load the running state from persistent storage of the phone. if not found, kick off the first one (index 0), which should
 // be NOTHING
 void running_state_load () {
+	APP_LOG(APP_LOG_LEVEL_INFO,"Loadding running state...");
   if (persist_exists(KEY_CURRENT_RUNNING_STATE)) {
     persist_read_data(KEY_CURRENT_RUNNING_STATE, &running_state_current, sizeof(running_state_current));
     // state maintain
     running_state_what = what_list[running_state_current.whats_running_idx];
     running_state_reminder_stage = (*running_state_what).stages + running_state_current.stage_idx;
     APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] loaded ", running_state_summary());
+    sync_w_running();
     return;
   };
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state not found in store, kicking off NIL");
   running_state_kickoff(0);
-  running_state_save();
 };
 
 // kick off start a repeat
@@ -151,7 +153,6 @@ void running_state_commit() {
 		#endif
 		// kick-off session NOTHING before entering selection
 		running_state_kickoff(0);
-		running_state_save();
 };
 
 // handling wakeup & stage changes

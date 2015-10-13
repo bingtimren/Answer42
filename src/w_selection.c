@@ -385,7 +385,6 @@ static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
     case LINE_SET: 
 		running_state_kickoff(choice);
 		hide_w_selection(); 
-		sync_w_running();
 		break;
   }
 };

@@ -11,7 +11,7 @@
 // so that if a wakeup for a cookie has already been registered,
 // cancel that event first before registering the new wakeup
 // so basically - one wakeup one cookie
-WakeupId schedule_registry[4];
+WakeupId schedule_registry[WAKEUP_COOKIE_NUMOF];
 
 // load wakeup registry from persistent storage
 void wakeup_state_load () {
@@ -21,7 +21,7 @@ void wakeup_state_load () {
     return;
   };
   APP_LOG(APP_LOG_LEVEL_INFO, "No wakeup registry found, initiate");
-  for (int i=0; i<10; i++) {
+  for (int i=0; i<WAKEUP_COOKIE_NUMOF; i++) {
 	  schedule_registry[i] = -1;
   };
 };
@@ -50,10 +50,6 @@ void wakeup_schedule_next_in_minutes(uint16_t minutes_to_now, int32_t cookie ) {
   return wakeup_schedule_next_target_time(time(NULL) + SECONDS_PER_MIN * minutes_to_now, cookie);
 }
 
-void wakeup_schedule_next_in_seconds(uint16_t seconds_to_now, int32_t cookie ) {
-  return wakeup_schedule_next_target_time(time(NULL) + seconds_to_now, cookie);
-}
-
 // if previously registered then cancel
 void wakeup_cancel_by_cookie(int32_t cookie) {
   if (schedule_registry[cookie] > 0) {
@@ -68,10 +64,10 @@ void wakeup_schedule_next_target_time(time_t target, int32_t cookie) {
   wakeup_cancel_by_cookie(cookie);
   schedule_registry[cookie] = wakeup_schedule(target, cookie, false);  
   while (schedule_registry[cookie] == E_RANGE) {
-	  APP_LOG(APP_LOG_LEVEL_INFO, "Delaying wakeup to avoid conflict");
-	  target += 10;
+	  // APP_LOG(APP_LOG_LEVEL_INFO, "Delaying wakeup to avoid conflict");
+	  target += 30;
 	  schedule_registry[cookie] = wakeup_schedule(target, cookie, false);  
-  };
+  }; 
   #ifdef APP_LOG
 	  char buffer[20];
 	  fmt_time_24h(buffer, sizeof(buffer), &(target));

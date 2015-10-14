@@ -140,7 +140,8 @@ void running_state_kickoff_repeat() {
 void running_state_commit() {
 		// first save current session
 		APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... data store usage = %d", data_store_usage_count());
-		if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time) / 60 , running_state_current.whats_running_idx)){
+		// durition - +30 to round up
+		if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time + 30) / 60 , running_state_current.whats_running_idx)){
 			APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
 		};
 		#ifdef DEBUG_SAVE_DEBUG_RECORDS

@@ -22,6 +22,7 @@ static GBitmap *s_res_image_action_wireless;
 static GBitmap *s_res_image_action_stop;
 static GFont s_res_gothic_18_bold;
 static GFont s_res_gothic_18;
+static GFont s_res_gothic_14;
 static ActionBarLayer *s_actionbarlayer_1;
 static TextLayer *t_what;
 static TextLayer *s_textlayer_1;
@@ -32,6 +33,7 @@ static TextLayer *t_elapsed_time;
 static TextLayer *t_start_time;
 static TextLayer *t_target_time;
 static TextLayer *t_remain_over;
+static TextLayer *t_warning;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -44,6 +46,7 @@ static void initialise_ui(void) {
   s_res_image_action_stop = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_STOP);
   s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
   s_res_gothic_18 = fonts_get_system_font(FONT_KEY_GOTHIC_18);
+  s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
   // s_actionbarlayer_1
   s_actionbarlayer_1 = action_bar_layer_create();
   action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
@@ -55,7 +58,7 @@ static void initialise_ui(void) {
   
   // t_what
   t_what = text_layer_create(GRect(0, 3, 124, 21));
-  text_layer_set_text(t_what, " ");
+  text_layer_set_text(t_what, "Nothing ");
   text_layer_set_text_alignment(t_what, GTextAlignmentCenter);
   text_layer_set_font(t_what, s_res_gothic_18_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_what);
@@ -89,7 +92,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_remaining_time);
   
   // t_elapsed_time
-  t_elapsed_time = text_layer_create(GRect(60, 90, 60, 20));
+  t_elapsed_time = text_layer_create(GRect(61, 90, 60, 20));
   text_layer_set_text(t_elapsed_time, " ");
   text_layer_set_font(t_elapsed_time, s_res_gothic_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_elapsed_time);
@@ -111,10 +114,18 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_target_time);
   
   // t_remain_over
-  t_remain_over = text_layer_create(GRect(4, 110, 53, 20));
+  t_remain_over = text_layer_create(GRect(5, 110, 53, 20));
   text_layer_set_text(t_remain_over, "Remain:");
   text_layer_set_font(t_remain_over, s_res_gothic_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_remain_over);
+  
+  // t_warning
+  t_warning = text_layer_create(GRect(0, 133, 123, 18));
+  text_layer_set_background_color(t_warning, GColorClear);
+  text_layer_set_text(t_warning, " ");
+  text_layer_set_text_alignment(t_warning, GTextAlignmentCenter);
+  text_layer_set_font(t_warning, s_res_gothic_14);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_warning);
 }
 
 static void destroy_ui(void) {
@@ -129,6 +140,7 @@ static void destroy_ui(void) {
   text_layer_destroy(t_start_time);
   text_layer_destroy(t_target_time);
   text_layer_destroy(t_remain_over);
+  text_layer_destroy(t_warning);
   gbitmap_destroy(s_res_image_action_clear);
   gbitmap_destroy(s_res_image_action_wireless);
   gbitmap_destroy(s_res_image_action_stop);

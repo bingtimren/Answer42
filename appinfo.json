@@ -9,18 +9,8 @@
     "resources": {
         "media": [
             {
-                "file": "images/action_switch.png",
-                "name": "IMAGE_ACTION_SWITCH",
-                "type": "png"
-            },
-            {
-                "file": "images/action_mid.png",
-                "name": "IMAGE_ACTION_MID",
-                "type": "png"
-            },
-            {
-                "file": "images/action_up.png",
-                "name": "IMAGE_ACTION_UP",
+                "file": "images/action_right.png",
+                "name": "IMAGE_ACTION_RIGHT",
                 "type": "png"
             },
             {
@@ -29,33 +19,8 @@
                 "type": "png"
             },
             {
-                "file": "images/action_down.png",
-                "name": "IMAGE_ACTION_DOWN",
-                "type": "png"
-            },
-            {
-                "file": "images/action_right.png",
-                "name": "IMAGE_ACTION_RIGHT",
-                "type": "png"
-            },
-            {
-                "file": "images/action_yes.png",
-                "name": "IMAGE_ACTION_YES",
-                "type": "png"
-            },
-            {
-                "file": "images/action_no.png",
-                "name": "IMAGE_ACTION_NO",
-                "type": "png"
-            },
-            {
-                "file": "images/wireless.png",
-                "name": "IMAGE_ACTION_WIRELESS",
-                "type": "png"
-            },
-            {
-                "file": "images/action_stop.png",
-                "name": "IMAGE_ACTION_STOP",
+                "file": "images/action_up.png",
+                "name": "IMAGE_ACTION_UP",
                 "type": "png"
             },
             {
@@ -65,13 +30,48 @@
                 "type": "png"
             },
             {
-                "file": "images/action_left.png",
-                "name": "IMAGE_ACTION_LEFT",
+                "file": "images/action_yes.png",
+                "name": "IMAGE_ACTION_YES",
+                "type": "png"
+            },
+            {
+                "file": "images/action_down.png",
+                "name": "IMAGE_ACTION_DOWN",
+                "type": "png"
+            },
+            {
+                "file": "images/wireless.png",
+                "name": "IMAGE_ACTION_WIRELESS",
                 "type": "png"
             },
             {
                 "file": "images/action_clear.png",
                 "name": "IMAGE_ACTION_CLEAR",
+                "type": "png"
+            },
+            {
+                "file": "images/action_switch.png",
+                "name": "IMAGE_ACTION_SWITCH",
+                "type": "png"
+            },
+            {
+                "file": "images/action_left.png",
+                "name": "IMAGE_ACTION_LEFT",
+                "type": "png"
+            },
+            {
+                "file": "images/action_no.png",
+                "name": "IMAGE_ACTION_NO",
+                "type": "png"
+            },
+            {
+                "file": "images/action_mid.png",
+                "name": "IMAGE_ACTION_MID",
+                "type": "png"
+            },
+            {
+                "file": "images/action_stop.png",
+                "name": "IMAGE_ACTION_STOP",
                 "type": "png"
             }
         ]

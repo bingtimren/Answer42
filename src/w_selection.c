@@ -377,6 +377,7 @@ static void select_line(uint8_t l) {
 
 // up button
 static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
+  reset_activity_timer();
   // set selection time out - remove previous one if needed
   switch (state) {
     case INIT: select_half(0); break;
@@ -392,6 +393,7 @@ static void up_button_handler(ClickRecognizerRef recognizer, void *context) {
 
 // middle button
 static void middle_button_handler(ClickRecognizerRef recognizer, void *context) {
+  reset_activity_timer();
   switch (state) {
     case INIT: turnpage(); break;
     case HALF_SET: select_section(1); break;
@@ -403,6 +405,7 @@ static void middle_button_handler(ClickRecognizerRef recognizer, void *context) 
 static void my_init();
 // down button
 static void down_button_handler(ClickRecognizerRef recognizer, void *context) {
+  reset_activity_timer();
   switch (state) {
     case INIT: select_half(1); break;
     case HALF_SET: select_section(2); break;

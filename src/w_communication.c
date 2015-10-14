@@ -271,6 +271,7 @@ void messages_init() {
 // n*4+4 -> what (string)
 
 static void send_communication_handler(ClickRecognizerRef recognizer, void *context) {
+	reset_activity_timer();
 	// first record sending time
 	time(&time_now);
 	strftime(send_time_buf, sizeof(send_time_buf), "%H:%M:%S", localtime(&time_now));
@@ -366,6 +367,7 @@ void reset_handler_after_confirmation(bool confirmed){
 };
 
 static void reset_handler(ClickRecognizerRef recognizer, void *context) {
+	reset_activity_timer();
 	// complete reset, first bring up confirmation
 	confirmation_ask("RESET! Sure?", *reset_handler_after_confirmation);
 };

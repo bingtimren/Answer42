@@ -2,10 +2,18 @@
 
 #define WAKEUP_COOKIE_NUMOF 2
 
+
+#define INACTIVITY_TIME_OUT 10
+
 enum WakeUpCookieType {
   RunningStateReminder = 0,
   BluetoothHighTimeOut = 1
 };
+
+void reset_activity_timer();
+
+bool inactivity_timeout();
+
 
 void wakeup_init();
 

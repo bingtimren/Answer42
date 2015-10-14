@@ -13,6 +13,16 @@
 // so basically - one wakeup one cookie
 WakeupId schedule_registry[WAKEUP_COOKIE_NUMOF];
 
+static time_t last_button_activity;
+
+void reset_activity_timer() {
+	time(&last_button_activity);
+};
+
+bool inactivity_timeout() {
+	return ((time(NULL) - last_button_activity) > INACTIVITY_TIME_OUT);
+};
+
 // load wakeup registry from persistent storage
 void wakeup_state_load () {
   if (persist_exists(KEY_WAKEUP_REGISTRY)) {

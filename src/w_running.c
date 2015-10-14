@@ -185,6 +185,12 @@ void sync_w_running(void) {
 
 // handle ticks - update running & remaining time
 static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
+	// if time-out, return to running window
+	if ((window_stack_get_top_window() != s_window) && inactivity_timeout()) {
+			APP_LOG(APP_LOG_LEVEL_INFO, "Inactive, return to window running...");
+			while (window_stack_get_top_window() != s_window) 
+				window_stack_pop(true);
+			};
   sync_lapse_remain();
 };
 
@@ -198,6 +204,7 @@ void what_finish_handler_after_confirmation(bool confirmed){
 
 // down click handler - finish current what
 static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
+	reset_activity_timer();
 	if (running_state_current.whats_running_idx == 0) { // nothing, no need to commit, just bring up selection window 
 		show_w_selection();
 	} else {
@@ -208,6 +215,7 @@ static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
 
 // call communicator
 static void call_communication_handler(ClickRecognizerRef recognizer, void *context) {
+	reset_activity_timer();
   show_w_communication();
 }
 
@@ -219,6 +227,7 @@ void what_discard_handler_after_confirmation(bool confirmed){
 
 // down click handler - finish current what
 static void what_discard_handler(ClickRecognizerRef recognizer, void *context) {
+	reset_activity_timer();
 	if (running_state_current.whats_running_idx != 0) { 
 		confirmation_ask("Discard this?", &what_discard_handler_after_confirmation);
 	};

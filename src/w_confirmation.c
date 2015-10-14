@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "w_confirmation.h"
 #include "debug.h"
+#include "wakeup.h"
 
 ConfirmationReceived received_callback;
 
@@ -63,11 +64,13 @@ void hide_w_confirmation(void) {
 
 
 static void yes_handler(ClickRecognizerRef recognizer, void *context) {
+	reset_activity_timer();
 	hide_w_confirmation();
   received_callback(true);
 }
 
 static void no_handler(ClickRecognizerRef recognizer, void *context) {
+	reset_activity_timer();
 	hide_w_confirmation();
   received_callback(false);
 }

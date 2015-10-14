@@ -10,7 +10,7 @@
 /* everything related to storage of records and communication with phone */
 /* pebble persisent storage capability: max value length 256 bytes, all cannot exceed 4K */  
   
-#define DATA_STORE_SIZE 30
+#define DATA_STORE_SIZE 35
 
 typedef struct TimeRecord { // together = 7 bytes & aligned
   time_t time; // unsigned int = 4 bytes

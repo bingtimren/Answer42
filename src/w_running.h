@@ -5,3 +5,5 @@ void hide_w_running(void);
 void sync_w_running(void);
 
 void running_vibe();
+
+void space_shortage_warning_check();

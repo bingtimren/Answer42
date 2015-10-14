@@ -1,7 +1,7 @@
 #include <pebble.h>
 #include "debug.h"
 #include "data.h"
-
+#include "w_running.h"
 
 static uint8_t data_store_usage;
 
@@ -19,6 +19,7 @@ void data_store_load () {
 			if (data_store[i].time != 0) { data_store_usage += 1; };
 		};
 		APP_LOG(APP_LOG_LEVEL_INFO, "Data store (size %u load %u) loaded ", sizeof(data_store), data_store_usage);
+		space_shortage_warning_check();
     return;
   };
   // not found persisted data store
@@ -54,7 +55,7 @@ bool data_log_in(const time_t time, const uint16_t durition, const uint16_t what
 	};	
 	// if there is no empty slot, just exit
 	if (data_store_usage == DATA_STORE_SIZE) {
-		APP_LOG(APP_LOG_LEVEL_INFO, "should not run here... storage full");
+		APP_LOG(APP_LOG_LEVEL_INFO, "storage full");
 		return false;
 	};
 	// find an empty slot and put data into
@@ -67,6 +68,7 @@ bool data_log_in(const time_t time, const uint16_t durition, const uint16_t what
 			data_store_usage += 1;
 			APP_LOG(APP_LOG_LEVEL_INFO, "data logged in what index %u slot position %u storage usage %u", what_index, i, data_store_usage);
 			data_store_save();
+			space_shortage_warning_check();
 			return true;
 		};
 	};
@@ -80,6 +82,7 @@ void data_free(const uint8_t i) {
 		data_store[i].time = 0;
 		data_store_usage -= 1;
 		data_store_save();
+		space_shortage_warning_check();
 		APP_LOG(APP_LOG_LEVEL_INFO, "Freed slot %u usage=%d", i, data_store_usage);		
 	} else {
 		APP_LOG(APP_LOG_LEVEL_ERROR, "Slot %u already freed", i);

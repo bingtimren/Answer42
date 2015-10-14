@@ -12,8 +12,9 @@
 
 static char start_time[FORMAT_24HTIME_BUFFER_LENGTH];
 static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];  
-static char elapsed_time[50];
-static char remaining_time[50];  
+static char elapsed_time[10];
+static char remaining_time[10];  
+static char warning[20];
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -204,6 +205,16 @@ static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed
 				window_stack_pop(true);
 			};
   sync_lapse_remain();
+};
+
+void space_shortage_warning_check() {
+	uint8_t spaceleft = DATA_STORE_SIZE - data_store_usage_count();
+	if (spaceleft > 20) text_layer_set_text(t_warning, " ");
+	else if (spaceleft > 1) {
+			snprintf(warning, sizeof(warning), "%d Spaces Left",spaceleft);
+			text_layer_set_text(t_warning, warning);
+	}	else if (spaceleft == 1) text_layer_set_text(t_warning, "Last Space Left");
+		else text_layer_set_text(t_warning, "Storage Full");
 };
 
 void what_finish_handler_after_confirmation(bool confirmed){

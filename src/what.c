@@ -24,6 +24,15 @@ const struct WhatType WHAT_WORK = {
   LAST_NO_REMINDER
 };
 
+const struct WhatType WHAT_PERSONAL = {
+  "Personal",
+  "Personal",
+  2, // 2 stages
+  r30_30,
+  LAST_NO_REMINDER
+};
+
+
 const struct WhatType WHAT_SLEEP = {
   "Sleep",
   "Sleep",
@@ -201,28 +210,30 @@ const struct WhatType WHAT_RELAX = {
  then free define
 */
 
+// !!!!!! Update WHAT_LIST_LENGTH if change number of items in this list !!!!!!
 const struct WhatType* what_list[] = {
   &WHAT_NOTHING, 
   &WHAT_WORK, 
-  &WHAT_SLEEP, 
-  &WHAT_SPORTS, 
-  &WHAT_HYGIENE, 
+  &WHAT_BREAKS,
   &WHAT_DOMESTIC, 
-  &WHAT_SHOPPING, 
-  &WHAT_Purchasing, 
+  &WHAT_HYGIENE, 
+  &WHAT_PET,
+  &WHAT_PERSONAL,
+  &WHAT_COOKDINE,
+  &WHAT_TRAFFIC,
+  &WHAT_SPORTS, 
+  &WHAT_SOCIAL,
   &WHAT_READING, 
   &WHAT_STUDYING,
-  &WHAT_LEISURE,
+  &WHAT_SLEEP, 
+  &WHAT_SHOPPING, 
+  &WHAT_Purchasing, 
   &WHAT_MEDITATION,
-  &WHAT_PET,
-  &WHAT_TRAFFIC,
+  &WHAT_LEISURE,
   &WHAT_HEALTH,
-  &WHAT_SOCIAL,
-  &WHAT_CULTURE,
-  &WHAT_COOKDINE,
   &WHAT_SMISC,
-  &WHAT_BREAKS,
   &WHAT_MISC,
+  &WHAT_CULTURE,
   &WHAT_MEDIA,
   &WHAT_RELAX
 };

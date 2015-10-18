@@ -60,7 +60,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
   
   // t_what
-  t_what = text_layer_create(GRect(1, 25, 119, 23));
+  t_what = text_layer_create(GRect(1, 25, 119, 26));
   text_layer_set_background_color(t_what, GColorBlack);
   text_layer_set_text_color(t_what, GColorWhite);
   text_layer_set_text(t_what, "Nothing ");

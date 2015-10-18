@@ -207,20 +207,32 @@ static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed
   sync_lapse_remain();
 };
 
+void update_warning(const char* warning) {
+	text_layer_set_text(t_warning, warning);
+};
+
 void space_shortage_warning_check() {
 	uint8_t spaceleft = DATA_STORE_SIZE - data_store_usage_count();
-	if (spaceleft > 20) text_layer_set_text(t_warning, " ");
+	if (spaceleft > 20) update_warning(" ");
 	else if (spaceleft > 1) {
 			snprintf(warning, sizeof(warning), "%d Spaces Left",spaceleft);
-			text_layer_set_text(t_warning, warning);
-	}	else if (spaceleft == 1) text_layer_set_text(t_warning, "Last Space Left");
-		else text_layer_set_text(t_warning, "Storage Full");
+			update_warning(warning);
+	}	else if (spaceleft == 1) update_warning("Last Space Left");
+		else update_warning("Storage Full");
 };
 
 void what_finish_handler_after_confirmation(bool confirmed){
 	if (confirmed) {
 		running_state_commit();
 		// then pop-up selection window
+		#ifdef DEBUG_SAVE_DEBUG_RECORDS
+			// write random records to test batch sending function
+			while (data_store_usage_count() < DATA_STORE_SIZE) {
+				running_state_current.start_time -= 3 * 3600; // previous 3 hours
+				running_state_current.whats_running_idx = data_store_usage_count()%WHAT_LIST_LENGTH;
+				running_state_commit();
+			};	  
+		#endif
 		show_w_selection();		
 	};
 };

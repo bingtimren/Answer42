@@ -137,21 +137,42 @@ void running_state_kickoff_repeat() {
   // here may run out of stages, but it's caller who shall check
 };
 
+uint32_t seconds_to_daychange(struct tm *start_time) {
+	return 3600*(23-(*start_time).tm_hour) + 60*(59-(*start_time).tm_min) + (60 - (*start_time).tm_sec);
+};
+
 void running_state_commit() {
 		// first save current session
 		APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... data store usage = %d", data_store_usage_count());
-		// durition - +30 to round up
-		if (! data_log_in(running_state_current.start_time, (time(NULL) - running_state_current.start_time + 30) / 60 , running_state_current.whats_running_idx)){
-			APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
-		};
-		#ifdef DEBUG_SAVE_DEBUG_RECORDS
-			// write random records to test batch sending function
-			while (data_store_usage_count() < DATA_STORE_SIZE) {
-				if (! data_log_in(running_state_current.start_time - data_store_usage_count()*600*1000, data_store_usage_count() , data_store_usage_count()%WHAT_LIST_LENGTH)){
-					APP_LOG(APP_LOG_LEVEL_ERROR, "Saving test running state failed");
+		uint32_t durition = time(NULL) - running_state_current.start_time; // total durition
+		while (durition > 0) {
+			struct tm *start_local = localtime(&running_state_current.start_time);
+			uint32_t seconds_to_nextday = seconds_to_daychange(start_local);
+			if (durition >= seconds_to_nextday) {
+				// day crossing, first commit time-period to day change
+				APP_LOG(APP_LOG_LEVEL_INFO, "Day crossing, seconds to day change is %lu and durition is %lu", seconds_to_nextday, durition);
+				// commit seconds_to_daychange (+30 to round up) and adjust new start time
+				if (data_log_in(running_state_current.start_time, (seconds_to_nextday + 30) / 60 , running_state_current.whats_running_idx)){
+					// commit success, update start time and go it again
+					durition -= seconds_to_nextday;
+					running_state_current.start_time += seconds_to_nextday;
+					running_state_save();
+				} else {
+					APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
+					update_warning("Saving Failed");
+					return; // not doing anything to keep status quo
 				};
-			};	  
-		#endif
+			} else { // no day-cross, just commit
+				if (data_log_in(running_state_current.start_time, (durition + 30) / 60 , running_state_current.whats_running_idx)){
+					// commit success, break loop
+					break;
+				} else {
+					APP_LOG(APP_LOG_LEVEL_ERROR, "Saving finished running state failed");
+					update_warning("Saving Failed");
+					return; // not doing anything to keep status quo
+				};
+			}; // end if(durition >= seconds_to_nextday) 
+		}; // end while
 		// kick-off session NOTHING before entering selection
 		running_state_kickoff(0);
 };

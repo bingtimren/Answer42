@@ -188,7 +188,6 @@ void hide_w_running(void) {
 
 // display lapse and remain
 void sync_time_lapse_remain(void) {
-	// APP_LOG(APP_LOG_LEVEL_INFO,"Ticking...");
 	time_t time_now;
 	struct tm *time_now_local;	
 	time(&time_now);
@@ -202,9 +201,9 @@ void sync_time_lapse_remain(void) {
 		text_layer_set_text(t_elapsed_time, elapsed_time);
   if (fmt_timediff_str(remaining_time, sizeof(remaining_time), time_now, running_state_current.target_time)) {
 		// now earlier then target
-		text_layer_set_text(t_remain_over, "Remain:");
+		text_layer_set_text(t_remain_over, " Remain:");
 	} else {
-		text_layer_set_text(t_remain_over, "Over:");
+		text_layer_set_text(t_remain_over, " Over:");
 	};
   text_layer_set_text(t_remaining_time, remaining_time);
 }

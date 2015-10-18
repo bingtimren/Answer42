@@ -83,7 +83,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
   // s_textlayer_3
-  s_textlayer_3 = text_layer_create(GRect(1, 105, 122, 20));
+  s_textlayer_3 = text_layer_create(GRect(1, 105, 119, 20));
   text_layer_set_background_color(s_textlayer_3, GColorBlack);
   text_layer_set_text_color(s_textlayer_3, GColorWhite);
   text_layer_set_text(s_textlayer_3, " Elapsed:");
@@ -115,7 +115,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_target_time);
   
   // t_remain_over
-  t_remain_over = text_layer_create(GRect(1, 125, 122, 20));
+  t_remain_over = text_layer_create(GRect(1, 125, 119, 20));
   text_layer_set_background_color(t_remain_over, GColorBlack);
   text_layer_set_text_color(t_remain_over, GColorWhite);
   text_layer_set_text(t_remain_over, " Remain:");

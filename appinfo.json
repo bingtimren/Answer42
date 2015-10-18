@@ -9,18 +9,8 @@
     "resources": {
         "media": [
             {
-                "file": "images/action_right.png",
-                "name": "IMAGE_ACTION_RIGHT",
-                "type": "png"
-            },
-            {
-                "file": "images/action_reset.png",
-                "name": "IMAGE_ACTION_RESET",
-                "type": "png"
-            },
-            {
-                "file": "images/action_up.png",
-                "name": "IMAGE_ACTION_UP",
+                "file": "images/wireless.png",
+                "name": "IMAGE_ACTION_WIRELESS",
                 "type": "png"
             },
             {
@@ -35,18 +25,8 @@
                 "type": "png"
             },
             {
-                "file": "images/action_down.png",
-                "name": "IMAGE_ACTION_DOWN",
-                "type": "png"
-            },
-            {
-                "file": "images/wireless.png",
-                "name": "IMAGE_ACTION_WIRELESS",
-                "type": "png"
-            },
-            {
-                "file": "images/action_clear.png",
-                "name": "IMAGE_ACTION_CLEAR",
+                "file": "images/action_up.png",
+                "name": "IMAGE_ACTION_UP",
                 "type": "png"
             },
             {
@@ -55,8 +35,18 @@
                 "type": "png"
             },
             {
-                "file": "images/action_left.png",
-                "name": "IMAGE_ACTION_LEFT",
+                "file": "images/action_stop.png",
+                "name": "IMAGE_ACTION_STOP",
+                "type": "png"
+            },
+            {
+                "file": "images/action_right.png",
+                "name": "IMAGE_ACTION_RIGHT",
+                "type": "png"
+            },
+            {
+                "file": "images/action_reset.png",
+                "name": "IMAGE_ACTION_RESET",
                 "type": "png"
             },
             {
@@ -70,8 +60,18 @@
                 "type": "png"
             },
             {
-                "file": "images/action_stop.png",
-                "name": "IMAGE_ACTION_STOP",
+                "file": "images/action_left.png",
+                "name": "IMAGE_ACTION_LEFT",
+                "type": "png"
+            },
+            {
+                "file": "images/action_down.png",
+                "name": "IMAGE_ACTION_DOWN",
+                "type": "png"
+            },
+            {
+                "file": "images/action_clear.png",
+                "name": "IMAGE_ACTION_CLEAR",
                 "type": "png"
             }
         ]

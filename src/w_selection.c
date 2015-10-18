@@ -130,7 +130,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_00);
   
   // t_13
-  t_13 = text_layer_create(GRect(62, 69, 60, 16));
+  t_13 = text_layer_create(GRect(62, 68, 60, 16));
   text_layer_set_text(t_13, " ");
   text_layer_set_font(t_13, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_13);

@@ -335,8 +335,7 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 
 	// pack complete, write number of records, and prepare to send them off
 	DictionaryResult res = dict_write_uint8(dic_iterator, 0, records_packed);
-	uint32_t final_size = dict_write_end(dic_iterator);
-	APP_LOG(APP_LOG_LEVEL_INFO, "Packed %d records, size (final_size %lu dict_size %lu)", records_packed, final_size, dict_size(dic_iterator));
+	APP_LOG(APP_LOG_LEVEL_INFO, "Packed %d records, size (final_size %lu dict_size %lu)", records_packed, dict_write_end(dic_iterator), dict_size(dic_iterator));
 	if (res != DICT_OK) {
 		APP_LOG(APP_LOG_LEVEL_INFO, "Last write failed, reason %d, not sending", res);
 		return;

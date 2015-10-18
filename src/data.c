@@ -44,6 +44,7 @@ void data_store_save () {
   APP_LOG(APP_LOG_LEVEL_INFO, "Data store (l=%u) saved ", sizeof(data_store));
 };
 
+// durition - now in units of 0.01 hour (36 seconds)
 bool data_log_in(const time_t time, const uint16_t durition, const uint16_t what_index) {
 	#ifdef DEBUG_CHECK_MORE
 	char time_buf[30];

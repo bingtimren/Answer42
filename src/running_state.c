@@ -152,7 +152,7 @@ void running_state_commit() {
 				// day crossing, first commit time-period to day change
 				APP_LOG(APP_LOG_LEVEL_INFO, "Day crossing, seconds to day change is %lu and durition is %lu", seconds_to_nextday, durition);
 				// commit seconds_to_daychange (+30 to round up) and adjust new start time
-				if (data_log_in(running_state_current.start_time, (seconds_to_nextday + 30) / 60 , running_state_current.whats_running_idx)){
+				if (data_log_in(running_state_current.start_time, (seconds_to_nextday + 18) / 36 , running_state_current.whats_running_idx)){
 					// commit success, update start time and go it again
 					durition -= seconds_to_nextday;
 					running_state_current.start_time += seconds_to_nextday;
@@ -163,7 +163,7 @@ void running_state_commit() {
 					return; // not doing anything to keep status quo
 				};
 			} else { // no day-cross, just commit
-				if (data_log_in(running_state_current.start_time, (durition + 30) / 60 , running_state_current.whats_running_idx)){
+				if (data_log_in(running_state_current.start_time, (durition + 18) / 36 , running_state_current.whats_running_idx)){
 					// commit success, break loop
 					break;
 				} else {

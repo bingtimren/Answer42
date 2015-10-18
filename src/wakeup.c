@@ -63,7 +63,7 @@ void wakeup_schedule_next_in_minutes(uint16_t minutes_to_now, int32_t cookie ) {
 // if previously registered then cancel
 void wakeup_cancel_by_cookie(int32_t cookie) {
   if (schedule_registry[cookie] > 0) {
-	  APP_LOG(APP_LOG_LEVEL_INFO, "cancel previous scheduled wakeup, cookie = %ld", cookie);
+	  APP_LOG(APP_LOG_LEVEL_INFO, "cancel previous scheduled wakeup, cookie = %ld wakeup_id = %ld", cookie, schedule_registry[cookie]);
 	  wakeup_cancel(schedule_registry[cookie]);
   };	
 };
@@ -90,10 +90,11 @@ void wakeup_schedule_next_target_time(time_t target, int32_t cookie) {
 void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Woke-up, wakeupid %ld cookie %ld", wakeup_id, cookie);
   if (schedule_registry[cookie] != wakeup_id)
-	APP_LOG(APP_LOG_LEVEL_ERROR, "Woke-up UNEXPECTED!");
-  else
-	schedule_registry[cookie] = -1;
-  wakeup_state_save();
+		APP_LOG(APP_LOG_LEVEL_ERROR, "Woke-up UNEXPECTED!");
+  else {
+		schedule_registry[cookie] = -1;
+		wakeup_state_save();
+	};
   switch (cookie) {
 	  case RunningStateReminder: running_reminder_handler(); break;
 	  case BluetoothHighTimeOut : APP_LOG(APP_LOG_LEVEL_INFO, "turnning down bluetooth level"); app_comm_set_sniff_interval(SNIFF_INTERVAL_NORMAL); break;

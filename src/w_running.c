@@ -228,7 +228,7 @@ void what_finish_handler_after_confirmation(bool confirmed){
 		#ifdef DEBUG_SAVE_DEBUG_RECORDS
 			// write random records to test batch sending function
 			while (data_store_usage_count() < DATA_STORE_SIZE) {
-				running_state_current.start_time -= 3 * 3600; // previous 3 hours
+				running_state_current.start_time -= 3 * 3600 * data_store_usage_count(); // previous 3 hours
 				running_state_current.whats_running_idx = data_store_usage_count()%WHAT_LIST_LENGTH;
 				running_state_commit();
 			};	  

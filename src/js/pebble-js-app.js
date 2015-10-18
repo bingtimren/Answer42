@@ -76,7 +76,7 @@ Pebble.addEventListener('appmessage',
 		var tStamp = new Date(e.payload[i*4+2]*1000);
 		var tDateStr = tStamp.getUTCFullYear() + "." + pad(tStamp.getUTCMonth()+1) + "." + pad(tStamp.getUTCDate()) + " " +days[tStamp.getUTCDay()];
 		var tTimeStr = pad(tStamp.getUTCHours()) + ":"+ pad(tStamp.getUTCMinutes());
-		var durition = e.payload[i*4+3];
+		var durition = e.payload[i*4+3]/100;
 		var what = e.payload[i*4+4];
 		var summary = "index="+index+" time stamp={"+tDateStr+" / "+tTimeStr+"} durition="+durition+" what:"+what;
 		console.log("Before sending, Summary: "+summary);
@@ -88,7 +88,7 @@ Pebble.addEventListener('appmessage',
 			'&entry.1527113700='+encodeURIComponent(tTimeStr)+
 			'&entry.1936279194='+encodeURIComponent(durition)+
 			'&entry.55169166='+encodeURIComponent(what)+
-			'&submit=Submit', true);
+			'&entry.440204214=Y&submit=Submit', true);
 
 		req.onload = onload_handler(i, index, req);
 		req.onabort = onerror_handler(i, index, req);

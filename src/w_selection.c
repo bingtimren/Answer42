@@ -256,6 +256,7 @@ static void handle_window_unload(Window* window) {
 
 static void show_all_choices();
 static void my_init();
+static void my_reset();
 
 void show_w_selection(void) {
   APP_LOG(APP_LOG_LEVEL_INFO," #### showing window SELECTION");
@@ -291,8 +292,15 @@ static void show_all_choices() {
     if (index_start + i < WHAT_LIST_LENGTH) {
       text_layer_set_text(tarray[i], (*what_list[index_start + i]).short_name);
     } else {
-      text_layer_set_text(tarray[i],"------");
+      text_layer_set_text(tarray[i],"");
     };
+    if (i >= 9) {
+			text_layer_set_background_color(tarray[i], GColorClear);
+			text_layer_set_text_color(tarray[i], GColorBlack);
+		} else {
+			text_layer_set_background_color(tarray[i], GColorBlack);
+			text_layer_set_text_color(tarray[i], GColorWhite);
+		};    
   }
 }
 
@@ -307,11 +315,18 @@ static void turnpage() {
 };
 
 // hide from start to end but keep from keep_start to keep_end
-static void hide_other_whats(uint8_t start, uint8_t end, uint8_t keep_start, uint8_t keep_end) {
+static void hide_other_whats(uint8_t start, uint8_t end, uint8_t keep_start, uint8_t keep_end, uint8_t inverse_start, int8_t inverse_end) {
   for (uint8_t i=start; i<end; i++ ) {
     if (i<keep_start || i>= keep_end) {
       text_layer_set_text(tarray[i],"");
     }
+    if (i < inverse_start || i >= inverse_end) {
+			text_layer_set_background_color(tarray[i], GColorClear);
+			text_layer_set_text_color(tarray[i], GColorBlack);
+		} else {
+			text_layer_set_background_color(tarray[i], GColorBlack);
+			text_layer_set_text_color(tarray[i], GColorWhite);
+		};			
   }
 }
 
@@ -323,7 +338,7 @@ static void select_half(uint8_t h) {
     return;
   }
   state = HALF_SET;
-  hide_other_whats(0,18,half_starts,half_starts+9);
+  hide_other_whats(0,18,half_starts,half_starts+9,half_starts+3,half_starts+6);
   // set action icon to up/mid/down
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_up);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_mid);
@@ -338,7 +353,7 @@ static void select_section(uint8_t s) {
     return;
   }
   state = SECTION_SET;
-  hide_other_whats(half_starts,half_starts+9,section_starts,section_starts+3);
+  hide_other_whats(half_starts,half_starts+9,section_starts,section_starts+3,section_starts+1,section_starts+2);
 }
 
 static void hide_prompt_choice() {
@@ -370,6 +385,8 @@ static void select_line(uint8_t l) {
   for (uint8_t i = section_starts; i < section_starts+3; i++) {
     text_layer_set_text(tarray[i],"");
   };
+	text_layer_set_background_color(tarray[section_starts+1], GColorClear);
+  
   // display prompt & choice
   show_prompt_choice();
 }
@@ -402,7 +419,6 @@ static void middle_button_handler(ClickRecognizerRef recognizer, void *context) 
   }
 };
 
-static void my_init();
 // down button
 static void down_button_handler(ClickRecognizerRef recognizer, void *context) {
   reset_activity_timer();
@@ -410,8 +426,16 @@ static void down_button_handler(ClickRecognizerRef recognizer, void *context) {
     case INIT: select_half(1); break;
     case HALF_SET: select_section(2); break;
     case SECTION_SET: select_line(2); break;
-    case LINE_SET: my_init(); break; // reset
+    case LINE_SET: my_reset(); break; // reset
   }
+};
+
+static void back_button_handler(ClickRecognizerRef recognizer, void *context) {
+  reset_activity_timer();
+  if (state == INIT && page == 0) 
+		hide_w_selection();
+	else
+		my_reset(); // reset
 };
 
 // subscribe click events
@@ -419,24 +443,29 @@ void w_selection_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, *up_button_handler);
   window_single_click_subscribe(BUTTON_ID_SELECT, *middle_button_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, *down_button_handler);
+  window_single_click_subscribe(BUTTON_ID_BACK, *back_button_handler);  
 };
 
 // register handlers
 static void register_tarray();
 
-static void my_init() {
-  register_tarray();
+static void my_reset() {
   page = 0;
   hide_prompt_choice();
     // set status 
   state = INIT;
-  // click handlers
-  window_set_click_config_provider(s_window, *w_selection_click_config_provider);
   // reset action bar
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_left);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_switch);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_right);  
   show_all_choices(); 
+}
+
+static void my_init() {
+  register_tarray();
+  // click handlers
+  window_set_click_config_provider(s_window, *w_selection_click_config_provider);
+  my_reset();
 }
 
 static void register_tarray() {

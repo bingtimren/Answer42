@@ -3,7 +3,7 @@
 #define WAKEUP_COOKIE_NUMOF 2
 
 
-#define INACTIVITY_TIME_OUT 10
+#define INACTIVITY_TIME_OUT 30
 
 enum WakeUpCookieType {
   RunningStateReminder = 0,

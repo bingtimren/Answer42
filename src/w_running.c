@@ -30,11 +30,11 @@ static TextLayer *t_what;
 static TextLayer *s_textlayer_1;
 static TextLayer *s_textlayer_2;
 static TextLayer *s_textlayer_3;
-static TextLayer *t_remaining_time;
 static TextLayer *t_elapsed_time;
 static TextLayer *t_start_time;
 static TextLayer *t_target_time;
 static TextLayer *t_remain_over;
+static TextLayer *t_remaining_time;
 static TextLayer *t_warning;
 static TextLayer *t_time;
 
@@ -60,43 +60,41 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
   
   // t_what
-  t_what = text_layer_create(GRect(0, 25, 124, 21));
+  t_what = text_layer_create(GRect(1, 25, 119, 21));
+  text_layer_set_background_color(t_what, GColorBlack);
+  text_layer_set_text_color(t_what, GColorWhite);
   text_layer_set_text(t_what, "Nothing ");
   text_layer_set_text_alignment(t_what, GTextAlignmentCenter);
   text_layer_set_font(t_what, s_res_gothic_18_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_what);
   
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(1, 55, 119, 20));
-  text_layer_set_background_color(s_textlayer_1, GColorBlack);
-  text_layer_set_text_color(s_textlayer_1, GColorWhite);
+  s_textlayer_1 = text_layer_create(GRect(1, 55, 58, 20));
+  text_layer_set_background_color(s_textlayer_1, GColorClear);
   text_layer_set_text(s_textlayer_1, "  Started:");
   text_layer_set_font(s_textlayer_1, s_res_gothic_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   
   // s_textlayer_2
-  s_textlayer_2 = text_layer_create(GRect(1, 75, 119, 24));
-  text_layer_set_background_color(s_textlayer_2, GColorBlack);
-  text_layer_set_text_color(s_textlayer_2, GColorWhite);
+  s_textlayer_2 = text_layer_create(GRect(1, 75, 58, 24));
+  text_layer_set_background_color(s_textlayer_2, GColorClear);
   text_layer_set_text(s_textlayer_2, "  Target:");
   text_layer_set_font(s_textlayer_2, s_res_gothic_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
   
   // s_textlayer_3
-  s_textlayer_3 = text_layer_create(GRect(5, 105, 53, 20));
-  text_layer_set_text(s_textlayer_3, "Elapsed:");
+  s_textlayer_3 = text_layer_create(GRect(1, 105, 122, 20));
+  text_layer_set_background_color(s_textlayer_3, GColorBlack);
+  text_layer_set_text_color(s_textlayer_3, GColorWhite);
+  text_layer_set_text(s_textlayer_3, " Elapsed:");
   text_layer_set_font(s_textlayer_3, s_res_gothic_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
   
-  // t_remaining_time
-  t_remaining_time = text_layer_create(GRect(60, 125, 60, 20));
-  text_layer_set_text(t_remaining_time, " ");
-  text_layer_set_font(t_remaining_time, s_res_gothic_18);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_remaining_time);
-  
   // t_elapsed_time
   t_elapsed_time = text_layer_create(GRect(61, 105, 60, 20));
-  text_layer_set_text(t_elapsed_time, " ");
+  text_layer_set_background_color(t_elapsed_time, GColorClear);
+  text_layer_set_text_color(t_elapsed_time, GColorWhite);
+  text_layer_set_text(t_elapsed_time, " 12:33");
   text_layer_set_font(t_elapsed_time, s_res_gothic_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_elapsed_time);
   
@@ -117,13 +115,23 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_target_time);
   
   // t_remain_over
-  t_remain_over = text_layer_create(GRect(5, 125, 53, 20));
-  text_layer_set_text(t_remain_over, "Remain:");
+  t_remain_over = text_layer_create(GRect(1, 125, 122, 20));
+  text_layer_set_background_color(t_remain_over, GColorBlack);
+  text_layer_set_text_color(t_remain_over, GColorWhite);
+  text_layer_set_text(t_remain_over, " Remain:");
   text_layer_set_font(t_remain_over, s_res_gothic_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_remain_over);
   
+  // t_remaining_time
+  t_remaining_time = text_layer_create(GRect(60, 125, 60, 20));
+  text_layer_set_background_color(t_remaining_time, GColorClear);
+  text_layer_set_text_color(t_remaining_time, GColorWhite);
+  text_layer_set_text(t_remaining_time, " 12:33");
+  text_layer_set_font(t_remaining_time, s_res_gothic_18);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_remaining_time);
+  
   // t_warning
-  t_warning = text_layer_create(GRect(0, 148, 123, 18));
+  t_warning = text_layer_create(GRect(1, 148, 122, 18));
   text_layer_set_background_color(t_warning, GColorClear);
   text_layer_set_text(t_warning, " ");
   text_layer_set_text_alignment(t_warning, GTextAlignmentCenter);
@@ -131,7 +139,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_warning);
   
   // t_time
-  t_time = text_layer_create(GRect(0, 2, 120, 20));
+  t_time = text_layer_create(GRect(1, 2, 119, 20));
   text_layer_set_text(t_time, " ");
   text_layer_set_text_alignment(t_time, GTextAlignmentCenter);
   text_layer_set_font(t_time, s_res_gothic_18);
@@ -145,11 +153,11 @@ static void destroy_ui(void) {
   text_layer_destroy(s_textlayer_1);
   text_layer_destroy(s_textlayer_2);
   text_layer_destroy(s_textlayer_3);
-  text_layer_destroy(t_remaining_time);
   text_layer_destroy(t_elapsed_time);
   text_layer_destroy(t_start_time);
   text_layer_destroy(t_target_time);
   text_layer_destroy(t_remain_over);
+  text_layer_destroy(t_remaining_time);
   text_layer_destroy(t_warning);
   text_layer_destroy(t_time);
   gbitmap_destroy(s_res_image_action_clear);

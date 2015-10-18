@@ -15,6 +15,7 @@ static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];
 static char elapsed_time[10];
 static char remaining_time[10];  
 static char warning[20];
+static char current_time[20];
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -178,14 +179,20 @@ void hide_w_running(void) {
 }
 
 // display lapse and remain
-void sync_lapse_remain(void) {
-  time_t now = time(NULL);
-  if (fmt_timediff_str(elapsed_time, sizeof(elapsed_time), now, running_state_current.start_time)) {
+void sync_time_lapse_remain(void) {
+	// APP_LOG(APP_LOG_LEVEL_INFO,"Ticking...");
+	time_t time_now;
+	struct tm *time_now_local;	
+	time(&time_now);
+	time_now_local = localtime(&time_now);
+  strftime(current_time, sizeof(current_time), FORMAT_CURRENT_TIME, time_now_local);
+  text_layer_set_text(t_time, current_time);	
+  if (fmt_timediff_str(elapsed_time, sizeof(elapsed_time), time_now, running_state_current.start_time)) {
 		// now earlier than start time???!!
 		text_layer_set_text(t_elapsed_time, "ERR!");
 	} else
 		text_layer_set_text(t_elapsed_time, elapsed_time);
-  if (fmt_timediff_str(remaining_time, sizeof(remaining_time), now, running_state_current.target_time)) {
+  if (fmt_timediff_str(remaining_time, sizeof(remaining_time), time_now, running_state_current.target_time)) {
 		// now earlier then target
 		text_layer_set_text(t_remain_over, "Remain:");
 	} else {
@@ -202,8 +209,10 @@ void sync_w_running(void) {
   fmt_time_24h(target_time, sizeof(target_time), &(running_state_current.target_time));
   text_layer_set_text(t_start_time, start_time);
   text_layer_set_text(t_target_time, target_time);
-  sync_lapse_remain();
+  sync_time_lapse_remain();
 };
+
+
 
 // handle ticks - update running & remaining time
 static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed) {
@@ -213,7 +222,7 @@ static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed
 			while (window_stack_get_top_window() != s_window) 
 				window_stack_pop(true);
 			};
-  sync_lapse_remain();
+  sync_time_lapse_remain();
 };
 
 void update_warning(const char* warning) {

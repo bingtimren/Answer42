@@ -249,8 +249,8 @@ void messages_init() {
   app_message_register_inbox_dropped(messages_inbox_dropped);
   app_message_register_outbox_sent(messages_outbox_sent);
   app_message_register_outbox_failed(messages_outbox_failed);
-  // open message with maximum size
-  inbox_size = app_message_inbox_size_maximum() - safety_buffer;
+  // open outbox with maximum size, inbox with just enough to receive acknowledgement (each possible ack=1 byte, please header - in actual test 9 bytes, but get some more for safe)
+  inbox_size = DATA_STORE_SIZE + 15;
   outbox_size = app_message_outbox_size_maximum() - safety_buffer;
   if (app_message_open(inbox_size, outbox_size) != APP_MSG_OK) {
     APP_LOG(APP_LOG_LEVEL_ERROR, "Open Message Failed");

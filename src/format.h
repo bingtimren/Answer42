@@ -2,6 +2,7 @@
 #include <pebble.h>  
 
 #define FORMAT_24HTIME "%H:%M %S"
+#define FORMAT_CURRENT_TIME "%a %d %b %I:%M"
 #define FORMAT_24HTIME_BUFFER_LENGTH 9
   
 /* convert time to localtime and format to "HH:MM" */

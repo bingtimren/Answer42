@@ -8,6 +8,7 @@
   
 static void init(void) {
   APP_LOG(APP_LOG_LEVEL_INFO, "****************************************** [%s] starting.... *******************************", VERSION_INFO);
+  setlocale(LC_ALL, "en_AU");
   // initialize what - calculate the lengths of each short names
   what_initiate();
   // initialize wakeup service - subscribe

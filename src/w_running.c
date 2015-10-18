@@ -101,21 +101,18 @@ static void initialise_ui(void) {
   // t_start_time
   t_start_time = text_layer_create(GRect(60, 55, 60, 20));
   text_layer_set_background_color(t_start_time, GColorClear);
-  text_layer_set_text_color(t_start_time, GColorWhite);
-  text_layer_set_text(t_start_time, " ");
   text_layer_set_font(t_start_time, s_res_gothic_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_start_time);
   
   // t_target_time
   t_target_time = text_layer_create(GRect(60, 75, 60, 20));
   text_layer_set_background_color(t_target_time, GColorClear);
-  text_layer_set_text_color(t_target_time, GColorWhite);
   text_layer_set_text(t_target_time, " ");
   text_layer_set_font(t_target_time, s_res_gothic_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_target_time);
   
   // t_remain_over
-  t_remain_over = text_layer_create(GRect(1, 125, 119, 20));
+  t_remain_over = text_layer_create(GRect(1, 125, 119, 23));
   text_layer_set_background_color(t_remain_over, GColorBlack);
   text_layer_set_text_color(t_remain_over, GColorWhite);
   text_layer_set_text(t_remain_over, " Remain:");
@@ -131,7 +128,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_remaining_time);
   
   // t_warning
-  t_warning = text_layer_create(GRect(1, 148, 122, 18));
+  t_warning = text_layer_create(GRect(1, 150, 122, 18));
   text_layer_set_background_color(t_warning, GColorClear);
   text_layer_set_text(t_warning, " ");
   text_layer_set_text_alignment(t_warning, GTextAlignmentCenter);

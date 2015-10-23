@@ -14,7 +14,7 @@ static char start_time[FORMAT_24HTIME_BUFFER_LENGTH];
 static char target_time[FORMAT_24HTIME_BUFFER_LENGTH];  
 static char elapsed_time[10];
 static char remaining_time[10];  
-static char warning[20];
+char warning[20];
 static char current_time[20];
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY

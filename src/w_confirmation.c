@@ -79,17 +79,12 @@ void w_confirmation_click_config_provider(void *context) {
 };
 
 void show_w_confirmation(void) {
-	APP_LOG(APP_LOG_LEVEL_INFO," #### showing window CONFIRMATION");
   initialise_ui();
-	APP_LOG(APP_LOG_LEVEL_INFO," #1");
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
   });
-APP_LOG(APP_LOG_LEVEL_INFO," #2");  
   window_stack_push(s_window, true);
-APP_LOG(APP_LOG_LEVEL_INFO," #3");
   window_set_click_config_provider(s_window, *w_confirmation_click_config_provider);
-APP_LOG(APP_LOG_LEVEL_INFO," #4");  
 }
 
 

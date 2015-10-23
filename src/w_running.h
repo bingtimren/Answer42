@@ -10,3 +10,5 @@ void space_shortage_warning_check();
 
 void update_warning(const char* warning);
 
+extern char warning[20];
+

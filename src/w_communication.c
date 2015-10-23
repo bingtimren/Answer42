@@ -13,7 +13,7 @@ static char send_time_buf[10];
 static char ack_time_buf[10];
 
 // for some reason if I use maximum inbox/outbox I can get, after sending the system will just crash, so save some buffer
-#define safety_buffer 40
+#define safety_buffer 100
 
 static char onwatch_num_records[4];
 static char sent_num_records[4];

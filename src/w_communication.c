@@ -260,6 +260,16 @@ void messages_init() {
   init_done = true;
 };	
 
+<<<<<<< HEAD
+=======
+static void clear_send_ack_status() {
+  text_layer_set_text(t_lastsend_time, " ");
+  text_layer_set_text(t_lastsend_records, " ");
+  text_layer_set_text(t_lastsend_status, " ");
+  text_layer_set_text(t_ack_time, " ");
+  text_layer_set_text(t_lastack_records, " ");
+}
+>>>>>>> parent of 57d75c8... ii
 
 
 // to send one batch of records to phone
@@ -280,6 +290,10 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 	// first check if there is a record
 	uint8_t remaining_records = data_store_usage_count();
 	if (remaining_records == 0) {
+<<<<<<< HEAD
+=======
+		text_layer_set_text(t_lastsend_status, "No Rec.");
+>>>>>>> parent of 57d75c8... ii
 	  return;
 	};
 	// initialize dictionary

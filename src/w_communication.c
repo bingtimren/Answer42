@@ -262,7 +262,10 @@ void messages_init() {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 57d75c8... ii
 =======
 >>>>>>> parent of 57d75c8... ii
 static void clear_send_ack_status() {
@@ -295,6 +298,10 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 	if (remaining_records == 0) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		text_layer_set_text(t_lastsend_status, "No Rec.");
+>>>>>>> parent of 57d75c8... ii
 =======
 		text_layer_set_text(t_lastsend_status, "No Rec.");
 >>>>>>> parent of 57d75c8... ii

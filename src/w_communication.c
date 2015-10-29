@@ -58,7 +58,7 @@ static void initialise_ui(void) {
   s_res_image_action_wireless = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_WIRELESS);
   s_res_image_action_reset = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_RESET);
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(1, 0, 100, 20));
+  s_textlayer_1 = text_layer_create(GRect(1, 1, 120, 20));
   text_layer_set_text(s_textlayer_1, "Last Sent:");
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
   

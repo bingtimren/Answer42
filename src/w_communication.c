@@ -11,6 +11,7 @@
 static time_t time_now;
 static char send_time_buf[10];
 static char ack_time_buf[10];
+static char* lastsend_status = "";
 
 // for some reason if I use maximum inbox/outbox I can get, after sending the system will just crash, so save some buffer
 #define safety_buffer 100
@@ -161,6 +162,11 @@ static void destroy_ui(void) {
 }
 // END AUTO-GENERATED UI CODE
 
+static void update_lastsend_status(char* status) {
+	lastsend_status = status;
+	text_layer_set_text(t_lastsend_status, status);
+}
+
 static void handle_window_unload(Window* window) {
   destroy_ui();
 }
@@ -226,18 +232,18 @@ void messages_inbox_dropped(AppMessageResult reason, void *context) {
 
 void messages_outbox_sent(DictionaryIterator *iterator, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Message sent / reply received");
-  text_layer_set_text(t_lastsend_status, "Sent");
+  update_lastsend_status("Sent");
 }
   
 void messages_outbox_failed(DictionaryIterator *iterator, AppMessageResult reason, void *context){
   switch (reason) {
-         case APP_MSG_SEND_TIMEOUT: text_layer_set_text(t_lastsend_status, "T-out"); break;
-         case APP_MSG_SEND_REJECTED: text_layer_set_text(t_lastsend_status, "Rejected"); break;
-         case APP_MSG_NOT_CONNECTED: text_layer_set_text(t_lastsend_status, "No conn"); break;
-         case APP_MSG_APP_NOT_RUNNING: text_layer_set_text(t_lastsend_status, "App Close"); break;
-         case APP_MSG_BUSY: text_layer_set_text(t_lastsend_status, "Busy"); break;
-         case APP_MSG_OUT_OF_MEMORY: text_layer_set_text(t_lastsend_status, "Mem-out"); break;
-         default: text_layer_set_text(t_lastsend_status, "No conn"); break;
+         case APP_MSG_SEND_TIMEOUT: update_lastsend_status("T-out"); break;
+         case APP_MSG_SEND_REJECTED: update_lastsend_status("Rejected"); break;
+         case APP_MSG_NOT_CONNECTED: update_lastsend_status("No conn"); break;
+         case APP_MSG_APP_NOT_RUNNING: update_lastsend_status("App Close"); break;
+         case APP_MSG_BUSY: update_lastsend_status("Busy"); break;
+         case APP_MSG_OUT_OF_MEMORY: update_lastsend_status("Mem-out"); break;
+         default: update_lastsend_status("No conn"); break;
 	 };
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Message outbox failed, reason %d", reason);
 }
@@ -260,10 +266,18 @@ void messages_init() {
   init_done = true;
 };	
 
+static void show_send_ack_status() {
+  text_layer_set_text(t_lastsend_time, send_time_buf);
+  text_layer_set_text(t_lastsend_records, sent_num_records);
+  update_lastsend_status(lastsend_status);
+  text_layer_set_text(t_ack_time, ack_time_buf);
+  text_layer_set_text(t_lastack_records, ack_num_records);	
+};
+
 static void clear_send_ack_status() {
   text_layer_set_text(t_lastsend_time, " ");
   text_layer_set_text(t_lastsend_records, " ");
-  text_layer_set_text(t_lastsend_status, " ");
+  update_lastsend_status(" ");
   text_layer_set_text(t_ack_time, " ");
   text_layer_set_text(t_lastack_records, " ");
 }
@@ -288,7 +302,7 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 	// first check if there is a record
 	uint8_t remaining_records = data_store_usage_count();
 	if (remaining_records == 0) {
-		text_layer_set_text(t_lastsend_status, "No Rec.");
+		update_lastsend_status("No Rec.");
 	  return;
 	};
 	// initialize dictionary

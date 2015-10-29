@@ -53,6 +53,8 @@ void wakeup_state_save() {
   APP_LOG(APP_LOG_LEVEL_INFO, "Wakeup registry saved ");
 }
 
+
+
 // schedule next wakeup in minutes
 void wakeup_schedule_next_in_minutes(uint16_t minutes_to_now, int32_t cookie ) {
   return wakeup_schedule_next_target_time(time(NULL) + SECONDS_PER_MIN * minutes_to_now, cookie);
@@ -70,25 +72,12 @@ void wakeup_cancel_by_cookie(int32_t cookie) {
 void wakeup_schedule_next_target_time(time_t target, int32_t cookie) {
   // only one wakeup for a cookie type is allowed
   wakeup_cancel_by_cookie(cookie);
-  uint8_t retry = 15;
   schedule_registry[cookie] = wakeup_schedule(target, cookie, false);  
-  while (retry > 0 && (schedule_registry[cookie] == E_RANGE || schedule_registry[cookie] == E_INVALID_ARGUMENT || schedule_registry[cookie] == E_INTERNAL)) {
+  while (schedule_registry[cookie] == E_RANGE) {
 	  // APP_LOG(APP_LOG_LEVEL_INFO, "Delaying wakeup to avoid conflict");
-	  target += 60;
-	  retry -= 1;
+	  target += 30;
 	  schedule_registry[cookie] = wakeup_schedule(target, cookie, false);  
   }; 
-  if (schedule_registry[cookie] < 0) {
-		// wakeup schedule failed, reason unclear so just ignore
-		switch (schedule_registry[cookie]) {
-			case E_RANGE: update_warning("ERR Wkup ERange"); APP_LOG(APP_LOG_LEVEL_ERROR, "Wakeup failed, reason E_Range"); break;
-			case E_INVALID_ARGUMENT: update_warning("ERR Wkup InvArg"); APP_LOG(APP_LOG_LEVEL_ERROR, "Wakeup failed, reason Invalid Argument"); break;
-			case E_OUT_OF_RESOURCES: update_warning("ERR Wkup ResOut"); APP_LOG(APP_LOG_LEVEL_ERROR, "Wakeup failed, reason Out of Resource"); break;
-			case E_INTERNAL: update_warning("ERR Wkup Internal"); APP_LOG(APP_LOG_LEVEL_ERROR, "Wakeup failed, reason Internal"); break;
-			default: update_warning("ERR Wkup Unknown"); APP_LOG(APP_LOG_LEVEL_ERROR, "Wakeup failed, reason %ld", schedule_registry[cookie]); break;
-		};
-		update_warning(warning);
-	};
   #ifdef APP_LOG
 	  char buffer[20];
 	  fmt_time_24h(buffer, sizeof(buffer), &(target));

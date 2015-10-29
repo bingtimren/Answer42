@@ -196,6 +196,8 @@ void w_communication_update_record_num() {
 };
 
 
+
+
 void messages_inbox_received(DictionaryIterator *iterator, void *context)  {
 	APP_LOG(APP_LOG_LEVEL_INFO,"Message inbox received, size %lu", dict_size(iterator));
 	// first record ack time

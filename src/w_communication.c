@@ -261,7 +261,10 @@ void messages_init() {
 };	
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 57d75c8... ii
 static void clear_send_ack_status() {
   text_layer_set_text(t_lastsend_time, " ");
   text_layer_set_text(t_lastsend_records, " ");
@@ -291,6 +294,10 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 	uint8_t remaining_records = data_store_usage_count();
 	if (remaining_records == 0) {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+		text_layer_set_text(t_lastsend_status, "No Rec.");
+>>>>>>> parent of 57d75c8... ii
 =======
 		text_layer_set_text(t_lastsend_status, "No Rec.");
 >>>>>>> parent of 57d75c8... ii

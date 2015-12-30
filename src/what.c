@@ -11,8 +11,8 @@
 const struct WhatType WHAT_NOTHING = {
   "Nothing",
   "Nil",
-  3, // 3 stages
-  r5x2_5x10_30,
+  2, 
+  r5x1_5x3,
   LAST_NO_REMINDER
 };
 
@@ -20,7 +20,7 @@ const struct WhatType WHAT_WORK = {
   "Work",
   "Work",
   2, // 2 stages
-  r15x2_15,
+  r30_15,
   LAST_NO_REMINDER
 };
 
@@ -32,6 +32,21 @@ const struct WhatType WHAT_PERSONAL = {
   LAST_NO_REMINDER
 };
 
+const struct WhatType WHAT_DEVELOPMENT = {
+  "Develop",
+  "Development",
+  2, // 2 stages
+  r30_30,
+  LAST_NO_REMINDER
+};
+
+const struct WhatType WHAT_ENJOYMENT = {
+  "Enjoy",
+  "Enjoyment",
+  2, // 2 stages
+  r240_60,
+  LAST_NO_REMINDER
+};
 
 const struct WhatType WHAT_SLEEP = {
   "Sleep",
@@ -41,43 +56,19 @@ const struct WhatType WHAT_SLEEP = {
   COMMIT_AS_IS
 };
 
-const struct WhatType WHAT_SPORTS = {
-  "Sports",
-  "Sports",
-  2, // 2 stages
-  r60_60x3,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_HYGIENE = {
-  "Hygiene",
-  "Hygiene",
-  2, // 2 stages
-  r30_10x5,
-  COMMIT_AS_IS
-};
-
 const struct WhatType WHAT_DOMESTIC = {
   "Domestic",
   "Domestic Works",
   2, // 2 stages
-  r30_10x5,
+  r30_15,
   LAST_NO_REMINDER
 };
 
-const struct WhatType WHAT_SHOPPING = {
-  "Shopping",
-  "Shopping",
+const struct WhatType WHAT_PLAN = {
+  "Plan",
+  "Planning",
   2, // 2 stages
-  r30_10x5,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_Purchasing = {
-  "Purchasing",
-  "Purchasing",
-  2, // 2 stages
-  r30_10x5,
+  r30_15,
   LAST_NO_REMINDER
 };
 
@@ -97,109 +88,14 @@ const struct WhatType WHAT_STUDYING = {
   LAST_NO_REMINDER
 };
 
-const struct WhatType WHAT_LEISURE = {
-  "Leisure",
-  "Leisure",
-  2, // 2 stages
-  r180_60x5,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_MEDITATION = {
-  "Meditation",
-  "Meditation",
-  2, // 2 stages
-  r60_60x3,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_PET = {
-  "Pet",
-  "Pet",
-  2, // 2 stages
-  r60_60x3,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_TRAFFIC = {
-  "Traffic",
-  "Traffic",
-  2, // 2 stages
-  r60_60x3,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_HEALTH = {
-  "Health Care",
-  "Health",
-  2, // 2 stages
-  r60_60x3,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_SOCIAL = {
-  "Social",
-  "Social",
-  2, // 2 stages
-  r60_60x3,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_CULTURE = {
-  "Culture",
-  "Culture",
-  2, // 2 stages
-  r60_60x3,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_COOKDINE = {
-  "Cook & Dine",
-  "Cook Dine",
-  2, // 2 stages
-  r30x2_15x4,
-  COMMIT_AS_IS
-};
-
-const struct WhatType WHAT_SMISC = {
-  "Serious Misc.",
-  "S. Misc.",
+const struct WhatType WHAT_LMATTER = {
+  "LifeMat",
+  "Life Matters",
   2, // 2 stages
   r30_30,
   LAST_NO_REMINDER
 };
 
-const struct WhatType WHAT_BREAKS = {
-  "Breaks",
-  "Breaks",
-  2, // 2 stages
-  r5_5x3,
-  COMMIT_AS_IS
-};
-
-const struct WhatType WHAT_MISC = {
-  "Misc.",
-  "Misc.",
-  2, // 2 stages
-  r30_30,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_MEDIA = {
-  "Media",
-  "Media",
-  2, // 2 stages
-  r30_30,
-  LAST_NO_REMINDER
-};
-
-const struct WhatType WHAT_RELAX = {
-  "Relaxing",
-  "Relax",
-  2, // 2 stages
-  r180_60x5,
-  LAST_NO_REMINDER
-};
 
 
 /*********************************************************************************************/
@@ -212,30 +108,17 @@ const struct WhatType WHAT_RELAX = {
 
 // !!!!!! Update WHAT_LIST_LENGTH if change number of items in this list !!!!!!
 const struct WhatType* what_list[] = {
-  &WHAT_NOTHING, 
-  &WHAT_WORK, 
-  &WHAT_BREAKS,
-  &WHAT_DOMESTIC, 
-  &WHAT_HYGIENE, 
-  &WHAT_PET,
+  &WHAT_NOTHING,
+  &WHAT_WORK,
   &WHAT_PERSONAL,
-  &WHAT_COOKDINE,
-  &WHAT_TRAFFIC,
-  &WHAT_SPORTS, 
-  &WHAT_SOCIAL,
-  &WHAT_READING, 
+  &WHAT_DEVELOPMENT,
+  &WHAT_ENJOYMENT,
+  &WHAT_SLEEP,
+  &WHAT_DOMESTIC,
+  &WHAT_PLAN,
+  &WHAT_READING,
   &WHAT_STUDYING,
-  &WHAT_SLEEP, 
-  &WHAT_SHOPPING, 
-  &WHAT_Purchasing, 
-  &WHAT_MEDITATION,
-  &WHAT_LEISURE,
-  &WHAT_HEALTH,
-  &WHAT_SMISC,
-  &WHAT_MISC,
-  &WHAT_CULTURE,
-  &WHAT_MEDIA,
-  &WHAT_RELAX
+  &WHAT_LMATTER
 };
 
 uint8_t what_list_length_short_name[WHAT_LIST_LENGTH];

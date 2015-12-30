@@ -30,11 +30,6 @@
                 "type": "png"
             },
             {
-                "file": "images/action_switch.png",
-                "name": "IMAGE_ACTION_SWITCH",
-                "type": "png"
-            },
-            {
                 "file": "images/action_stop.png",
                 "name": "IMAGE_ACTION_STOP",
                 "type": "png"
@@ -76,13 +71,10 @@
             }
         ]
     },
-    "sdkVersion": "3",
+    "sdkVersion": "2",
     "shortName": "Answer 42",
-    "targetPlatforms": [
-        "aplite",
-        "basalt"
-    ],
     "uuid": "68778513-6f1d-408f-b490-d61e2e977216",
+    "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
         "watchface": false

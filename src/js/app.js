@@ -92,8 +92,8 @@ Pebble.addEventListener('appmessage',
 		var req = new XMLHttpRequest();
 		var index = e.payload[i*4+1];
 		var tStamp = new Date(e.payload[i*4+2]*1000);
-		var tDateStr = tStamp.getUTCFullYear() + "." + pad(tStamp.getUTCMonth()+1) + "." + pad(tStamp.getUTCDate()) + " " +days[tStamp.getUTCDay()];
-		var tTimeStr = pad(tStamp.getUTCHours()) + ":"+ pad(tStamp.getUTCMinutes());
+		var tDateStr = tStamp.getFullYear() + "." + pad(tStamp.getMonth()+1) + "." + pad(tStamp.getDate()) + " " +days[tStamp.getDay()];
+		var tTimeStr = pad(tStamp.getHours()) + ":"+ pad(tStamp.getMinutes());
 		var durition = e.payload[i*4+3]/100;
 		var what = e.payload[i*4+4];
 		var summary = "index="+index+" time stamp={"+tDateStr+" / "+tTimeStr+"} durition="+durition+" what:"+what;

@@ -47,13 +47,10 @@ void data_store_save () {
 // durition - now in units of 0.01 hour (36 seconds)
 bool data_log_in(const time_t time, const uint16_t durition, const uint16_t what_index) {
   time_t time_adj;
-  time_adj= mktime(localtime(&time));
 	#ifdef DEBUG_CHECK_MORE
 	char time_buf[50];
 	strftime(time_buf, sizeof(time_buf), "%d.%m.%y %H:%M", localtime(&time));
 	APP_LOG(APP_LOG_LEVEL_INFO, "data logging: time %s durition %u index %u", time_buf, durition, what_index);
-  strftime(time_buf, sizeof(time_buf), "%d.%m.%y %H:%M", localtime(&time_adj));
-	APP_LOG(APP_LOG_LEVEL_INFO, "data logging: time_adj %s", time_buf);
 	#endif
 	if (! data_store_loaded) {
 		data_store_load();

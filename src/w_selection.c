@@ -39,7 +39,7 @@ static ActionBarLayer *s_actionbarlayer_1;
 static void initialise_ui(void) {
   s_window = window_create();
   #ifndef PBL_SDK_3
-    window_set_fullscreen(s_window, false);
+    window_set_fullscreen(s_window, 0);
   #endif
   
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
@@ -49,7 +49,7 @@ static void initialise_ui(void) {
   s_res_image_action_mid = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_MID);
   s_res_image_action_down = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_DOWN);
   // t_07
-  t_07 = text_layer_create(GRect(62, 76, 60, 16));
+  t_07 = text_layer_create(GRect(58, 76, 56, 16));
   text_layer_set_background_color(t_07, GColorBlack);
   text_layer_set_text_color(t_07, GColorWhite);
   text_layer_set_text(t_07, " 07");
@@ -57,19 +57,19 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_07);
   
   // t_08
-  t_08 = text_layer_create(GRect(0, 110, 60, 16));
+  t_08 = text_layer_create(GRect(0, 110, 56, 16));
   text_layer_set_text(t_08, " 08");
   text_layer_set_font(t_08, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_08);
   
   // t_11
-  t_11 = text_layer_create(GRect(62, 126, 60, 16));
+  t_11 = text_layer_create(GRect(58, 126, 56, 16));
   text_layer_set_text(t_11, "11 ");
   text_layer_set_font(t_11, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_11);
   
   // t_06
-  t_06 = text_layer_create(GRect(0, 76, 60, 16));
+  t_06 = text_layer_create(GRect(0, 76, 56, 16));
   text_layer_set_background_color(t_06, GColorBlack);
   text_layer_set_text_color(t_06, GColorWhite);
   text_layer_set_text(t_06, " 06");
@@ -77,7 +77,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_06);
   
   // t_05
-  t_05 = text_layer_create(GRect(62, 60, 60, 16));
+  t_05 = text_layer_create(GRect(58, 60, 56, 16));
   text_layer_set_background_color(t_05, GColorBlack);
   text_layer_set_text_color(t_05, GColorWhite);
   text_layer_set_text(t_05, " 05");
@@ -85,13 +85,13 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_05);
   
   // t_09
-  t_09 = text_layer_create(GRect(62, 110, 60, 16));
+  t_09 = text_layer_create(GRect(58, 110, 56, 16));
   text_layer_set_text(t_09, "09 ");
   text_layer_set_font(t_09, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_09);
   
   // t_04
-  t_04 = text_layer_create(GRect(0, 60, 60, 16));
+  t_04 = text_layer_create(GRect(0, 60, 56, 16));
   text_layer_set_background_color(t_04, GColorBlack);
   text_layer_set_text_color(t_04, GColorWhite);
   text_layer_set_text(t_04, " 04");
@@ -99,31 +99,31 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_04);
   
   // t_03
-  t_03 = text_layer_create(GRect(62, 26, 60, 16));
+  t_03 = text_layer_create(GRect(58, 26, 56, 16));
   text_layer_set_text(t_03, "03 ");
   text_layer_set_font(t_03, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_03);
   
   // t_02
-  t_02 = text_layer_create(GRect(0, 26, 60, 16));
+  t_02 = text_layer_create(GRect(0, 26, 56, 16));
   text_layer_set_text(t_02, " 02");
   text_layer_set_font(t_02, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_02);
   
   // t_01
-  t_01 = text_layer_create(GRect(62, 10, 60, 16));
+  t_01 = text_layer_create(GRect(58, 10, 56, 16));
   text_layer_set_text(t_01, "01");
   text_layer_set_font(t_01, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_01);
   
   // t_00
-  t_00 = text_layer_create(GRect(0, 10, 60, 16));
+  t_00 = text_layer_create(GRect(0, 10, 56, 16));
   text_layer_set_text(t_00, " 00");
   text_layer_set_font(t_00, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_00);
   
   // t_10
-  t_10 = text_layer_create(GRect(0, 126, 60, 16));
+  t_10 = text_layer_create(GRect(0, 126, 56, 16));
   text_layer_set_text(t_10, " 10");
   text_layer_set_font(t_10, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_10);

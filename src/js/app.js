@@ -40,8 +40,8 @@ Pebble.addEventListener('appmessage',
   function(e) {
 	var ack_count = 0;
 	var acknowledgement = "";
-    // obtain number of records
-    var numberOfRecords = e.payload["0"];	
+  // obtain number of records
+  var numberOfRecords = e.payload["0"];	
     
 	// the closures
   //*********************************************************************//	

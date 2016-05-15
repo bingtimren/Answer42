@@ -46,10 +46,14 @@ void data_store_save () {
 
 // durition - now in units of 0.01 hour (36 seconds)
 bool data_log_in(const time_t time, const uint16_t durition, const uint16_t what_index) {
+  time_t time_adj;
+  time_adj= mktime(localtime(&time));
 	#ifdef DEBUG_CHECK_MORE
-	char time_buf[30];
+	char time_buf[50];
 	strftime(time_buf, sizeof(time_buf), "%d.%m.%y %H:%M", localtime(&time));
 	APP_LOG(APP_LOG_LEVEL_INFO, "data logging: time %s durition %u index %u", time_buf, durition, what_index);
+  strftime(time_buf, sizeof(time_buf), "%d.%m.%y %H:%M", localtime(&time_adj));
+	APP_LOG(APP_LOG_LEVEL_INFO, "data logging: time_adj %s", time_buf);
 	#endif
 	if (! data_store_loaded) {
 		data_store_load();
@@ -63,7 +67,9 @@ bool data_log_in(const time_t time, const uint16_t durition, const uint16_t what
     for (uint8_t i=0; i<DATA_STORE_SIZE; i++) {
 		if (data_store[i].time == 0) {
 			// empty slot
-			data_store[i].time = time;
+			// data_store[i].time = time; - after SDK3.0, time() is not adjusted for time zone.
+      // want to store adjusted time which will be send to phone and convert to string
+      data_store[i].time = mktime(localtime(&time));
 			data_store[i].durition = durition;
 			data_store[i].what_index = what_index;
 			data_store_usage += 1;

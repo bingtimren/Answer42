@@ -261,15 +261,23 @@ void what_finish_handler_after_confirmation(bool confirmed){
 };
 
 // down click handler - finish current what
-static void what_finish_handler(ClickRecognizerRef recognizer, void *context) {
+static void what_finish_handler_long(ClickRecognizerRef recognizer, void *context) {
 	reset_activity_timer();
 	if (running_state_current.whats_running_idx == 0) { // nothing, no need to commit, just bring up selection window 
 		show_w_selection();
 	} else {
-		// bring up confirmation window
+    // bring up confirmation window
 		confirmation_ask("Log session?", &what_finish_handler_after_confirmation);
 	};
 }
+
+static void what_finish_handler_single(ClickRecognizerRef recognizer, void *context) {
+	reset_activity_timer();
+	if (running_state_current.whats_running_idx == 0) { // nothing, no need to commit, just bring up selection window 
+		show_w_selection();
+	} // else no response, since it takes a long click to stop a session
+}
+
 
 // call communicator
 static void call_communication_handler(ClickRecognizerRef recognizer, void *context) {
@@ -294,7 +302,8 @@ static void what_discard_handler(ClickRecognizerRef recognizer, void *context) {
 // subscribe click events
 void w_running_click_config_provider(void *context) {
   window_long_click_subscribe(BUTTON_ID_UP, 0, &what_discard_handler, NULL);	
-  window_long_click_subscribe(BUTTON_ID_DOWN, 0, &what_finish_handler, NULL);
+  window_long_click_subscribe(BUTTON_ID_DOWN, 0, &what_finish_handler_long, NULL);
+  window_single_click_subscribe(BUTTON_ID_DOWN, &what_finish_handler_single);
   window_single_click_subscribe(BUTTON_ID_SELECT, &call_communication_handler);
 };
 

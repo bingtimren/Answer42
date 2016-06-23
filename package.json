@@ -1,0 +1,132 @@
+{
+    "author": "Life Endeavour",
+    "dependencies": {},
+    "keywords": [],
+    "name": "answer-42",
+    "pebble": {
+        "capabilities": [
+            ""
+        ],
+        "displayName": "Answer 42",
+        "enableMultiJS": true,
+        "messageKeys": {},
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/action_adjust.png",
+                    "name": "IMAGE_ACTION_ADJUST",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_minus.png",
+                    "name": "IMAGE_ACTION_MINUS",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_plus.png",
+                    "name": "IMAGE_ACTION_PLUS",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/clock_running",
+                    "name": "IMAGE_CLOCK_RUNNING",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/clock_start",
+                    "name": "IMAGE_CLOCK_START",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_stop.png",
+                    "name": "IMAGE_ACTION_STOP",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_wireless.png",
+                    "name": "IMAGE_ACTION_WIRELESS",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_yes.png",
+                    "name": "IMAGE_ACTION_YES",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_up.png",
+                    "name": "IMAGE_ACTION_UP",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_right.png",
+                    "name": "IMAGE_ACTION_RIGHT",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_reset.png",
+                    "name": "IMAGE_ACTION_RESET",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_no.png",
+                    "name": "IMAGE_ACTION_NO",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_mid.png",
+                    "name": "IMAGE_ACTION_MID",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_down.png",
+                    "name": "IMAGE_ACTION_DOWN",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_left.png",
+                    "name": "IMAGE_ACTION_LEFT",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_clear.png",
+                    "name": "IMAGE_ACTION_CLEAR",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/menuimg.png",
+                    "menuIcon": true,
+                    "name": "IMAGE_42",
+                    "type": "png"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk"
+        ],
+        "uuid": "68778513-6f1d-408f-b490-d61e2e977216",
+        "watchapp": {
+            "watchface": false
+        }
+    },
+    "version": "1.0.0"
+}

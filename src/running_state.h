@@ -6,6 +6,7 @@
 /* current running status */
 struct RunningState {
   uint8_t whats_running_idx;
+  int plus_step;
   time_t start_time;
   time_t target_time;
   uint8_t stage_idx;

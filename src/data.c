@@ -46,7 +46,6 @@ void data_store_save () {
 
 // durition - now in units of 0.01 hour (36 seconds)
 bool data_log_in(const time_t time, const uint16_t durition, const uint16_t what_index) {
-  time_t time_adj;
 	#ifdef DEBUG_CHECK_MORE
 	char time_buf[50];
 	strftime(time_buf, sizeof(time_buf), "%d.%m.%y %H:%M", localtime(&time));

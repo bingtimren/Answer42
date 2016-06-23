@@ -89,6 +89,7 @@ void running_state_kickoff(int whats_idx) {
   running_state_what = what_list[whats_idx];
   // set start time 
   time(&running_state_current.start_time);
+  running_state_current.plus_step = 0;
   // kick off stage 0, in which will also update target time
   running_state_kickoff_stage(0);
   APP_LOG(APP_LOG_LEVEL_INFO, "Running state [%s] kicked-off ", running_state_summary());

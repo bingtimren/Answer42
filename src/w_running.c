@@ -32,7 +32,7 @@ static GFont s_res_gothic_24;
 static GBitmap *s_res_image_action_adjust;
 static GBitmap *s_res_image_action_wireless;
 static GBitmap *s_res_image_action_stop;
-static GFont s_res_bitham_42_medium_numbers;
+static GFont s_res_bitham_34_medium_numbers;
 static TextLayer *t_warning;
 static BitmapLayer *s_bitmaplayer_1;
 static BitmapLayer *s_bitmaplayer_elapse;
@@ -60,9 +60,9 @@ static void initialise_ui(void) {
   s_res_image_action_adjust = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_ADJUST);
   s_res_image_action_wireless = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_WIRELESS);
   s_res_image_action_stop = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_STOP);
-  s_res_bitham_42_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_42_MEDIUM_NUMBERS);
+  s_res_bitham_34_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS);
   // t_warning
-  t_warning = text_layer_create(GRect(0, 150, 114, 20));
+  t_warning = text_layer_create(GRect(0, 150, 116, 20));
   text_layer_set_background_color(t_warning, GColorBlack);
   text_layer_set_text_color(t_warning, GColorWhite);
   text_layer_set_text(t_warning, " ");
@@ -71,7 +71,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_warning);
   
   // s_bitmaplayer_1
-  s_bitmaplayer_1 = bitmap_layer_create(GRect(0, 103, 114, 47));
+  s_bitmaplayer_1 = bitmap_layer_create(GRect(0, 103, 116, 47));
   bitmap_layer_set_background_color(s_bitmaplayer_1, GColorBlack);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmaplayer_1);
   
@@ -88,7 +88,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmaplayer_start);
   
   // t_what
-  t_what = text_layer_create(GRect(0, 72, 114, 31));
+  t_what = text_layer_create(GRect(0, 72, 116, 31));
   text_layer_set_background_color(t_what, GColorBlack);
   text_layer_set_text_color(t_what, GColorWhite);
   text_layer_set_text(t_what, "Nothing ");
@@ -97,7 +97,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_what);
   
   // t_plus_minus
-  t_plus_minus = text_layer_create(GRect(100, 126, 14, 26));
+  t_plus_minus = text_layer_create(GRect(100, 124, 14, 26));
   text_layer_set_background_color(t_plus_minus, GColorClear);
   text_layer_set_text_color(t_plus_minus, GColorWhite);
   text_layer_set_text(t_plus_minus, "+");
@@ -105,7 +105,7 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_plus_minus);
   
   // t_elapsed_time
-  t_elapsed_time = text_layer_create(GRect(29, 126, 71, 26));
+  t_elapsed_time = text_layer_create(GRect(29, 124, 71, 28));
   text_layer_set_background_color(t_elapsed_time, GColorClear);
   text_layer_set_text_color(t_elapsed_time, GColorWhite);
   text_layer_set_text(t_elapsed_time, "2h 19m");
@@ -113,15 +113,15 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_elapsed_time);
   
   // t_start_time
-  t_start_time = text_layer_create(GRect(29, 103, 75, 28));
+  t_start_time = text_layer_create(GRect(29, 102, 77, 30));
   text_layer_set_background_color(t_start_time, GColorClear);
   text_layer_set_text_color(t_start_time, GColorWhite);
-  text_layer_set_text(t_start_time, "20:27 AM");
+  text_layer_set_text(t_start_time, "04:04 am");
   text_layer_set_font(t_start_time, s_res_gothic_24_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_start_time);
   
   // t_date
-  t_date = text_layer_create(GRect(0, 0, 114, 28));
+  t_date = text_layer_create(GRect(0, 0, 116, 28));
   text_layer_set_background_color(t_date, GColorBlack);
   text_layer_set_text_color(t_date, GColorWhite);
   text_layer_set_text(t_date, " Tue 23 Jun");
@@ -139,12 +139,12 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
   
   // t_time
-  t_time = text_layer_create(GRect(0, 28, 114, 44));
+  t_time = text_layer_create(GRect(0, 28, 116, 44));
   text_layer_set_background_color(t_time, GColorBlack);
   text_layer_set_text_color(t_time, GColorWhite);
-  text_layer_set_text(t_time, "09:49");
+  text_layer_set_text(t_time, "04:04");
   text_layer_set_text_alignment(t_time, GTextAlignmentCenter);
-  text_layer_set_font(t_time, s_res_bitham_42_medium_numbers);
+  text_layer_set_font(t_time, s_res_bitham_34_medium_numbers);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_time);
 }
 

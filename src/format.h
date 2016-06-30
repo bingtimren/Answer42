@@ -1,7 +1,7 @@
 #pragma once
 #include <pebble.h>  
 
-#define FORMAT_24HTIME "%I:%M %p"
+#define FORMAT_24HTIME "%I:%M %P"
 #define FORMAT_CURRENT_DATE "%a %d %b"
 #define FORMAT_CURRENT_TIME "%I:%M"
 #define FORMAT_24HTIME_BUFFER_LENGTH 9

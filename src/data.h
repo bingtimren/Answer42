@@ -5,6 +5,7 @@
 #define KEY_CURRENT_RUNNING_STATE 1
 #define KEY_DATA_STORE 2
 #define KEY_WAKEUP_REGISTRY 3 
+#define KEY_LOCAL_SUMMARY 4
 
 
 /* everything related to storage of records and communication with phone */

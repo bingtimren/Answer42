@@ -3,6 +3,13 @@
 #include "data.h"
 #include "w_running.h"
 
+/*
+ * manage TimeRecord data storage 
+ * 
+ * 
+ * 
+ */
+
 static uint8_t data_store_usage;
 
 struct TimeRecord data_store[DATA_STORE_SIZE];

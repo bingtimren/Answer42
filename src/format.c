@@ -20,6 +20,18 @@ void fmt_to_timediff(struct TimeDifference* result_buffer, time_t t1, time_t t2)
   (*result_buffer).days = secdiff / SEC_IN_DAY;
 }
 
+void fmt_minutes_to_hour_minutes(char* res_buffer, int buffer_length, uint16_t minutes) {
+	uint16_t days = minutes / MINUTES_PER_DAY;
+	uint8_t hours = (minutes % MINUTES_PER_DAY) / MINUTES_PER_HOUR;
+	uint8_t min = (minutes % MINUTES_PER_DAY) % MINUTES_PER_HOUR;
+	
+	if (days > 0) {
+		uint8_t d1 = snprintf(res_buffer, buffer_length, "%ud", days);
+	};
+	
+}
+
+
 // returns - earlier (true) or later
 bool fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2) {
   struct TimeDifference tdiff;

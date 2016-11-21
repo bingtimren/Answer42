@@ -11,9 +11,15 @@
 #include "w_confirmation.h"
 #include "localsummary.h"
 
-static uint8_t mid_section_mode = 0;
-#define MID_SECTION_MODES 2
+enum MidSectionMode {
+	start_lasted = 0,
+	local_summary = 1,
+};
+
+static enum MidSectionMode mid_section_mode = start_lasted;
+
 #define MID_SECTION_MODE_CHANGE_TIME 10
+
 static char line1[15];
 static char line2[15];
 char warning[20];
@@ -208,9 +214,8 @@ bool fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2) {
 static time_t mid_section_mode_lastchange_time;
 
 void display_mid_section_switch_state(time_t now) {
-	if ((now - mid_section_mode_lastchange_time) >= MID_SECTION_MODE_CHANGE_TIME) {
-		mid_section_mode = (mid_section_mode+1) % MID_SECTION_MODES;
-		mid_section_mode_lastchange_time = now;
+	if ((mid_section_mode != start_lasted) && (now - mid_section_mode_lastchange_time) >= MID_SECTION_MODE_CHANGE_TIME) {
+		mid_section_mode = start_lasted;
 	};
 };
 
@@ -356,7 +361,7 @@ static void down_short_handler(ClickRecognizerRef recognizer, void *context) {
   if (mode == 'A')
     adjust_minus();
   else {
-  	mid_section_mode = (mid_section_mode+1) % MID_SECTION_MODES;
+  	mid_section_mode = local_summary;
 	mid_section_mode_lastchange_time = time(NULL);
 	display_mid_section();
   };
@@ -394,8 +399,7 @@ static void back_short_handler(ClickRecognizerRef recognizer, void *context) {
 // up_long_handler
 static void up_long_handler(ClickRecognizerRef recognizer, void *context) {
   reset_activity_timer();
-  if (mode == 'N')
-    mode_adjust();
+  mode_adjust();
 }
 
 

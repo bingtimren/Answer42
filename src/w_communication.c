@@ -6,6 +6,7 @@
 #include "wakeup.h"
 #include "debug.h"
 #include "w_confirmation.h"
+#include "localsummary.h"
 
   // text buffers
 static time_t time_now;
@@ -311,8 +312,9 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 	};
 	// initialize dictionary
 	DictionaryIterator* dic_iterator;
-	if (app_message_outbox_begin(&dic_iterator) != APP_MSG_OK) {
-	APP_LOG(APP_LOG_LEVEL_ERROR, "Begin Message Outbox Failed");
+	AppMessageResult r = app_message_outbox_begin(&dic_iterator);
+	if (r != APP_MSG_OK) {
+	APP_LOG(APP_LOG_LEVEL_ERROR, "Begin Message Outbox Failed %d", r);
 	return;
 	}
 	
@@ -387,6 +389,7 @@ void reset_handler_after_confirmation(bool confirmed){
 		data_clear();
 		running_state_clear();
 		wakeup_state_clear();
+		local_summary_clear();
 		// and exit everything
 		window_stack_pop_all(false);
 	};

@@ -26,10 +26,10 @@ static void build_menu_section() {
 		lsum = get_local_summary_by_what_index(i);
 		uint8_t tl = 0;
 		if (lsum -> one_100_hours_today > 0) {
-			tl = snprintf(&subtitles[i-1][0], SUB_TITLE_LENGTH, "Td %u.%uh ", (lsum -> one_100_hours_today)/100, (lsum -> one_100_hours_today)%100);		
+			tl = snprintf(&subtitles[i-1][0], SUB_TITLE_LENGTH, "Td %u.%02uh ", (lsum -> one_100_hours_today)/100, (lsum -> one_100_hours_today)%100);		
 		};
 		if ((lsum -> one_100_hours_yesterday > 0) && (tl < SUB_TITLE_LENGTH)) {
-			snprintf(&subtitles[i-1][0]+tl, SUB_TITLE_LENGTH-tl, "Ystd %u.%uh ", (lsum -> one_100_hours_yesterday)/100, (lsum -> one_100_hours_yesterday)%100);		
+			snprintf(&subtitles[i-1][0]+tl, SUB_TITLE_LENGTH-tl, "Ystd %u.%02uh ", (lsum -> one_100_hours_yesterday)/100, (lsum -> one_100_hours_yesterday)%100);		
 		};
 		s_menu_items[i-1] = (SimpleMenuItem) {
 			.title = what_list[i] -> name,

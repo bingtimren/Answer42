@@ -1,7 +1,5 @@
 var days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-DEBUG = false;
-
 Pebble.addEventListener('ready',
   function(e) {
     debug_log('JavaScript app ready and running!');
@@ -9,7 +7,8 @@ Pebble.addEventListener('ready',
 );
 
 function debug_log(message) {
-	if (DEBUG) console.log(message);
+	// remark or not remark, to change debug mode
+	// console.log(message);
 };
 
 debug_log("DEBUGGING MODE");

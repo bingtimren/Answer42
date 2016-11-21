@@ -9,6 +9,7 @@ struct LocalSummaryDataStorage {
 };
 
 struct LocalSummaryDataStorage local_summary_store;
+static bool local_summary_data_loaded = false;
 
 time_t starts_of_today() {
 	time_t time_now;
@@ -20,6 +21,7 @@ time_t starts_of_today() {
 // save local summary status
 void local_summary_save () {
   persist_write_data(KEY_LOCAL_SUMMARY, &local_summary_store, sizeof(local_summary_store));
+  local_summary_data_loaded = true;
   APP_LOG(APP_LOG_LEVEL_INFO, "Local summary store (l=%u) saved ", sizeof(local_summary_store));
 };
 
@@ -50,6 +52,8 @@ void local_summary_swap() {
 //    now - today > 24 hour but <= 48 hour (no more today, yesterday) -> swap out 
 //    now - today > 48 hour, reset
 void check_local_summary() {
+	if (!local_summary_data_loaded)
+		local_summary_load();
 	time_t time_now;
 	time(&time_now);
 	time_t tdiff = time_now - local_summary_store.local_summary_today;
@@ -62,8 +66,17 @@ void check_local_summary() {
 	};
 };
 
+// clear 
+void local_summary_clear() {
+  if (persist_exists(KEY_LOCAL_SUMMARY)) {
+    persist_delete(KEY_LOCAL_SUMMARY);
+    APP_LOG(APP_LOG_LEVEL_INFO, "Local Summary cleared.");
+  };
+}
+
 // load local summary, or kick off if not found
 void local_summary_load () {
+	local_summary_data_loaded = true;
 	APP_LOG(APP_LOG_LEVEL_INFO,"Loadding local summary store...");
 	if (persist_exists(KEY_LOCAL_SUMMARY)) {
 		persist_read_data(KEY_LOCAL_SUMMARY, &local_summary_store, sizeof(local_summary_store));
@@ -73,12 +86,6 @@ void local_summary_load () {
 	}; 
 	// otherwise kick off
 	local_summary_reset();				
-};
-
-void local_summary_accumulate(uint8_t what_index, int minutes) {
-	check_local_summary();
-	local_summary_store.local_summarys[what_index].one_100_hours_today += minutes;
-	local_summary_save();
 };
 
 struct LocalSummaryType* get_local_summary_by_what_index(uint8_t index) {

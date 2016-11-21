@@ -13,7 +13,7 @@
 
 static uint8_t mid_section_mode = 0;
 #define MID_SECTION_MODES 2
-#define MID_SECTION_MODE_CHANGE_TIME 3
+#define MID_SECTION_MODE_CHANGE_TIME 10
 static char line1[15];
 static char line2[15];
 char warning[20];
@@ -230,9 +230,9 @@ void display_mid_section_tdy_yest(time_t tnow) {
 	// today / yesterday
 	struct LocalSummaryType *lsum = get_local_summary_by_what_index(running_state_current.whats_running_idx);
 	uint16_t today = lsum -> one_100_hours_today + (tnow - running_state_current.start_time + 18) / 36;
-	snprintf(line1, sizeof(line1), "Tody: %u.%u h ", (today)/100, (today)%100);	
+	snprintf(line1, sizeof(line1), "Tody: %u.%02u h ", (today)/100, (today)%100);	
 	text_layer_set_text(t_line1, line1);  
-	snprintf(line2, sizeof(line2), "Ystdy: %u.%u h ", (lsum -> one_100_hours_yesterday)/100, (lsum -> one_100_hours_yesterday)%100);	
+	snprintf(line2, sizeof(line2), "Ystdy: %u.%02u h ", (lsum -> one_100_hours_yesterday)/100, (lsum -> one_100_hours_yesterday)%100);	
 	text_layer_set_text(t_line2, line2);	
 };	
 
@@ -355,6 +355,11 @@ static void down_short_handler(ClickRecognizerRef recognizer, void *context) {
   reset_activity_timer();
   if (mode == 'A')
     adjust_minus();
+  else {
+  	mid_section_mode = (mid_section_mode+1) % MID_SECTION_MODES;
+	mid_section_mode_lastchange_time = time(NULL);
+	display_mid_section();
+  };
 }
 
 void what_discard_handler_after_confirmation(bool confirmed){

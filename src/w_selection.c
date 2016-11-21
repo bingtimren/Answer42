@@ -6,6 +6,7 @@
 #include "w_running.h"
 #include "debug.h"
 #include "format.h"
+#include "localsummary.h"
 
 static Window *s_window;
 static SimpleMenuLayer *s_simple_menu;
@@ -15,13 +16,21 @@ static SimpleMenuItem s_menu_items[WHAT_LIST_LENGTH-1];
 static char subtitles[WHAT_LIST_LENGTH-1][SUB_TITLE_LENGTH];
 
 static void menu_select_callback(int index, void *ctx) {
-  s_menu_items[index].subtitle = "Hit here!";
-  layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu));
+	running_state_kickoff(index+1);
+	hide_w_selection(); 	
 }
 
 static void build_menu_section() {
 	for (uint8_t i=1; i<WHAT_LIST_LENGTH; i++) { // note i starts from 1, mind array boundary!
-		fmt_minutes_to_hour_minutes(&subtitles[i-1][0], SUB_TITLE_LENGTH, 3*60*24);		
+		struct LocalSummaryType *lsum;
+		lsum = get_local_summary_by_what_index(i);
+		uint8_t tl = 0;
+		if (lsum -> one_100_hours_today > 0) {
+			tl = snprintf(&subtitles[i-1][0], SUB_TITLE_LENGTH, "Td %u.%uh ", (lsum -> one_100_hours_today)/100, (lsum -> one_100_hours_today)%100);		
+		};
+		if ((lsum -> one_100_hours_yesterday > 0) && (tl < SUB_TITLE_LENGTH)) {
+			snprintf(&subtitles[i-1][0]+tl, SUB_TITLE_LENGTH-tl, "Ystd %u.%uh ", (lsum -> one_100_hours_yesterday)/100, (lsum -> one_100_hours_yesterday)%100);		
+		};
 		s_menu_items[i-1] = (SimpleMenuItem) {
 			.title = what_list[i] -> name,
 			.subtitle = &subtitles[i-1][0],

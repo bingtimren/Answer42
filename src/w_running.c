@@ -9,9 +9,13 @@
 #include "w_selection.h"  
 #include "w_communication.h"
 #include "w_confirmation.h"
+#include "localsummary.h"
 
-static char start_time[FORMAT_24HTIME_BUFFER_LENGTH];
-static char elapsed_time[10]; 
+static uint8_t mid_section_mode = 0;
+#define MID_SECTION_MODES 2
+#define MID_SECTION_MODE_CHANGE_TIME 3
+static char line1[15];
+static char line2[15];
 char warning[20];
 static char current_date[15];
 static char current_time[10];
@@ -24,8 +28,6 @@ static GBitmap *s_res_image_action_minus;
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
 static GFont s_res_gothic_14;
-static GBitmap *s_res_image_clock_running;
-static GBitmap *s_res_image_clock_start;
 static GFont s_res_gothic_28;
 static GFont s_res_gothic_24_bold;
 static GFont s_res_gothic_24;
@@ -35,12 +37,10 @@ static GBitmap *s_res_image_action_stop;
 static GFont s_res_bitham_34_medium_numbers;
 static TextLayer *t_warning;
 static BitmapLayer *s_bitmaplayer_1;
-static BitmapLayer *s_bitmaplayer_elapse;
-static BitmapLayer *s_bitmaplayer_start;
 static TextLayer *t_what;
 static TextLayer *t_plus_minus;
-static TextLayer *t_elapsed_time;
-static TextLayer *t_start_time;
+static TextLayer *t_line2;
+static TextLayer *t_line1;
 static TextLayer *t_date;
 static ActionBarLayer *s_actionbarlayer_1;
 static TextLayer *t_time;
@@ -52,8 +52,6 @@ static void initialise_ui(void) {
   #endif
   
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
-  s_res_image_clock_running = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CLOCK_RUNNING);
-  s_res_image_clock_start = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_CLOCK_START);
   s_res_gothic_28 = fonts_get_system_font(FONT_KEY_GOTHIC_28);
   s_res_gothic_24_bold = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD);
   s_res_gothic_24 = fonts_get_system_font(FONT_KEY_GOTHIC_24);
@@ -75,18 +73,6 @@ static void initialise_ui(void) {
   bitmap_layer_set_background_color(s_bitmaplayer_1, GColorBlack);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmaplayer_1);
   
-  // s_bitmaplayer_elapse
-  s_bitmaplayer_elapse = bitmap_layer_create(GRect(5, 131, 21, 21));
-  bitmap_layer_set_bitmap(s_bitmaplayer_elapse, s_res_image_clock_running);
-  bitmap_layer_set_background_color(s_bitmaplayer_elapse, GColorBlack);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmaplayer_elapse);
-  
-  // s_bitmaplayer_start
-  s_bitmaplayer_start = bitmap_layer_create(GRect(5, 109, 21, 21));
-  bitmap_layer_set_bitmap(s_bitmaplayer_start, s_res_image_clock_start);
-  bitmap_layer_set_background_color(s_bitmaplayer_start, GColorBlack);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmaplayer_start);
-  
   // t_what
   t_what = text_layer_create(GRect(0, 72, 116, 31));
   text_layer_set_background_color(t_what, GColorBlack);
@@ -104,21 +90,21 @@ static void initialise_ui(void) {
   text_layer_set_font(t_plus_minus, s_res_gothic_24_bold);
   layer_add_child(window_get_root_layer(s_window), (Layer *)t_plus_minus);
   
-  // t_elapsed_time
-  t_elapsed_time = text_layer_create(GRect(29, 124, 71, 28));
-  text_layer_set_background_color(t_elapsed_time, GColorClear);
-  text_layer_set_text_color(t_elapsed_time, GColorWhite);
-  text_layer_set_text(t_elapsed_time, "2h 19m");
-  text_layer_set_font(t_elapsed_time, s_res_gothic_24_bold);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_elapsed_time);
+  // t_line2
+  t_line2 = text_layer_create(GRect(2, 124, 105, 28));
+  text_layer_set_background_color(t_line2, GColorClear);
+  text_layer_set_text_color(t_line2, GColorWhite);
+  text_layer_set_text(t_line2, "l2");
+  text_layer_set_font(t_line2, s_res_gothic_24_bold);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_line2);
   
-  // t_start_time
-  t_start_time = text_layer_create(GRect(29, 102, 77, 30));
-  text_layer_set_background_color(t_start_time, GColorClear);
-  text_layer_set_text_color(t_start_time, GColorWhite);
-  text_layer_set_text(t_start_time, "04:04 am");
-  text_layer_set_font(t_start_time, s_res_gothic_24_bold);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)t_start_time);
+  // t_line1
+  t_line1 = text_layer_create(GRect(2, 102, 107, 30));
+  text_layer_set_background_color(t_line1, GColorClear);
+  text_layer_set_text_color(t_line1, GColorWhite);
+  text_layer_set_text(t_line1, "l1");
+  text_layer_set_font(t_line1, s_res_gothic_24_bold);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)t_line1);
   
   // t_date
   t_date = text_layer_create(GRect(0, 0, 116, 28));
@@ -152,17 +138,13 @@ static void destroy_ui(void) {
   window_destroy(s_window);
   text_layer_destroy(t_warning);
   bitmap_layer_destroy(s_bitmaplayer_1);
-  bitmap_layer_destroy(s_bitmaplayer_elapse);
-  bitmap_layer_destroy(s_bitmaplayer_start);
   text_layer_destroy(t_what);
   text_layer_destroy(t_plus_minus);
-  text_layer_destroy(t_elapsed_time);
-  text_layer_destroy(t_start_time);
+  text_layer_destroy(t_line2);
+  text_layer_destroy(t_line1);
   text_layer_destroy(t_date);
   action_bar_layer_destroy(s_actionbarlayer_1);
   text_layer_destroy(t_time);
-  gbitmap_destroy(s_res_image_clock_running);
-  gbitmap_destroy(s_res_image_clock_start);
   gbitmap_destroy(s_res_image_action_adjust);
   gbitmap_destroy(s_res_image_action_wireless);
   gbitmap_destroy(s_res_image_action_stop);
@@ -209,24 +191,75 @@ void hide_w_running(void) {
   window_stack_remove(s_window, true);
 }
 
-// display lapse and remain
-void sync_time_lapse_remain(void) {
+// returns - earlier (true) or later
+bool fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2) {
+  struct TimeDifference tdiff;
+  fmt_to_timediff(&tdiff, t1, t2);
+  if (tdiff.days != 0) {
+    snprintf(buffer, size, "Lst: %ud %u h", tdiff.days, tdiff.hours);
+  } else if (tdiff.hours != 0) {
+    snprintf(buffer, size, "Lst: %uh %u m", tdiff.hours, tdiff.minutes);
+  } else {
+    snprintf(buffer, size, "Lst: %um %u s", tdiff.minutes, tdiff.seconds);
+  };
+  return tdiff.earlier;
+}
+
+static time_t mid_section_mode_lastchange_time;
+
+void display_mid_section_switch_state(time_t now) {
+	if ((now - mid_section_mode_lastchange_time) >= MID_SECTION_MODE_CHANGE_TIME) {
+		mid_section_mode = (mid_section_mode+1) % MID_SECTION_MODES;
+		mid_section_mode_lastchange_time = now;
+	};
+};
+
+void display_mid_section_start_lasted (time_t tnow) {
+	// start / lasted time
+	strftime(line1, sizeof(line1), "Str: %I:%M %P", localtime(&(running_state_current.start_time)));
+	text_layer_set_text(t_line1, line1);  
+	if (fmt_timediff_str(line2, sizeof(line2), tnow, running_state_current.start_time)) {
+		// now earlier than start time???!!
+		text_layer_set_text(t_line2, "Lst: ERR!");
+	} else {
+		text_layer_set_text(t_line2, line2);	
+	};
+};	
+
+void display_mid_section_tdy_yest(time_t tnow) {
+	// today / yesterday
+	struct LocalSummaryType *lsum = get_local_summary_by_what_index(running_state_current.whats_running_idx);
+	uint16_t today = lsum -> one_100_hours_today + (tnow - running_state_current.start_time + 18) / 36;
+	snprintf(line1, sizeof(line1), "Tody: %u.%u h ", (today)/100, (today)%100);	
+	text_layer_set_text(t_line1, line1);  
+	snprintf(line2, sizeof(line2), "Ystdy: %u.%u h ", (lsum -> one_100_hours_yesterday)/100, (lsum -> one_100_hours_yesterday)%100);	
+	text_layer_set_text(t_line2, line2);	
+};	
+
+
+void display_mid_section(void) {
 	time_t time_now;
 	struct tm *time_now_local;	
 	time(&time_now);
 	time_now_local = localtime(&time_now);
-  strftime(current_date, sizeof(current_date), FORMAT_CURRENT_DATE, time_now_local);
-  strftime(current_time, sizeof(current_time), FORMAT_CURRENT_TIME, time_now_local);
+	
+	display_mid_section_switch_state(time_now);
+	
+	strftime(current_date, sizeof(current_date), FORMAT_CURRENT_DATE, time_now_local);
+	strftime(current_time, sizeof(current_time), FORMAT_CURRENT_TIME, time_now_local);
   
-  text_layer_set_text(t_date, current_date);	
-  text_layer_set_text(t_time, current_time);	
+	text_layer_set_text(t_date, current_date);	
+	text_layer_set_text(t_time, current_time);	
   
-  if (fmt_timediff_str(elapsed_time, sizeof(elapsed_time), time_now, running_state_current.start_time)) {
-		// now earlier than start time???!!
-		text_layer_set_text(t_elapsed_time, "ERR!");
-	} else
-		text_layer_set_text(t_elapsed_time, elapsed_time);
-}
+	switch (mid_section_mode) {
+		case 0: 
+			display_mid_section_start_lasted(time_now);
+			break;
+		case 1 : 
+			display_mid_section_tdy_yest(time_now);
+			break;
+	};
+};
 
 // synchronize contents of the running window
 void sync_w_running(void) {
@@ -238,10 +271,8 @@ void sync_w_running(void) {
   } else {
     text_layer_set_text(t_plus_minus, "-");
   };
-  // show state - start time 
-  fmt_time_24h(start_time, sizeof(start_time), &(running_state_current.start_time));
-  text_layer_set_text(t_start_time, start_time);
-  sync_time_lapse_remain();
+
+  display_mid_section();
 };
 
 
@@ -258,7 +289,7 @@ static void w_running_tick_handler(struct tm *tick_time, TimeUnits units_changed
     if (mode != 'N')
       mode_normal();
     }
-  sync_time_lapse_remain();
+  display_mid_section();
 };
 
 void update_warning(const char* warning) {

@@ -20,28 +20,23 @@ void fmt_to_timediff(struct TimeDifference* result_buffer, time_t t1, time_t t2)
   (*result_buffer).days = secdiff / SEC_IN_DAY;
 }
 
-void fmt_minutes_to_hour_minutes(char* res_buffer, int buffer_length, uint16_t minutes) {
+uint8_t fmt_minutes_to_hour_minutes(char* res_buffer, int buffer_length, uint16_t minutes) {
 	uint16_t days = minutes / MINUTES_PER_DAY;
 	uint8_t hours = (minutes % MINUTES_PER_DAY) / MINUTES_PER_HOUR;
 	uint8_t min = (minutes % MINUTES_PER_DAY) % MINUTES_PER_HOUR;
-	
+	uint8_t d1 = 0;
+	uint8_t d2 = 0;
+	uint8_t d3 = 0;
 	if (days > 0) {
-		uint8_t d1 = snprintf(res_buffer, buffer_length, "%ud", days);
+		d1 = snprintf(res_buffer, buffer_length, "%ud ", days);
 	};
-	
+	if ((hours > 0) && (d1<buffer_length)) {
+		d2 = snprintf(res_buffer+d1, buffer_length-d1, "%uh", hours);
+	};
+	if ((minutes > 0) && ((d1+d2)<buffer_length)) {
+		d3 = snprintf(res_buffer+d1+d2, buffer_length-d1-d2, "%um", min);
+	};
+	return d1+d2+d3;
 }
 
 
-// returns - earlier (true) or later
-bool fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2) {
-  struct TimeDifference tdiff;
-  fmt_to_timediff(&tdiff, t1, t2);
-  if (tdiff.days != 0) {
-    snprintf(buffer, size, "%ud %uh", tdiff.days, tdiff.hours);
-  } else if (tdiff.hours != 0) {
-    snprintf(buffer, size, "%uh %um", tdiff.hours, tdiff.minutes);
-  } else {
-    snprintf(buffer, size, "%um %us", tdiff.minutes, tdiff.seconds);
-  };
-  return tdiff.earlier;
-}

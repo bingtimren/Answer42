@@ -28,8 +28,8 @@ void local_summary_reset() {
 	local_summary_store.local_summary_today = starts_of_today();
 	for (uint8_t i=0; i < WHAT_LIST_LENGTH; i++) {
 		struct LocalSummaryType* lsum = &(local_summary_store.local_summarys[i]);
-		lsum -> minutes_yesterday = 0;
-		lsum -> minutes_today = 0;					
+		lsum -> one_100_hours_yesterday = 0;
+		lsum -> one_100_hours_today = 0;					
 	};
 	local_summary_save();
 };
@@ -39,8 +39,8 @@ void local_summary_swap() {
 	local_summary_store.local_summary_today = starts_of_today();
 	for (uint8_t i=0; i < WHAT_LIST_LENGTH; i++) {
 		struct LocalSummaryType* lsum = &(local_summary_store.local_summarys[i]);
-		lsum -> minutes_yesterday = lsum -> minutes_today;
-		lsum -> minutes_today = 0;					
+		lsum -> one_100_hours_yesterday = lsum -> one_100_hours_today;
+		lsum -> one_100_hours_today = 0;					
 	};
 	local_summary_save();
 };
@@ -77,11 +77,17 @@ void local_summary_load () {
 
 void local_summary_accumulate(uint8_t what_index, int minutes) {
 	check_local_summary();
-	local_summary_store.local_summarys[what_index].minutes_today += minutes;
+	local_summary_store.local_summarys[what_index].one_100_hours_today += minutes;
 	local_summary_save();
 };
 
-struct LocalSummaryType get_local_summary_by_what_index(uint8_t index) {
+struct LocalSummaryType* get_local_summary_by_what_index(uint8_t index) {
 	check_local_summary();
-	return local_summary_store.local_summarys[index];
+	return &local_summary_store.local_summarys[index];
+};
+
+void commit_local_summary_by_what_index(uint16_t time_by_1_100th_hour, uint8_t index) {
+	check_local_summary();
+	local_summary_store.local_summarys[index].one_100_hours_today += time_by_1_100th_hour;
+	local_summary_save();
 };

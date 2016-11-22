@@ -15,7 +15,7 @@ time_t starts_of_today() {
 	time_t time_now;
 	time(&time_now);
 	struct tm *time_now_local = localtime(&time_now);	
-	return time_now - 3600*(23-(*time_now_local).tm_hour) + 60*(59-(*time_now_local).tm_min) + (60 - (*time_now_local).tm_sec);
+	return time_now - 3600*(time_now_local->tm_hour) - 60*(time_now_local->tm_min) - (time_now_local->tm_sec);
 };
 
 // save local summary status
@@ -57,6 +57,7 @@ void check_local_summary() {
 	time_t time_now;
 	time(&time_now);
 	time_t tdiff = time_now - local_summary_store.local_summary_today;
+	APP_LOG(APP_LOG_LEVEL_INFO, "Local Summary check local status, Time now: %ld, time diff %ld", time_now, tdiff);
 	if (tdiff < SECONDS_PER_DAY)
 		return; // nothing to do
 	if (tdiff < 2 * SECONDS_PER_DAY) { // swap out		

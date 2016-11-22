@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "w_confirmation.h"
 #include "localsummary.h"
+#include "w_credit.h"
 
   // text buffers
 static time_t time_now;
@@ -14,17 +15,13 @@ static char send_time_buf[10];
 static char ack_time_buf[10];
 static char* lastsend_status = "";
 
-// for some reason if I use maximum inbox/outbox I can get, after sending the system will just crash, so save some buffer
-#define safety_buffer 6500
-
 static char onwatch_num_records[4];
 static char sent_num_records[4];
 static char ack_num_records[4];
 
-static bool init_done = false;
+#define OUTBOX_SIZE 1000 // cannot predict behavior only try and find what works
 
-static uint32_t inbox_size = 0;
-static uint32_t outbox_size = 0;
+static bool init_done = false;
 
 // minutes to boost bluetooth response
 #define bluetooth_high_durition 2
@@ -263,10 +260,8 @@ void messages_init() {
   app_message_register_outbox_sent(messages_outbox_sent);
   app_message_register_outbox_failed(messages_outbox_failed);
   // open outbox with maximum size, inbox with just enough to receive acknowledgement (each possible ack=1 byte, plus header - in actual test 9 bytes, but get some more for safe)
-  inbox_size = DATA_STORE_SIZE + 15;
-  outbox_size = app_message_outbox_size_maximum() - safety_buffer;
-  AppMessageResult msg_open_result = app_message_open(inbox_size, outbox_size);
-  APP_LOG(APP_LOG_LEVEL_INFO, "Open message, inbox size %lu outbox size %lu result %u", inbox_size, outbox_size, msg_open_result);
+  AppMessageResult msg_open_result = app_message_open(DATA_STORE_SIZE + 15, OUTBOX_SIZE);
+  APP_LOG(APP_LOG_LEVEL_INFO, "Open message, inbox size %i outbox size %i result %u", DATA_STORE_SIZE + 15, OUTBOX_SIZE, msg_open_result);
   if ( msg_open_result != APP_MSG_OK) {
     APP_LOG(APP_LOG_LEVEL_ERROR, "Open Message Failed");
     return;
@@ -301,8 +296,9 @@ static void clear_send_ack_status() {
 // n*4+4 -> what (string)
 
 static void send_communication_handler(ClickRecognizerRef recognizer, void *context) {
+	APP_LOG(APP_LOG_LEVEL_INFO, "Sending Communication.");
 	reset_activity_timer();
-  clear_send_ack_status();	
+    clear_send_ack_status();	
 	// first record sending time
 	time(&time_now);
 	strftime(send_time_buf, sizeof(send_time_buf), "%H:%M:%S", localtime(&time_now));
@@ -336,7 +332,7 @@ static void send_communication_handler(ClickRecognizerRef recognizer, void *cont
 			2, // durition 2 bytes
 			what_list_length_short_name[data_store[idx].what_index]); // what name, and then remove the buffer header as it's already calculated
 		// APP_LOG(APP_LOG_LEVEL_INFO, "checking space, if pack record %d buffer size would be %d", (records_packed + 1), buffer_used);
-		if (buffer_used  >= outbox_size) { // header size 7 + 1 byte record number = 8, for key 0
+		if (buffer_used  >= OUTBOX_SIZE) { // header size 7 + 1 byte record number = 8, for key 0
 			break;
 		};
 		time_t time = data_store[idx].time;
@@ -405,9 +401,14 @@ static void reset_handler(ClickRecognizerRef recognizer, void *context) {
 	confirmation_ask("RESET! Sure?", *reset_handler_after_confirmation);
 };
 
+static void credit_window_handler(ClickRecognizerRef recognizer, void *context) {
+	show_w_credit();
+};
+
 // subscribe click events
 void w_communication_click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, *send_communication_handler);
+  window_single_click_subscribe(BUTTON_ID_SELECT, *credit_window_handler);
   window_long_click_subscribe(BUTTON_ID_DOWN, 0, *reset_handler, NULL);
 };
 

@@ -361,8 +361,12 @@ static void down_short_handler(ClickRecognizerRef recognizer, void *context) {
   if (mode == 'A')
     adjust_minus();
   else {
-  	mid_section_mode = local_summary;
-	mid_section_mode_lastchange_time = time(NULL);
+  	if (mid_section_mode == start_lasted) {
+		mid_section_mode = local_summary;
+		mid_section_mode_lastchange_time = time(NULL);
+	} else {
+		mid_section_mode = start_lasted;
+	};
 	display_mid_section();
   };
 }

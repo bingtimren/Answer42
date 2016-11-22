@@ -361,7 +361,7 @@ static void down_short_handler(ClickRecognizerRef recognizer, void *context) {
   if (mode == 'A')
     adjust_minus();
   else {
-  	if (mid_section_mode == start_lasted) {
+  	if (mid_section_mode == start_lasted && running_state_current.whats_running_idx!=0) { // if running nothing, no local summary mode
 		mid_section_mode = local_summary;
 		mid_section_mode_lastchange_time = time(NULL);
 	} else {

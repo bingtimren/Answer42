@@ -6,24 +6,21 @@
 static Window *s_window;
 static GFont s_res_gothic_18;
 static GFont s_res_gothic_14;
-static GBitmap *s_res_image_menuimg_42;
 static TextLayer *s_textlayer_motto;
 static TextLayer *s_textlayer_dtitle;
 static TextLayer *s_textlayer_vtitle;
 static TextLayer *s_textlayer_answer;
 static TextLayer *s_textlayer_developer;
 static TextLayer *s_textlayer_version;
-static BitmapLayer *s_bitmaplayer_1;
 
 static void initialise_ui(void) {
   s_window = window_create();
   #ifndef PBL_SDK_3
-    window_set_fullscreen(s_window, true);
+    window_set_fullscreen(s_window, 0);
   #endif
   
   s_res_gothic_18 = fonts_get_system_font(FONT_KEY_GOTHIC_18);
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
-  s_res_image_menuimg_42 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_MENUIMG_42);
   // s_textlayer_motto
   s_textlayer_motto = text_layer_create(GRect(2, 34, 138, 44));
   text_layer_set_text(s_textlayer_motto, "Life, the Universe and Everything");
@@ -41,8 +38,8 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_vtitle);
   
   // s_textlayer_answer
-  s_textlayer_answer = text_layer_create(GRect(54, 16, 47, 20));
-  text_layer_set_text(s_textlayer_answer, "Answer");
+  s_textlayer_answer = text_layer_create(GRect(2, 16, 79, 20));
+  text_layer_set_text(s_textlayer_answer, "Answer 42");
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_answer);
   
   // s_textlayer_developer
@@ -58,11 +55,6 @@ static void initialise_ui(void) {
   text_layer_set_text_alignment(s_textlayer_version, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_version, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_version);
-  
-  // s_bitmaplayer_1
-  s_bitmaplayer_1 = bitmap_layer_create(GRect(93, 8, 25, 25));
-  bitmap_layer_set_bitmap(s_bitmaplayer_1, s_res_image_menuimg_42);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmaplayer_1);
 }
 
 static void destroy_ui(void) {
@@ -73,8 +65,6 @@ static void destroy_ui(void) {
   text_layer_destroy(s_textlayer_answer);
   text_layer_destroy(s_textlayer_developer);
   text_layer_destroy(s_textlayer_version);
-  bitmap_layer_destroy(s_bitmaplayer_1);
-  gbitmap_destroy(s_res_image_menuimg_42);
 }
 // END AUTO-GENERATED UI CODE
 

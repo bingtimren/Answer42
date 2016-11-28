@@ -19,7 +19,7 @@ static char onwatch_num_records[4];
 static char sent_num_records[4];
 static char ack_num_records[4];
 
-#define OUTBOX_SIZE 1000 // cannot predict behavior only try and find what works
+#define OUTBOX_SIZE 400 // cannot predict behavior only try and find what works
 
 static bool init_done = false;
 
@@ -263,7 +263,7 @@ void messages_init() {
   AppMessageResult msg_open_result = app_message_open(DATA_STORE_SIZE + 15, OUTBOX_SIZE);
   APP_LOG(APP_LOG_LEVEL_INFO, "Open message, inbox size %i outbox size %i result %u", DATA_STORE_SIZE + 15, OUTBOX_SIZE, msg_open_result);
   if ( msg_open_result != APP_MSG_OK) {
-    APP_LOG(APP_LOG_LEVEL_ERROR, "Open Message Failed");
+    APP_LOG(APP_LOG_LEVEL_ERROR, "Open Message Failed, reason see above");
     return;
   }  
   APP_LOG(APP_LOG_LEVEL_INFO, "Open message OK");

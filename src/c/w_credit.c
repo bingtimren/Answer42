@@ -4,16 +4,16 @@
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
-static GBitmap *s_res_image_42;
 static GFont s_res_gothic_18;
 static GFont s_res_gothic_14;
-static BitmapLayer *s_bitmaplayer_42;
+static GBitmap *s_res_image_menuimg_42;
 static TextLayer *s_textlayer_motto;
 static TextLayer *s_textlayer_dtitle;
 static TextLayer *s_textlayer_vtitle;
 static TextLayer *s_textlayer_answer;
 static TextLayer *s_textlayer_developer;
 static TextLayer *s_textlayer_version;
+static BitmapLayer *s_bitmaplayer_1;
 
 static void initialise_ui(void) {
   s_window = window_create();
@@ -21,14 +21,9 @@ static void initialise_ui(void) {
     window_set_fullscreen(s_window, true);
   #endif
   
-  s_res_image_42 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_42);
   s_res_gothic_18 = fonts_get_system_font(FONT_KEY_GOTHIC_18);
   s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
-  // s_bitmaplayer_42
-  s_bitmaplayer_42 = bitmap_layer_create(GRect(102, 8, 31, 28));
-  bitmap_layer_set_bitmap(s_bitmaplayer_42, s_res_image_42);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmaplayer_42);
-  
+  s_res_image_menuimg_42 = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_MENUIMG_42);
   // s_textlayer_motto
   s_textlayer_motto = text_layer_create(GRect(2, 34, 138, 44));
   text_layer_set_text(s_textlayer_motto, "Life, the Universe and Everything");
@@ -63,18 +58,23 @@ static void initialise_ui(void) {
   text_layer_set_text_alignment(s_textlayer_version, GTextAlignmentCenter);
   text_layer_set_font(s_textlayer_version, s_res_gothic_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_version);
+  
+  // s_bitmaplayer_1
+  s_bitmaplayer_1 = bitmap_layer_create(GRect(93, 8, 25, 25));
+  bitmap_layer_set_bitmap(s_bitmaplayer_1, s_res_image_menuimg_42);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmaplayer_1);
 }
 
 static void destroy_ui(void) {
   window_destroy(s_window);
-  bitmap_layer_destroy(s_bitmaplayer_42);
   text_layer_destroy(s_textlayer_motto);
   text_layer_destroy(s_textlayer_dtitle);
   text_layer_destroy(s_textlayer_vtitle);
   text_layer_destroy(s_textlayer_answer);
   text_layer_destroy(s_textlayer_developer);
   text_layer_destroy(s_textlayer_version);
-  gbitmap_destroy(s_res_image_42);
+  bitmap_layer_destroy(s_bitmaplayer_1);
+  gbitmap_destroy(s_res_image_menuimg_42);
 }
 // END AUTO-GENERATED UI CODE
 

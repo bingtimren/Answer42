@@ -6,21 +6,16 @@
     "pebble": {
         "displayName": "Answer 42",
         "enableMultiJS": true,
-        "messageKeys": {},
+        "messageKeys": [],
         "projectType": "native",
         "resources": {
             "media": [
                 {
-                    "file": "images/action_info.png",
-                    "name": "IMAGE_ACTION_INFO",
-                    "targetPlatforms": null,
-                    "type": "bitmap"
-                },
-                {
                     "file": "images/menuimg.png",
                     "menuIcon": true,
-                    "name": "IMAGE_42",
-                    "type": "png"
+                    "name": "IMAGE_MENUIMG_42",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
                 },
                 {
                     "file": "images/action_yes.png",
@@ -61,6 +56,12 @@
                 {
                     "file": "images/action_minus.png",
                     "name": "IMAGE_ACTION_MINUS",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/action_info.png",
+                    "name": "IMAGE_ACTION_INFO",
                     "targetPlatforms": null,
                     "type": "bitmap"
                 },

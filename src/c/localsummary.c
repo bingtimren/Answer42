@@ -29,9 +29,8 @@ void local_summary_save () {
 void local_summary_reset() {
 	local_summary_store.local_summary_today = starts_of_today();
 	for (uint8_t i=0; i < WHAT_LIST_LENGTH; i++) {
-		struct LocalSummaryType* lsum = &(local_summary_store.local_summarys[i]);
-		lsum -> one_100_hours_yesterday = 0;
-		lsum -> one_100_hours_today = 0;					
+		local_summary_store.local_summarys[i].one_100_hours_yesterday = 0;
+		local_summary_store.local_summarys[i].one_100_hours_today = 0;					
 	};
 	local_summary_save();
 };
@@ -40,9 +39,8 @@ void local_summary_reset() {
 void local_summary_swap() {
 	local_summary_store.local_summary_today = starts_of_today();
 	for (uint8_t i=0; i < WHAT_LIST_LENGTH; i++) {
-		struct LocalSummaryType* lsum = &(local_summary_store.local_summarys[i]);
-		lsum -> one_100_hours_yesterday = lsum -> one_100_hours_today;
-		lsum -> one_100_hours_today = 0;					
+		local_summary_store.local_summarys[i].one_100_hours_yesterday = local_summary_store.local_summarys[i].one_100_hours_today;
+		local_summary_store.local_summarys[i].one_100_hours_today = 0;					
 	};
 	local_summary_save();
 };
@@ -91,11 +89,20 @@ void local_summary_load () {
 
 struct LocalSummaryType* get_local_summary_by_what_index(uint8_t index) {
 	check_local_summary();
-	return &local_summary_store.local_summarys[index];
+	if (index < WHAT_LIST_LENGTH) {
+		return &local_summary_store.local_summarys[index];
+	};
+	// SHOULD NOT BE HERE!!
+	APP_LOG(APP_LOG_LEVEL_ERROR,"get_local_summary_by_what_index exceeds boundary"); 
+	return 0;
 };
 
 void commit_local_summary_by_what_index(uint16_t time_by_1_100th_hour, uint8_t index) {
 	check_local_summary();
-	local_summary_store.local_summarys[index].one_100_hours_today += time_by_1_100th_hour;
-	local_summary_save();
+	if (index < WHAT_LIST_LENGTH) {	
+		local_summary_store.local_summarys[index].one_100_hours_today += time_by_1_100th_hour;
+		local_summary_save();
+		return;
+	};
+	APP_LOG(APP_LOG_LEVEL_ERROR,"commit_local_summary_by_what_index exceeds boundary (index=%u)", index); 
 };

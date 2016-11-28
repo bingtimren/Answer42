@@ -82,7 +82,7 @@ void running_state_kickoff_stage(uint8_t stage_idx) {
 // 3. update start / target time
 // 4. kick off stage 0
 void running_state_kickoff(int whats_idx) {
-	APP_LOG(APP_LOG_LEVEL_INFO, "WHAT_IDX <= %d", whats_idx);
+	APP_LOG(APP_LOG_LEVEL_INFO, "running_state_kickoff WHAT_IDX %d", whats_idx);
 	// cancel reminder for old session
 	wakeup_cancel_by_cookie(RunningStateReminder);
   running_state_current.whats_running_idx = whats_idx;

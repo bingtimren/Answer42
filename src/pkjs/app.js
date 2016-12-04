@@ -8,7 +8,7 @@ Pebble.addEventListener('ready',
 
 function debug_log(message) {
 	// remark or not remark, to change debug mode
-	// console.log(message);
+	console.log(message);
 };
 
 debug_log("DEBUGGING MODE");

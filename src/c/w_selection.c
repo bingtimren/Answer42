@@ -1,4 +1,4 @@
-#include <pebble.h>
+/*#include <pebble.h>
 #include "w_selection.h"
 #include "what.h"
 #include "running_state.h"
@@ -10,6 +10,7 @@
 
 static Window *s_window;
 static SimpleMenuLayer *s_simple_menu;
+
 static SimpleMenuSection s_menu_section;
 static SimpleMenuItem s_menu_items[WHAT_LIST_LENGTH-1];
 #define SUB_TITLE_LENGTH 20
@@ -22,6 +23,7 @@ static void menu_select_callback(int index, void *ctx) {
 
 static void build_menu_section() {
 	for (uint8_t i=1; i<WHAT_LIST_LENGTH; i++) { // note i starts from 1, mind array boundary!
+	
 		struct LocalSummaryType *lsum;
 		lsum = get_local_summary_by_what_index(i);
 		uint8_t tl = 0;
@@ -34,8 +36,9 @@ static void build_menu_section() {
 		s_menu_items[i-1] = (SimpleMenuItem) {
 			.title = what_list[i] -> name,
 			.subtitle = &subtitles[i-1][0],
-			.callback = menu_select_callback,
+			.callback = menu_select_callback
 		};
+
 	};
 	s_menu_section = (SimpleMenuSection) {
 		.num_items = WHAT_LIST_LENGTH -1,
@@ -47,21 +50,17 @@ static void initialise_ui(void) {
 	build_menu_section();
 	s_window = window_create();
 	#ifndef PBL_SDK_3
-    window_set_fullscreen(s_window, 0);
+    window_set_fullscreen(s_window, true);
 	#endif
+	
 	Layer *window_layer = window_get_root_layer(s_window);
 	GRect bounds = layer_get_frame(window_layer);  
   	s_simple_menu = simple_menu_layer_create(bounds, s_window, &s_menu_section, 1, NULL);
   	layer_add_child(window_layer, simple_menu_layer_get_layer(s_simple_menu));
 }
 
-static void destroy_ui(void) {
-  window_destroy(s_window);
-
-}
-
 static void handle_window_unload(Window* window) {
-  destroy_ui();
+  window_destroy(s_window);
 }
 
 
@@ -79,4 +78,23 @@ void hide_w_selection(void) {
   window_stack_remove(s_window, true);
 }
 
+*/
+#include <pebble.h>
+#include "w_selection.h"
+#include "running_state.h"
 
+static int state = 0;
+
+void show_w_selection(void) {
+	if (state == 0) {
+		running_state_kickoff(1);
+		state = 1;
+	} else {
+		running_state_commit();
+		state = 0;
+	};
+}
+
+void hide_w_selection(void) {
+  
+}

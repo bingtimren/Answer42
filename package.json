@@ -6,7 +6,7 @@
     "pebble": {
         "displayName": "Answer 42",
         "enableMultiJS": true,
-        "messageKeys": {},
+        "messageKeys": [],
         "projectType": "native",
         "resources": {
             "media": [

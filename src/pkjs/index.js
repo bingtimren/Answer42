@@ -9,14 +9,14 @@ Pebble.addEventListener('ready',
 function debug_log(message) {
 	// remark or not remark, to change debug mode
 	// console.log(message);
-};
+}
 
 debug_log("DEBUGGING MODE");
 
 function pad(number) {
-	if (number < 10) { number = "0" + number};
+	if (number < 10) { number = "0" + number; }
 	return number;
-};
+}
 
 function send_ack(acknowledgement) {
 	var dic = {
@@ -30,7 +30,7 @@ function send_ack(acknowledgement) {
 			debug_log('Error sending acknowledgement info to Pebble!');
 		}
 	);	
-};
+}
 
 
 
@@ -57,16 +57,16 @@ Pebble.addEventListener('appmessage',
 					// this is where interesting thing happened, status 200 but response not recorded?
 					debug_log("Status 200 but response not recorded, what??!!");
 					debug_log(localReq.responseText);
-				};
+				}
 			} else
 				debug_log("[i="+i+"] "+'Response received, readyState:'+localReq.readyState+' status:' + localReq.status+" FAILED!, index="+index+" total_success="+ack_count);
 			// if this is the last, send acknowledgement
 			if (ack_count == numberOfRecords) {
 				debug_log("Last result received, prepare to acknowledge to pebble.");
 				send_ack(acknowledgement);
-			};
+			}
 		}; // end of function
-	}; // Immediately Invoked Function Expression	
+	} // Immediately Invoked Function Expression	
 
   //*********************************************************************//
 	// when response has error  
@@ -78,9 +78,9 @@ Pebble.addEventListener('appmessage',
 			if (ack_count == numberOfRecords) {
 				debug_log("Last result received (on error), prepare to acknowledge to pebble.");
 				send_ack(acknowledgement);
-			};
+			}
 		}; // end of function
-	}; // Immediately Invoked Function Expression		  
+	} // Immediately Invoked Function Expression		  
 	
 	// actually start
     debug_log('Phone: received message: ' + JSON.stringify(e.payload));
@@ -113,7 +113,7 @@ Pebble.addEventListener('appmessage',
 		req.ontimeout = onerror_handler(i, index, req);
 		req.send();
 		debug_log('Request sent');
-	}; // end for
+	} // end for
 	debug_log("ALL SENT");
   }
 );

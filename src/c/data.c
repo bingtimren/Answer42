@@ -60,7 +60,7 @@ bool data_log_in(const time_t time, const uint16_t durition, const uint8_t what_
 	APP_LOG(APP_LOG_LEVEL_INFO, "data logging: time %s durition %u index %u", time_buf, durition, what_index);
 	#endif
 	// first add to local summary
-	// commit_local_summary_by_what_index(durition, what_index);
+	commit_local_summary_by_what_index(durition, what_index);
 	
 	// handles data store
 	if (! data_store_loaded) {

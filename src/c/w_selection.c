@@ -1,4 +1,4 @@
-/*#include <pebble.h>
+#include <pebble.h>
 #include "w_selection.h"
 #include "what.h"
 #include "running_state.h"
@@ -63,8 +63,6 @@ static void handle_window_unload(Window* window) {
   window_destroy(s_window);
 }
 
-
-
 void show_w_selection(void) {
   APP_LOG(APP_LOG_LEVEL_INFO,"show_w_selection");	
   initialise_ui();
@@ -78,23 +76,3 @@ void hide_w_selection(void) {
   window_stack_remove(s_window, true);
 }
 
-*/
-#include <pebble.h>
-#include "w_selection.h"
-#include "running_state.h"
-
-static int state = 0;
-
-void show_w_selection(void) {
-	if (state == 0) {
-		running_state_kickoff(1);
-		state = 1;
-	} else {
-		running_state_commit();
-		state = 0;
-	};
-}
-
-void hide_w_selection(void) {
-  
-}

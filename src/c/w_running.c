@@ -165,7 +165,7 @@ void mode_normal() {
 }
 
 void mode_adjust() {
-  mode = 'A'; // mode normal
+  mode = 'A'; // mode adjust
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_plus);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_clear);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_minus);
@@ -410,8 +410,7 @@ static void up_long_handler(ClickRecognizerRef recognizer, void *context) {
 // down click handler - finish current what
 static void what_finish_handler_long(ClickRecognizerRef recognizer, void *context) {
 	reset_activity_timer();
-  if (mode == 'A')
-    return;
+	if (mode == 'A') return;
 	if (running_state_current.whats_running_idx == 0) { // nothing, no need to commit, just bring up selection window 
 		show_w_selection();
 	} else {

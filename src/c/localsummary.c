@@ -97,10 +97,15 @@ struct LocalSummaryType* get_local_summary_by_what_index(uint8_t index) {
 	return 0;
 };
 
-void commit_local_summary_by_what_index(uint16_t time_by_1_100th_hour, uint8_t index) {
+void commit_local_summary_by_what_index(time_t time, uint16_t time_by_1_100th_hour, uint8_t index) {
+	time_t tday = starts_of_today();
 	check_local_summary();
 	if (index < WHAT_LIST_LENGTH) {	
-		local_summary_store.local_summarys[index].one_100_hours_today += time_by_1_100th_hour;
+		if (time >= tday) {
+			local_summary_store.local_summarys[index].one_100_hours_today += time_by_1_100th_hour;
+		} else if (time >= tday - SECONDS_PER_DAY) {// add to yesterday 
+			local_summary_store.local_summarys[index].one_100_hours_yesterday += time_by_1_100th_hour;
+		};
 		local_summary_save();
 		return;
 	};

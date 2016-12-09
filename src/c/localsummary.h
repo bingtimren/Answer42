@@ -13,4 +13,4 @@ void local_summary_load ();
 void local_summary_accumulate(uint8_t what_index, int minutes);
 void local_summary_clear();
 struct LocalSummaryType* get_local_summary_by_what_index(uint8_t index);
-void commit_local_summary_by_what_index(uint16_t time_by_1_100th_hour, uint8_t index);
+void commit_local_summary_by_what_index(time_t time, uint16_t time_by_1_100th_hour, uint8_t index);

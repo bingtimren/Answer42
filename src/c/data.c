@@ -60,8 +60,8 @@ void data_store_save () {
   APP_LOG(APP_LOG_LEVEL_INFO, "Data index (l=%u) saved, as index %u", sizeof(data_today), KEY_DATA_STORE_START+data_store_head);
 };
 
-// durition - now in units of 0.01 hour (36 seconds)
-bool data_log_in(const time_t time, const uint16_t durition, const uint8_t what_index) {
+// durition - in minutes
+bool data_log_in(const time_t time, const uint16_t durition, const uint8_t what_index, char indicator) {
 	#ifdef DEBUG_CHECK_MORE
 	char time_buf[50];
 	strftime(time_buf, sizeof(time_buf), "%d.%m.%y %H:%M", localtime(&time));
@@ -91,6 +91,7 @@ bool data_log_in(const time_t time, const uint16_t durition, const uint8_t what_
 	data_today.day_records[data_today.length].time = minutes_past_midnight(time);
 	data_today.day_records[data_today.length].durition = durition;
 	data_today.day_records[data_today.length].what_index = what_index;
+	data_today.day_records[data_today.length].indicator = indicator;
 	data_today.length = data_today.length + 1;
 	APP_LOG(APP_LOG_LEVEL_INFO, "data logged in what index %u length %u data_store_head %u", what_index, data_today.length, data_store_head);
 	data_store_save();

@@ -15,7 +15,7 @@ struct TimeRecordDayStore *dayStore;
  *         Function section
  * **************************************************************************************************/
 
-
+// return durition in whatever unit (minutes)
 uint16_t localsummary_sum_whatid_total_durition(struct TimeRecordDayStore *dayStore, uint8_t what_index) {
 	uint16_t total;
 	total = 0;
@@ -44,11 +44,12 @@ bool localsummary_load_previous(uint8_t current) {
 	return data_store_load_into_history(prev);
 };
 		
+// get total durition in whatever unit		
 void get_brief_summary_from_whatid(uint8_t what_id, struct BriefSummary *result) {
 	time_t today = starts_of_today();
 	time_t yesterday = today - SECONDS_PER_DAY;
 	struct TimeRecordDayStore *mightbe_yesterday;
-	// check today
+	// check today, and get mightbe_yesterday pointer right
 	if (today == data_today.day_start) { // there might be some records for today
 		result -> today = localsummary_sum_whatid_total_durition(&data_today, what_id);
 		localsummary_load_previous(data_store_head);
@@ -72,7 +73,7 @@ void get_brief_summary_from_whatid(uint8_t what_id, struct BriefSummary *result)
 // prepares data for summary section
 static char todayStr[20];
 static char todayRefStr[20];
-static uint16_t total_100th_hours;
+static uint16_t total_minutes;
 static uint8_t summary_what_idx[WHAT_LIST_LENGTH-1];
 static uint16_t summary_what_durition[WHAT_LIST_LENGTH-1];
 uint8_t summary_of_day_length;
@@ -123,12 +124,12 @@ static void prepareSummaryData(void) {
 	};
 	
 	// total & each
-	total_100th_hours = 0;
+	total_minutes = 0;
 	summary_of_day_length = 0;
 	for (int i=1; i< WHAT_LIST_LENGTH; i++ ){
 		uint16_t dur = localsummary_sum_whatid_total_durition(dayStore, i);
 		if (dur > 0) {
-			total_100th_hours = total_100th_hours + dur;
+			total_minutes = total_minutes + dur;
 			summary_what_idx[summary_of_day_length] = i;
 			summary_what_durition[summary_of_day_length] = dur;
 			summary_of_day_length = summary_of_day_length + 1;
@@ -208,21 +209,23 @@ static void menuLayerDrawRowCallback(GContext *ctx, const Layer *cell_layer, Men
 		  return;
 	  };
 	  if (cell_index -> row == 1) {// total
-		  snprintf(buffer, sizeof(buffer), "TTL %u.%02u h", total_100th_hours/100, total_100th_hours%100);
+		  snprintf(buffer, sizeof(buffer), "Total %u:%02u", total_minutes/60, total_minutes%60);
 		  menu_cell_basic_draw(ctx, cell_layer, "[Everything]", buffer, NULL);
 		  return;
 	  };
 	  // summary of each what
 	  uint8_t idx = summary_what_idx[cell_index -> row - 2];
 	  uint16_t dur = summary_what_durition[cell_index -> row - 2];
-	  snprintf(buffer, sizeof(buffer), "TTL %u.%02u h", dur/100, dur%100);
+	  snprintf(buffer, sizeof(buffer), "Total %u:%02u", dur/60, dur%60);
 	  menu_cell_basic_draw(ctx, cell_layer, what_list[idx]-> name,buffer,NULL);
 	  return;
   };
   if (cell_index->section == 3) {
   	  TimeRecord *rec;
 	  rec = &(dayStore -> day_records[cell_index -> row]);
-	  snprintf(buffer, sizeof(buffer), "%02u:%02u %u.%02uh", rec->time/60,rec->time%60, rec->durition/100, rec->durition%100); 
+	  uint16_t rec_end = rec->time + rec->durition;
+	  int indi = (int)(rec -> indicator);
+	  snprintf(buffer, sizeof(buffer), "%02u:%02u-%02u:%02u %u:%02u %c", rec->time/60,rec->time%60, rec_end/60,rec_end%60, rec->durition/60, rec->durition%60, indi); 
 	  menu_cell_basic_draw(ctx, cell_layer, what_list[rec->what_index]->name,buffer,NULL);
   };
 };

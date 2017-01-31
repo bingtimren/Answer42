@@ -202,11 +202,11 @@ bool fmt_timediff_str(char* buffer, size_t size, time_t t1, time_t t2) {
   struct TimeDifference tdiff;
   fmt_to_timediff(&tdiff, t1, t2);
   if (tdiff.days != 0) {
-    snprintf(buffer, size, "Lst: %ud %u h", tdiff.days, tdiff.hours);
+    snprintf(buffer, size, "Lst: %ud %uh", tdiff.days, tdiff.hours);
   } else if (tdiff.hours != 0) {
-    snprintf(buffer, size, "Lst: %uh %u m", tdiff.hours, tdiff.minutes);
+    snprintf(buffer, size, "Lst: %uh %um", tdiff.hours, tdiff.minutes);
   } else {
-    snprintf(buffer, size, "Lst: %um %u s", tdiff.minutes, tdiff.seconds);
+    snprintf(buffer, size, "Lst: %um %us", tdiff.minutes, tdiff.seconds);
   };
   return tdiff.earlier;
 }
@@ -229,15 +229,24 @@ void display_mid_section_start_lasted (time_t tnow) {
 	} else {
 		text_layer_set_text(t_line2, line2);	
 	};
+    if (running_state_current.plus_step == 0) {
+        text_layer_set_text(t_plus_minus, "");
+    } else if (running_state_current.plus_step > 0) {
+        text_layer_set_text(t_plus_minus, "+");
+    } else {
+        text_layer_set_text(t_plus_minus, "-");
+    };
+	
 };	
 
 void display_mid_section_tdy_yest(time_t tnow) {
-	struct BriefSummary summary;
+	struct BriefSummary summary; // in minutes
+	text_layer_set_text(t_plus_minus, "");
 	get_brief_summary_from_whatid(running_state_current.whats_running_idx, &summary);
-	uint16_t today = summary.today + (tnow - running_state_current.start_time + 18) / 36;
-	snprintf(line1, sizeof(line1), "Tody: %u.%02u h ", (today)/100, (today)%100);	
+	uint16_t today = summary.today + ((tnow - running_state_current.start_time) / 60); // minutes + minutes
+	snprintf(line1, sizeof(line1), "  Today: %u:%02u", (today)/60, (today)%60);	
 	text_layer_set_text(t_line1, line1);  
-	snprintf(line2, sizeof(line2), "Ystdy: %u.%02u h ", (summary.yesterday)/100, (summary.yesterday)%100);	
+	snprintf(line2, sizeof(line2), "  Ystdy: %u:%02u", (summary.yesterday)/60, (summary.yesterday)%60);	
 	text_layer_set_text(t_line2, line2);	
 };	
 
@@ -269,14 +278,6 @@ void display_mid_section(void) {
 // synchronize contents of the running window
 void sync_w_running(void) {
   text_layer_set_text(t_what, (*running_state_what).name);
-  if (running_state_current.plus_step == 0) {
-    text_layer_set_text(t_plus_minus, "");
-  } else if (running_state_current.plus_step > 0) {
-    text_layer_set_text(t_plus_minus, "+");
-  } else {
-    text_layer_set_text(t_plus_minus, "-");
-  };
-
   display_mid_section();
 };
 

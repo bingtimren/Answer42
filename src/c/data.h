@@ -26,8 +26,9 @@ extern struct TimeRecordDayStore data_history;
 
 typedef struct TimeRecord { // together = 5 bytes & aligned
   uint16_t time; // minutes since mid-night, 2 bytes
-  uint16_t durition; // 2 bytes
+  uint16_t durition; // 2 bytes, in minutes
   uint8_t what_index; // 1 bytes
+  char indicator; // adjustments, etc.
 }  __attribute__((__packed__)) TimeRecord;
 
 // The store - for one day
@@ -54,8 +55,8 @@ bool data_store_load_into_history (uint8_t slot);
 
 // save index and today - history records are already saved
 void data_store_save ();
-// durition - now in units of 0.01 hour (36 seconds)
-bool data_log_in(const time_t time, const uint16_t durition, const uint8_t what_index);
+// durition - in minutes
+bool data_log_in(const time_t time, const uint16_t durition, const uint8_t what_index, char indicator);
 
 
 

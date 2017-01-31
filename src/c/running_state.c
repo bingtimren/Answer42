@@ -145,15 +145,23 @@ uint32_t seconds_to_daychange(struct tm *start_time) {
 void running_state_commit() {
 		// first save current session
 		APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... ");
-		uint32_t durition = time(NULL) - running_state_current.start_time; // total durition
+		uint32_t durition = time(NULL) - running_state_current.start_time; // total durition, in seconds
+		char indicator;
+		if (running_state_current.plus_step == 0) {
+			indicator = ' ';
+		} else if (running_state_current.plus_step > 0) {
+			indicator = '+';
+		} else {
+			indicator = '-';
+		};		
 		while (durition > 0) {
 			struct tm *start_local = localtime(&running_state_current.start_time);
 			uint32_t seconds_to_nextday = seconds_to_daychange(start_local);
 			if (durition >= seconds_to_nextday) {
 				// day crossing, first commit time-period to day change
 				APP_LOG(APP_LOG_LEVEL_INFO, "Day crossing, seconds to day change is %lu and durition is %lu", seconds_to_nextday, durition);
-				// commit seconds_to_daychange (+30 to round up) and adjust new start time
-				if (data_log_in(running_state_current.start_time, (seconds_to_nextday + 18) / 36 , running_state_current.whats_running_idx)){
+				// commit seconds_to_daychange (+30 to round up) convert to minutes and adjust new start time
+				if (data_log_in(running_state_current.start_time, (seconds_to_nextday + 30) / 60 , running_state_current.whats_running_idx, indicator)){
 					// commit success, update start time and go it again
 					durition -= seconds_to_nextday;
 					running_state_current.start_time += seconds_to_nextday;
@@ -164,7 +172,7 @@ void running_state_commit() {
 					return; // not doing anything to keep status quo
 				};
 			} else { // no day-cross, just commit
-				if (data_log_in(running_state_current.start_time, (durition + 18) / 36 , running_state_current.whats_running_idx)){
+				if (data_log_in(running_state_current.start_time, (durition + 30) / 60 , running_state_current.whats_running_idx, indicator)){
 					update_warning("");
 					// commit success, break loop
 					break;

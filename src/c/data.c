@@ -2,7 +2,8 @@
 #include "debug.h"
 #include "data.h"
 #include "w_running.h"
-#include "localsummary.h"
+#include "w_localsummary.h"
+#include "format.h"
 
 /*
  * manage TimeRecord data storage 
@@ -11,45 +12,52 @@
  * 
  */
 
-static uint8_t data_store_usage;
-
-struct TimeRecord data_store[DATA_STORE_SIZE];
-
+uint8_t data_store_head;
+struct TimeRecordDayStore data_today;
+struct TimeRecordDayStore data_history;
 static bool data_store_loaded = false;
+
+void reset_data_today(time_t time) {
+	data_today.day_start = starts_of_the_day(time);
+	data_today.length = 0;
+	data_store_save();
+};
 
 void data_store_load () {
   data_store_loaded = true;
-  data_store_usage = 0;
-  if (persist_exists(KEY_DATA_STORE)) {
-    persist_read_data(KEY_DATA_STORE, &data_store, sizeof(data_store));
-    // now count the empty slots
-    for (uint8_t i=0; i<DATA_STORE_SIZE; i++) {
-			if (data_store[i].time != 0) { data_store_usage += 1; };
-		};
-		APP_LOG(APP_LOG_LEVEL_INFO, "Data store (size %u load %u) loaded ", sizeof(data_store), data_store_usage);
-		space_shortage_warning_check();
+  if (persist_exists(KEY_DATA_INDEX)) {
+    persist_read_data(KEY_DATA_INDEX, &data_store_head, sizeof(data_store_head));
+	APP_LOG(APP_LOG_LEVEL_INFO, "Data data_store_head loaded, size %u ", sizeof(data_store_head));
+	persist_read_data(KEY_DATA_STORE_START+data_store_head, &data_today, sizeof(data_today));
+	APP_LOG(APP_LOG_LEVEL_INFO, "Data today loaded, size %u, length %u", sizeof(data_today), data_today.length);
     return;
   };
-  // not found persisted data store
-  for (unsigned int i=0; i< DATA_STORE_SIZE; i++) {
-    data_store[i].time = 0;
-    data_store[i].durition = 0;
-  }
-  APP_LOG(APP_LOG_LEVEL_INFO, "Data store not found, in-memory store initialized, size %u", sizeof(data_store));
+  // not found persisted data store, initialize
+  data_store_head = 0;
+  reset_data_today(time(NULL));
+  APP_LOG(APP_LOG_LEVEL_INFO, "Data store not found, in-memory store initialized.");
 };
 
-uint8_t data_store_usage_count() {
-	if (! data_store_loaded) {
-		data_store_load();
-		};	
-	return data_store_usage;
+bool data_store_load_into_history (uint8_t slot) {
+  if (persist_exists(KEY_DATA_STORE_START+slot)) {
+	persist_read_data(KEY_DATA_STORE_START+slot, &data_history, sizeof(data_history));
+	APP_LOG(APP_LOG_LEVEL_INFO, "Data history loaded, slot %u, length %u", slot, data_history.length);
+	return true;
+  };  
+  // not found persisted history
+  data_history.day_start = 0;
+  data_history.length = 0;
+  APP_LOG(APP_LOG_LEVEL_INFO, "Data history slot %u not found.", slot);
+  return false;
 };
 
 
-
+// save index and today - history records are already saved
 void data_store_save () {
-  persist_write_data(KEY_DATA_STORE, &data_store, sizeof(data_store));
-  APP_LOG(APP_LOG_LEVEL_INFO, "Data store (l=%u) saved ", sizeof(data_store));
+  persist_write_data(KEY_DATA_INDEX, &data_store_head, sizeof(data_store_head));
+  APP_LOG(APP_LOG_LEVEL_INFO, "Data data_store_head (l=%u) saved ", sizeof(data_store_head));
+  persist_write_data(KEY_DATA_STORE_START+data_store_head, &data_today, sizeof(data_today));
+  APP_LOG(APP_LOG_LEVEL_INFO, "Data index (l=%u) saved, as index %u", sizeof(data_today), KEY_DATA_STORE_START+data_store_head);
 };
 
 // durition - now in units of 0.01 hour (36 seconds)
@@ -59,75 +67,47 @@ bool data_log_in(const time_t time, const uint16_t durition, const uint8_t what_
 	strftime(time_buf, sizeof(time_buf), "%d.%m.%y %H:%M", localtime(&time));
 	APP_LOG(APP_LOG_LEVEL_INFO, "data logging: time %s durition %u index %u", time_buf, durition, what_index);
 	#endif
-	// first add to local summary
-	commit_local_summary_by_what_index(time, durition, what_index);
 	
 	// handles data store
 	if (! data_store_loaded) {
 		data_store_load();
 	};	
+	
+	// check if need to change slot
+	if ((time - data_today.day_start) > SECONDS_PER_DAY) {// not today, need to go next
+		data_store_head = data_store_head + 1;
+		if (data_store_head == DATA_SLOT_SIZE) 
+			data_store_head = 0;
+		reset_data_today(time);
+	};
+	
 	// if there is no empty slot, just exit
-	if (data_store_usage == DATA_STORE_SIZE) {
-		APP_LOG(APP_LOG_LEVEL_INFO, "storage full");
+	if (data_today.length == DATA_STORE_SIZE_DAY) {
+		APP_LOG(APP_LOG_LEVEL_INFO, "today's storage full");
 		return false;
 	};
-	// find an empty slot and put data into
-    for (uint8_t i=0; i<DATA_STORE_SIZE; i++) {
-		if (data_store[i].time == 0) {
-			// empty slot
-			// data_store[i].time = time; - after SDK3.0, time() is not adjusted for time zone.
-      // want to store adjusted time which will be send to phone and convert to string
-      data_store[i].time = mktime(localtime(&time));
-			data_store[i].durition = durition;
-			data_store[i].what_index = what_index;
-			data_store_usage += 1;
-			APP_LOG(APP_LOG_LEVEL_INFO, "data logged in what index %u slot position %u storage usage %u", what_index, i, data_store_usage);
-			data_store_save();
-			space_shortage_warning_check();
-			return true;
-		};
-	};
-	APP_LOG(APP_LOG_LEVEL_INFO, "should not run here... storage full");
-	data_store_usage = DATA_STORE_SIZE;
-	return false;
+	
+	// put data into, first calculate time as minutes past mid-night
+	data_today.day_records[data_today.length].time = minutes_past_midnight(time);
+	data_today.day_records[data_today.length].durition = durition;
+	data_today.day_records[data_today.length].what_index = what_index;
+	data_today.length = data_today.length + 1;
+	APP_LOG(APP_LOG_LEVEL_INFO, "data logged in what index %u length %u data_store_head %u", what_index, data_today.length, data_store_head);
+	data_store_save();
+	return true;
 };
 
-void data_free(const uint8_t i) {
-	if (data_store[i].time != 0) {
-		data_store[i].time = 0;
-		data_store_usage -= 1;
-		data_store_save();
-		space_shortage_warning_check();
-		APP_LOG(APP_LOG_LEVEL_INFO, "Freed slot %u usage=%d", i, data_store_usage);		
-	} else {
-		APP_LOG(APP_LOG_LEVEL_ERROR, "Slot %u already freed", i);
-	}
-};
+
 
 // clear data store
 void data_clear() {
-  if (persist_exists(KEY_DATA_STORE)) {
-    persist_delete(KEY_DATA_STORE);
-    APP_LOG(APP_LOG_LEVEL_INFO, "Data store cleared.");
-  };  
-}
-
-
-
-uint8_t data_seek_valid(uint8_t start) {
-	if (! data_store_loaded) {
-		data_store_load();
-	};
-	// find an occupied slot
-    for (uint8_t i=start; i<DATA_STORE_SIZE; i++) {
-		if (data_store[i].time != 0) {
-			APP_LOG(APP_LOG_LEVEL_INFO, "data_seek_valid return %u time %ld", i, (data_store[i].time - 0));
-			return i;
+	for (int i=0; i<DATA_SLOT_SIZE; i++) {
+		if (persist_exists(KEY_DATA_STORE_START+i)) {
+			persist_delete(KEY_DATA_STORE_START+i);
 		};
 	};
-	APP_LOG(APP_LOG_LEVEL_ERROR, "should not be here, store empty");
-	return DATA_STORE_SIZE;
+	data_store_head = 0;
+	reset_data_today(time(NULL));
+	APP_LOG(APP_LOG_LEVEL_INFO, "Data store cleared.");
 };
-
-
 

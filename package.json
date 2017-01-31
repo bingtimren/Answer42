@@ -23,12 +23,6 @@
                     "type": "bitmap"
                 },
                 {
-                    "file": "images/action_wireless.png",
-                    "name": "IMAGE_ACTION_WIRELESS",
-                    "targetPlatforms": null,
-                    "type": "bitmap"
-                },
-                {
                     "file": "images/action_stop.png",
                     "name": "IMAGE_ACTION_STOP",
                     "targetPlatforms": null,

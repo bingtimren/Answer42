@@ -39,4 +39,22 @@ uint8_t fmt_minutes_to_hour_minutes(char* res_buffer, int buffer_length, uint16_
 	return d1+d2+d3;
 }
 
+time_t starts_of_the_day(time_t time_now) {
+	struct tm *time_now_local = localtime(&time_now);	
+	return time_now - 3600*(time_now_local->tm_hour) - 60*(time_now_local->tm_min) - (time_now_local->tm_sec);
+};
+
+uint16_t minutes_past_midnight(time_t t) {
+	struct tm *time_now_local = localtime(&t);	
+	return 60*(time_now_local->tm_hour) + time_now_local->tm_min;
+};
+
+
+time_t starts_of_today() {
+	time_t time_now;
+	time(&time_now);
+	return starts_of_the_day(time_now);
+};
+
+
 

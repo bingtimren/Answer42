@@ -3,27 +3,40 @@
 #include "pebble.h"
 /* IDs for persistent storage */
 #define KEY_CURRENT_RUNNING_STATE 1
-#define KEY_DATA_STORE 2
+#define KEY_DATA_STORE_START 10
 #define KEY_WAKEUP_REGISTRY 3 
-#define KEY_LOCAL_SUMMARY 4
+#define KEY_DATA_INDEX 2
+
+#define DATA_SLOT_SIZE 10
+
+extern uint8_t data_store_head;
+
+extern struct TimeRecordDayStore data_today;
+extern struct TimeRecordDayStore data_history;
 
 
 /* everything related to storage of records and communication with phone */
-/* pebble persisent storage capability: max value length 256 bytes, all cannot exceed 4K */  
+/* pebble persisent storage capability: max value length 256 bytes, all cannot exceed 4K per app*/  
   
-#define DATA_STORE_SIZE 35
+#ifdef DEBUG_SMALL_STORAGE
+  #define DATA_STORE_SIZE_DAY 3
+#else
+  #define DATA_STORE_SIZE_DAY 45
+#endif
 
-typedef struct TimeRecord { // together = 7 bytes & aligned
-  time_t time; // unsigned int = 4 bytes
+typedef struct TimeRecord { // together = 5 bytes & aligned
+  uint16_t time; // minutes since mid-night, 2 bytes
   uint16_t durition; // 2 bytes
   uint8_t what_index; // 1 bytes
 }  __attribute__((__packed__)) TimeRecord;
 
-// the store
-extern struct TimeRecord data_store[DATA_STORE_SIZE];
+// The store - for one day
+struct TimeRecordDayStore {
+	uint8_t length;
+	time_t day_start;
+	struct TimeRecord day_records[DATA_STORE_SIZE_DAY];
+};
 
-void data_clear();  
-  
 /* seconds in a minute - set to 1 for faster time lapsing for debugging */
 #ifdef DEBUG_TO_SECONDS
   #define SECONDS_PER_MIN 1
@@ -32,14 +45,19 @@ void data_clear();
 #endif
 
 
+void reset_data_today(time_t time);
+
 void data_store_load ();
 
-void data_store_save ();
+bool data_store_load_into_history (uint8_t slot);
 
+
+// save index and today - history records are already saved
+void data_store_save ();
+// durition - now in units of 0.01 hour (36 seconds)
 bool data_log_in(const time_t time, const uint16_t durition, const uint8_t what_index);
 
-uint8_t data_seek_valid(uint8_t start);
 
-uint8_t data_store_usage_count();
 
-void data_free(const uint8_t i);
+// clear data store
+void data_clear();

@@ -19,3 +19,6 @@ struct TimeDifference {
 void fmt_to_timediff(struct TimeDifference* result_buffer, time_t t1, time_t t2);
 
 
+time_t starts_of_today();
+time_t starts_of_the_day(time_t time_now);
+uint16_t minutes_past_midnight(time_t t);

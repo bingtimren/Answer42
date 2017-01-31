@@ -144,7 +144,7 @@ uint32_t seconds_to_daychange(struct tm *start_time) {
 
 void running_state_commit() {
 		// first save current session
-		APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... data store usage = %d", data_store_usage_count());
+		APP_LOG(APP_LOG_LEVEL_INFO, "Before saving... ");
 		uint32_t durition = time(NULL) - running_state_current.start_time; // total durition
 		while (durition > 0) {
 			struct tm *start_local = localtime(&running_state_current.start_time);
@@ -165,6 +165,7 @@ void running_state_commit() {
 				};
 			} else { // no day-cross, just commit
 				if (data_log_in(running_state_current.start_time, (durition + 18) / 36 , running_state_current.whats_running_idx)){
+					update_warning("");
 					// commit success, break loop
 					break;
 				} else {

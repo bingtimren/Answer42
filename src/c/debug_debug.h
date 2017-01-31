@@ -5,6 +5,8 @@
 
 // #define DEBUG_SAVE_DEBUG_RECORDS
 
+#define DEBUG_SMALL_STORAGE
+
 /* Testings
  * 
  * 1. run Nothing and see if reminders triggered 5x2_5x10_30

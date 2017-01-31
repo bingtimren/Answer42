@@ -4,5 +4,5 @@
 // the debug switch, just include either "debug_debug.h"
 // or the "debug_production.h"
 
-#define VERSION_INFO "2.3 (Joanna)"
+#define VERSION_INFO "3.0 (Joanna)"
 

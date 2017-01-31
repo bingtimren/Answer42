@@ -7,9 +7,9 @@
 #include "format.h"
 #include "wakeup.h"  
 #include "w_selection.h"  
-#include "w_communication.h"
 #include "w_confirmation.h"
-#include "localsummary.h"
+#include "w_localsummary.h"
+#include "w_credit.h"
 
 enum MidSectionMode {
 	start_lasted = 0,
@@ -38,7 +38,7 @@ static GFont s_res_gothic_28;
 static GFont s_res_gothic_24_bold;
 static GFont s_res_gothic_24;
 static GBitmap *s_res_image_action_adjust;
-static GBitmap *s_res_image_action_wireless;
+static GBitmap *s_res_image_action_info;
 static GBitmap *s_res_image_action_stop;
 static GFont s_res_bitham_34_medium_numbers;
 static TextLayer *t_warning;
@@ -62,7 +62,7 @@ static void initialise_ui(void) {
   s_res_gothic_24_bold = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD);
   s_res_gothic_24 = fonts_get_system_font(FONT_KEY_GOTHIC_24);
   s_res_image_action_adjust = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_ADJUST);
-  s_res_image_action_wireless = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_WIRELESS);
+  s_res_image_action_info = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_INFO);
   s_res_image_action_stop = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ACTION_STOP);
   s_res_bitham_34_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_34_MEDIUM_NUMBERS);
   // t_warning
@@ -126,7 +126,7 @@ static void initialise_ui(void) {
   action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
   action_bar_layer_set_background_color(s_actionbarlayer_1, GColorBlack);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_adjust);
-  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_wireless);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_info);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_stop);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
   
@@ -152,7 +152,7 @@ static void destroy_ui(void) {
   action_bar_layer_destroy(s_actionbarlayer_1);
   text_layer_destroy(t_time);
   gbitmap_destroy(s_res_image_action_adjust);
-  gbitmap_destroy(s_res_image_action_wireless);
+  gbitmap_destroy(s_res_image_action_info);
   gbitmap_destroy(s_res_image_action_stop);
 }
 // END AUTO-GENERATED UI CODE
@@ -160,7 +160,7 @@ static void destroy_ui(void) {
 void mode_normal() {
   mode = 'N'; // mode normal
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_image_action_adjust);
-  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_wireless);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_image_action_info);
   action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_image_action_stop);
 }
 
@@ -232,12 +232,12 @@ void display_mid_section_start_lasted (time_t tnow) {
 };	
 
 void display_mid_section_tdy_yest(time_t tnow) {
-	// today / yesterday
-	struct LocalSummaryType *lsum = get_local_summary_by_what_index(running_state_current.whats_running_idx);
-	uint16_t today = lsum -> one_100_hours_today + (tnow - running_state_current.start_time + 18) / 36;
+	struct BriefSummary summary;
+	get_brief_summary_from_whatid(running_state_current.whats_running_idx, &summary);
+	uint16_t today = summary.today + (tnow - running_state_current.start_time + 18) / 36;
 	snprintf(line1, sizeof(line1), "Tody: %u.%02u h ", (today)/100, (today)%100);	
 	text_layer_set_text(t_line1, line1);  
-	snprintf(line2, sizeof(line2), "Ystdy: %u.%02u h ", (lsum -> one_100_hours_yesterday)/100, (lsum -> one_100_hours_yesterday)%100);	
+	snprintf(line2, sizeof(line2), "Ystdy: %u.%02u h ", (summary.yesterday)/100, (summary.yesterday)%100);	
 	text_layer_set_text(t_line2, line2);	
 };	
 
@@ -301,29 +301,30 @@ void update_warning(const char* warning) {
 	text_layer_set_text(t_warning, warning);
 };
 
-void space_shortage_warning_check() {
-	uint8_t spaceleft = DATA_STORE_SIZE - data_store_usage_count();
-	if (spaceleft > 20) update_warning(" ");
-	else if (spaceleft > 1) {
-			snprintf(warning, sizeof(warning), "%d Spaces Left",spaceleft);
-			update_warning(warning);
-	}	else if (spaceleft == 1) update_warning("Last Space Left");
-		else update_warning("Storage Full");
-};
-
 void what_finish_handler_after_confirmation(bool confirmed){
 	if (confirmed) {
 		running_state_commit();
 		// then pop-up selection window
 		#ifdef DEBUG_SAVE_DEBUG_RECORDS
 			// write random records to test batch sending function
-			while (data_store_usage_count() < DATA_STORE_SIZE) {
-				running_state_current.start_time -= 3 * 3600 * data_store_usage_count(); // previous 3 hours
-				running_state_current.whats_running_idx = data_store_usage_count()%WHAT_LIST_LENGTH;
+			for (int i=0; i<5; i++) {
+				running_state_current.start_time -= 3 * 3600 * i; // previous 3 hours
+				running_state_current.whats_running_idx = (i*145)%WHAT_LIST_LENGTH;
 				running_state_commit();
 			};	  
 		#endif
 		show_w_selection();		
+	};
+};
+
+void reset_handler_after_confirmation(bool confirmed){
+	if (confirmed) {
+		// completely reset everything
+		data_clear();
+		running_state_clear();
+		wakeup_state_clear();
+		// and exit everything
+		window_stack_pop_all(false);
 	};
 };
 
@@ -382,7 +383,7 @@ void what_discard_handler_after_confirmation(bool confirmed){
 static void mid_short_handler(ClickRecognizerRef recognizer, void *context) {
   reset_activity_timer();
   if (mode == 'N') { // call communicator
-    show_w_communication();
+    show_w_localsummary();
   } else {
 	  if (running_state_current.whats_running_idx != 0) { 
 		  confirmation_ask("Discard this?", &what_discard_handler_after_confirmation);
@@ -406,6 +407,16 @@ static void up_long_handler(ClickRecognizerRef recognizer, void *context) {
   mode_adjust();
 }
 
+static void sel_long_handler(ClickRecognizerRef recognizer, void *context) {
+  reset_activity_timer();
+	reset_activity_timer();
+	if (mode == 'A') {
+		// bring up confirmation window
+		confirmation_ask("RESET ALL\?\?!!", &reset_handler_after_confirmation);
+	} else {
+		show_w_credit();
+	};
+}
 
 // down click handler - finish current what
 static void what_finish_handler_long(ClickRecognizerRef recognizer, void *context) {
@@ -424,6 +435,7 @@ static void what_finish_handler_long(ClickRecognizerRef recognizer, void *contex
 void w_running_click_config_provider(void *context) {
   window_long_click_subscribe(BUTTON_ID_UP, 0, &up_long_handler, NULL);	
   window_long_click_subscribe(BUTTON_ID_DOWN, 0, &what_finish_handler_long, NULL);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 0, &sel_long_handler, NULL);
   window_single_click_subscribe(BUTTON_ID_UP, &up_short_handler);  
   window_single_click_subscribe(BUTTON_ID_DOWN, &down_short_handler);
   window_single_click_subscribe(BUTTON_ID_SELECT, &mid_short_handler);

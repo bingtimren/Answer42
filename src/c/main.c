@@ -2,7 +2,7 @@
 #include "debug.h"
 #include "w_running.h"
 #include "running_state.h"
-#include "localsummary.h"
+#include "w_localsummary.h"
 #include "wakeup.h"
 #include "data.h"  
 #include "what.h"
@@ -18,8 +18,8 @@ static void init(void) {
   show_w_running();  
   // load running states
   running_state_load();
-  // load local summary
-  local_summary_load();
+  // load data
+  data_store_load();
 
   //is the launch due to wake_up?
   if (launch_reason() == APP_LAUNCH_WAKEUP) {
